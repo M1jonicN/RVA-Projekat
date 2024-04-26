@@ -1,0 +1,60 @@
+# Visual Studio generirane datoteke
+.vs/
+bin/
+obj/
+
+# Resursi generirani od strane Visual Studia
+*.user
+*.suo
+*.cache
+*.dll.refresh
+*.log
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+*.aps
+*.opendb
+*.suo
+*.sdf
+*.sln.docstates
+
+# Entity Framework specifične datoteke
+*.edmx
+*.csdl
+*.msl
+*.ssdl
+*.edmx.sql
+
+# WPF specifične datoteke
+*.exe
+*.pdb
+*.dll
+*.exe.config
+*.dll.config
+*.manifest
+*.xbap
+*.cache
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.tif
+*.tiff
+*.ico
+*.xaml
+*.bak
+*.psess
+*.vshost.*
+
+# WCF specifične datoteke
+*.svclog
+*.vsmdi
+*.psess
+*.vsp
+*.vssscc
+*.pdb
