@@ -1,4 +1,4 @@
-﻿using Server.DbModels;
+﻿using Common.DbModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;

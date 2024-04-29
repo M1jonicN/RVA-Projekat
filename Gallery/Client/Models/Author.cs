@@ -10,11 +10,13 @@ namespace Client.Models
 {
     public class Author : INotifyPropertyChanged
     {
+        private int id;
         private string firstName;
         private string lastName;
         private int birthYear;
         private int deathYear;
         private ArtMovement artMovement;
+        private bool isDeleted;
 
         public string FirstName {
             get
@@ -27,6 +29,19 @@ namespace Client.Models
                 OnPropertyChanged("FirstName");
             }
         }
+        public int Id
+        {
+            get
+            {
+                return id;
+            }
+            set
+            {
+                id = value;
+                OnPropertyChanged("Dd");
+            }
+        }
+
         public string LastName
         {
             get
@@ -70,6 +85,18 @@ namespace Client.Models
             {
                 artMovement = value;
                 OnPropertyChanged("ArtMovement");
+            }
+        }
+        public bool IsDeleted
+        {
+            get
+            {
+                return isDeleted;
+            }
+            set
+            {
+                isDeleted = value;
+                OnPropertyChanged("IsDeleted");
             }
         }
 

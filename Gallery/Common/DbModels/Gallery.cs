@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Server.DbModels
+namespace Common.DbModels
 {
     public class Gallery
     {
@@ -14,5 +14,6 @@ namespace Server.DbModels
         public string Address { get; set; }
         public string MBR { get; set; }
         public List<WorkOfArt> WorkOfArts { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

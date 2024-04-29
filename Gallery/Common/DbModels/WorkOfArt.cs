@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Server.DbModels
+namespace Common.DbModels
 {
     public class WorkOfArt
     {
@@ -15,5 +15,6 @@ namespace Server.DbModels
         public ArtMovement ArtMovement { get; set; }
         public Style Style { get; set; }
         public int AuthorID { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

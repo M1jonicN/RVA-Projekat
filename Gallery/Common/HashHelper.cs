@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Server.Helper
+namespace Common.Helper
 {
     public class HashHelper
     {

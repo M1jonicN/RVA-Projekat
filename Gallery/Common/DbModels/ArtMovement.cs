@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Server.DbModels
+namespace Common.DbModels
 {
     public enum ArtMovement
     {
@@ -16,6 +16,7 @@ namespace Server.DbModels
         Expressionism,
         Cubism,
         Contemporary_art,
+        PostImpressionism,
         Postmodernism,
         Minimalism,
         Pop_art,

@@ -1,17 +1,17 @@
-﻿using Server.DbModels;
-using Common.Contracts;
+﻿using Common.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Server.Helper;
+using Common.Helper;
+using Common.DbModels;
 
 namespace Server
 {
     public class AuthService : IAuthService
     {
-        private MyDbContext dbContext;
+        private readonly MyDbContext dbContext;
 
         public AuthService()
         {
@@ -39,8 +39,7 @@ namespace Server
 
         public bool Logout(string username)
         {
-            // Za logout možda nećete morati ništa raditi s bazom podataka, ovisno o zahtjevima aplikacije
-            return true; // Trenutno, vraćamo uvijek true jer ovdje ne radimo ništa sa bazom podataka
+            return true; 
         }
     }
 }

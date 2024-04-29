@@ -16,6 +16,7 @@ namespace Client.Enums
         Expressionism,
         Cubism,
         Contemporary_art,
+        PostImpressionism,
         Postmodernism,
         Minimalism,
         Pop_art,

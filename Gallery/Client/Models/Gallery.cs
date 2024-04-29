@@ -13,6 +13,7 @@ namespace Client.Models
         private string address;
         private string mbr;
         private List<WorkOfArt> workOfArts;
+        private bool isDeleted;
 
         public string PIB
         {
@@ -51,6 +52,18 @@ namespace Client.Models
             {
                 workOfArts = value;
                 OnPropertyChanged("WorkOfArts");
+            }
+        }
+        public bool IsDeleted
+        {
+            get
+            {
+                return isDeleted;
+            }
+            set
+            {
+                isDeleted = value;
+                OnPropertyChanged("IsDeleted");
             }
         }
 

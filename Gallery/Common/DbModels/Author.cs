@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Server.DbModels
+namespace Common.DbModels
 {
     public class Author
     {
@@ -16,5 +16,6 @@ namespace Server.DbModels
         public int BirthYear { get; set; }
         public int DeathYear { get; set; }
         public ArtMovement ArtMovement { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

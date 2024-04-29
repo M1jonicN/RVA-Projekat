@@ -17,6 +17,7 @@
                         BirthYear = c.Int(nullable: false),
                         DeathYear = c.Int(nullable: false),
                         ArtMovement = c.Int(nullable: false),
+                        IsDeleted = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.ID);
             
@@ -27,6 +28,7 @@
                         PIB = c.String(nullable: false, maxLength: 128),
                         Address = c.String(),
                         MBR = c.String(),
+                        IsDeleted = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.PIB);
             
@@ -39,6 +41,7 @@
                         ArtMovement = c.Int(nullable: false),
                         Style = c.Int(nullable: false),
                         AuthorID = c.Int(nullable: false),
+                        IsDeleted = c.Boolean(nullable: false),
                         Gallery_PIB = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.ID)
@@ -53,6 +56,7 @@
                         FirstName = c.String(nullable: false),
                         LastName = c.String(nullable: false),
                         Username = c.String(nullable: false),
+                        IsDeleted = c.Boolean(nullable: false),
                         UserType = c.Int(nullable: false),
                         PasswordHash = c.String(nullable: false),
                     })
