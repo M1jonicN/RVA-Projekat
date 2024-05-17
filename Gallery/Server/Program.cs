@@ -17,13 +17,12 @@ namespace Server
                 dbContext = new MyDbContext();
                 InitializeDatabaseData();
 
-                OpenCloseServices openCloseServices = new OpenCloseServices();
-                openCloseServices.Open();
+                OpenCloseServices.Open();
                 Console.WriteLine("All services are up!");
 
                 Console.ReadLine();
 
-                openCloseServices.Close();
+                OpenCloseServices.Close();
                 Console.WriteLine("All services are down!");
 
                 Console.ReadLine();

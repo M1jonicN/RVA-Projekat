@@ -12,15 +12,15 @@ namespace Server
 {
     public class OpenCloseServices
     {
-        private ServiceHost authService;
-        private ServiceHost galleryService;
+        private static ServiceHost authService;
+        private static ServiceHost galleryService;
 
         public OpenCloseServices()
         {
 
         }
 
-        public void Open()
+        public static void Open()
         {
             try
             {
@@ -46,7 +46,7 @@ namespace Server
             }
         }
 
-        public void Close()
+        public static void Close()
         {
             try
             {
