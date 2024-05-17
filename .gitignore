@@ -46,7 +46,6 @@ obj/
 *.tif
 *.tiff
 *.ico
-*.xaml
 *.bak
 *.psess
 *.vshost.*
