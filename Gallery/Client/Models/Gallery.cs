@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Client.Models
 {
-    public class Gallery : INotifyPropertyChanged
+    public class Gallery 
     {
         private string pib;
         private string address;
@@ -15,65 +15,10 @@ namespace Client.Models
         private List<WorkOfArt> workOfArts;
         private bool isDeleted;
 
-        public string PIB
-        {
-            get { return pib; }
-            set
-            {
-                pib = value;
-                OnPropertyChanged("PIB");
-            }
-        }
-
-        public string Address
-        {
-            get { return address; }
-            set
-            {
-                address = value;
-                OnPropertyChanged("Adresa");
-            }
-        }
-
-        public string MBR
-        {
-            get { return mbr; }
-            set
-            {
-                mbr = value;
-                OnPropertyChanged("MBR");
-            }
-        }
-
-        public List<WorkOfArt> WorkOfArts
-        {
-            get { return workOfArts; }
-            set
-            {
-                workOfArts = value;
-                OnPropertyChanged("WorkOfArts");
-            }
-        }
-        public bool IsDeleted
-        {
-            get
-            {
-                return isDeleted;
-            }
-            set
-            {
-                isDeleted = value;
-                OnPropertyChanged("IsDeleted");
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        public string Pib { get => pib; set => pib = value; }
+        public string Address { get => address; set => address = value; }
+        public string Mbr { get => mbr; set => mbr = value; }
+        public List<WorkOfArt> WorkOfArts { get => workOfArts; set => workOfArts = value; }
+        public bool IsDeleted { get => isDeleted; set => isDeleted = value; }
     }
 }

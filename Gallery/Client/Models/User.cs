@@ -7,71 +7,18 @@ using System.Threading.Tasks;
 
 namespace Client.Models
 {
-    public class User : INotifyPropertyChanged
+    public class User
     {
         private string firstName;
         private string lastName;
         private string username;
+        private bool isDeleted;
         private UserType userType;
 
-        public string FirstName
-        {
-            get
-            {
-                return firstName;
-            }
-            set
-            {
-                firstName = value;
-                OnPropertyChanged("FirstName");
-            }
-        }
-
-
-        public string LastName {
-            get
-            {
-                return lastName;
-            }
-            set
-            {
-                lastName = value;
-                OnPropertyChanged("LastName");
-            }
-        }
-
-    
-        public string Username {
-            get
-            {
-                return username;
-            }
-            set
-            {
-                username = value;
-                OnPropertyChanged("Username");
-            }
-        }
-        public UserType UserType
-        {
-            get
-            {
-                return userType;
-            }
-            set
-            {
-                userType = value;
-                OnPropertyChanged("UserType");
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        public string FirstName { get => firstName; set => firstName = value; }
+        public string LastName { get => lastName; set => lastName = value; }
+        public string Username { get => username; set => username = value; }
+        public bool IsDeleted { get => isDeleted; set => isDeleted = value; }
+        public UserType UserType { get => userType; set => userType = value; }
     }
 }

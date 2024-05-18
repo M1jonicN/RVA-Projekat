@@ -8,66 +8,18 @@ using System.Threading.Tasks;
 
 namespace Client.Models
 {
-    public class WorkOfArt : INotifyPropertyChanged
+    public class WorkOfArt
     {
         private string artName;
         private ArtMovement artMovement;
         private Style style;
         private int authorID;
+        private bool isDeleted;
 
-        public string ArtName {
-            get
-            {
-                return artName;
-            }
-            set
-            {
-                artName = value;
-                OnPropertyChanged("ArtName");
-            }
-        }
-        public ArtMovement ArtMovement {
-            get
-            {
-                return artMovement;
-            }
-            set
-            {
-                artMovement = value;
-                OnPropertyChanged("ArtMovement");
-            }
-        }
-        public Style Style {
-            get
-            {
-                return style;
-            }
-            set
-            {
-                style = value;
-                OnPropertyChanged("Style");
-            }
-        }
-        public int AuthorID
-        {
-            get
-            {
-                return authorID;
-            }
-            set
-            {
-                authorID = value;
-                OnPropertyChanged("AuthorID");
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        public string ArtName { get => artName; set => artName = value; }
+        public ArtMovement ArtMovement { get => artMovement; set => artMovement = value; }
+        public Style Style { get => style; set => style = value; }
+        public int AuthorID { get => authorID; set => authorID = value; }
+        public bool IsDeleted { get => isDeleted; set => isDeleted = value; }
     }
 }

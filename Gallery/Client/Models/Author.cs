@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Client.Models
 {
-    public class Author : INotifyPropertyChanged
+    public class Author 
     {
         private int id;
         private string firstName;
@@ -18,95 +18,12 @@ namespace Client.Models
         private ArtMovement artMovement;
         private bool isDeleted;
 
-        public string FirstName {
-            get
-            {
-                return firstName;
-            }
-            set
-            {
-                firstName = value;
-                OnPropertyChanged("FirstName");
-            }
-        }
-        public int Id
-        {
-            get
-            {
-                return id;
-            }
-            set
-            {
-                id = value;
-                OnPropertyChanged("Dd");
-            }
-        }
-
-        public string LastName
-        {
-            get
-            {
-                return lastName;
-            }
-            set
-            {
-                lastName = value;
-                OnPropertyChanged("LastName");
-            }
-        }
-        public int BirthYear {
-            get
-            {
-                return birthYear;
-            }
-            set
-            {
-                birthYear = value;
-                OnPropertyChanged("BirthYear");
-            }
-        }
-        public int DeathYear {
-            get
-            {
-                return deathYear;
-            }
-            set
-            {
-                deathYear = value;
-                OnPropertyChanged("DeathYear");
-            }
-        }
-        public ArtMovement ArtMovement {
-            get
-            {
-                return artMovement;
-            }
-            set
-            {
-                artMovement = value;
-                OnPropertyChanged("ArtMovement");
-            }
-        }
-        public bool IsDeleted
-        {
-            get
-            {
-                return isDeleted;
-            }
-            set
-            {
-                isDeleted = value;
-                OnPropertyChanged("IsDeleted");
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        public int Id { get => id; set => id = value; }
+        public string FirstName { get => firstName; set => firstName = value; }
+        public string LastName { get => lastName; set => lastName = value; }
+        public int BirthYear { get => birthYear; set => birthYear = value; }
+        public int DeathYear { get => deathYear; set => deathYear = value; }
+        public ArtMovement ArtMovement { get => artMovement; set => artMovement = value; }
+        public bool IsDeleted { get => isDeleted; set => isDeleted = value; }
     }
 }
