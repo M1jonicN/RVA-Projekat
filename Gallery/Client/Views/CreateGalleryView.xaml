@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="Client.Views.CreateGalleryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="400">
+    <Grid>
+        <StackPanel Margin="10">
+            <TextBlock Text="Create New Gallery" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                <TextBlock Width="100" Text="PIB:" VerticalAlignment="Center"/>
+                <TextBox Text="{Binding NewGallery.PIB}" Width="200" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                <TextBlock Width="100" Text="MBR:" VerticalAlignment="Center"/>
+                <TextBox Text="{Binding NewGallery.MBR}" Width="200" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                <TextBlock Width="100" Text="Address:" VerticalAlignment="Center"/>
+                <TextBox Text="{Binding NewGallery.Address}" Width="200" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            </StackPanel>
+            <Button Content="Create" Command="{Binding CreateGalleryCommand}" Width="100" Height="30" HorizontalAlignment="Center" Margin="20"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -15,6 +15,7 @@ namespace Client.ViewModels
 {
     public class EditUserViewModel : BaseViewModel
     {
+        public event EventHandler<Common.DbModels.User> UserUpdated;
         private readonly IAuthService _authService;
 
         private Common.DbModels.User _user;
@@ -115,7 +116,7 @@ namespace Client.ViewModels
         {
             try
             {
-                if(NewPassword != ConfirmPassword)
+                if (NewPassword != ConfirmPassword)
                 {
                     MessageBox.Show("Passwords doesn't match", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
@@ -123,7 +124,8 @@ namespace Client.ViewModels
                 else if (!string.IsNullOrEmpty(NewPassword))
                 {
                     User.PasswordHash = HashHelper.ConvertToHash(NewPassword);
-                }else
+                }
+                else
                 {
                     MessageBox.Show("U must enter password", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
@@ -134,8 +136,10 @@ namespace Client.ViewModels
                 {
                     MessageBox.Show("User saved successfully!");
 
-                    Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
+                    // Poziv događaja
+                    UserUpdated?.Invoke(this, User);
 
+                    Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
                 }
                 else
                 {

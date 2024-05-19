@@ -27,24 +27,27 @@ namespace Server.Services
             this.dbContext = new MyDbContext();
         }
 
-        public List<Author> GetAllAuthores()
-        {
-            var authors = dbContext.Authors.ToList();
-            return authors;
-        }
-
         public List<Gallery> GetAllGalleries()
         {
             var galleries = dbContext.Galleries.ToList();
-            return mapper.Map<List<Gallery>>(galleries);
+            return galleries;
         }
 
-        public List<WorkOfArt> GetAllWorkOfArts()
+        public bool CreateNewGallery(Gallery newGallery)
         {
-            var worksOfArt = dbContext.WorkOfArts.ToList();
-            return mapper.Map<List<WorkOfArt>>(worksOfArt);
+            if (dbContext.Galleries.Any(g => g.PIB == newGallery.PIB))
+                return false;
+
+
+            var gallery = new Gallery {
+                PIB = newGallery.PIB,
+                MBR = newGallery.MBR,
+                Address = newGallery.Address,
+                IsDeleted = false
+            };
+            dbContext.Galleries.Add(gallery);
+            dbContext.SaveChanges();
+            return true;
         }
-
-
     }
 }

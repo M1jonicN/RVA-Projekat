@@ -26,6 +26,5 @@ namespace Common.Contracts
         [OperationContract]
         bool SaveChanges(User user);
 
-
     }
 }

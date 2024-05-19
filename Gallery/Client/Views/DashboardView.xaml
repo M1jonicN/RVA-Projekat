@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="790" d:DesignWidth="1000">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
@@ -19,18 +19,37 @@
 
         <!-- Edit User Button -->
         <Button Grid.Row="0" Grid.Column="1" FontSize="16" Width="100" Margin="5" Content="View User" Command="{Binding EditUserCommand}" HorizontalAlignment="Left" />
+        <Button Grid.Row="0" Grid.Column="1" FontSize="16" Width="150" Margin="115, 5, 5, 5" Content="Create New Gallery" Command="{Binding CreateNewGalleryCommand}" HorizontalAlignment="Left" />
 
-        <TextBox Grid.Row="0" Grid.Column="1" Width="200" FontSize="16" Margin="5 5 10 5" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center"  VerticalContentAlignment="Center"/>
-        <Button Grid.Row="0" Grid.Column="1" FontSize="16" Width="100" Margin="20, 5, 120, 5" Content="Search" Command="{Binding SearchCommand}" HorizontalAlignment="Right" />
+        <TextBox Grid.Row="0" Grid.Column="1" Width="200" FontSize="16" Margin="5" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Button Grid.Row="0" Grid.Column="1" FontSize="16" Width="100" Margin="220, 5, 120, 5" Content="Search" Command="{Binding SearchCommand}" HorizontalAlignment="Right" />
         <Button Grid.Row="0" Grid.Column="2" FontSize="16" Width="100" Margin="5" Content="Logout" Command="{Binding LogoutCommand}" HorizontalAlignment="Right" />
-        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding LoggedInUsername}" Margin="5" Padding="5" FontSize="16"  IsReadOnly="True"/>
+        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding LoggedInUsername}" Margin="5" Padding="5" FontSize="16"  IsReadOnly="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 
         <ListView Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" FontSize="18" ItemsSource="{Binding Galleries}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="PIB" DisplayMemberBinding="{Binding Pib}" />
-                    <GridViewColumn Header="Address" DisplayMemberBinding="{Binding Address}" />
-                    <GridViewColumn Header="MBR" DisplayMemberBinding="{Binding Mbr}" />
+                    <GridViewColumn Header="PIB" Width="200" DisplayMemberBinding="{Binding PIB}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding}" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="MBR" Width="200" DisplayMemberBinding="{Binding MBR}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding}" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Address" Width="200" DisplayMemberBinding="{Binding Address}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding}" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>

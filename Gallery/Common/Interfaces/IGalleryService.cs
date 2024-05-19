@@ -10,14 +10,12 @@ namespace Common.Services
 {
     [ServiceContract]
     public interface IGalleryService
-    {
-        [OperationContract]
-        List<Author> GetAllAuthores();
+    { 
 
         [OperationContract]
         List<Gallery> GetAllGalleries();
 
         [OperationContract]
-        List<WorkOfArt> GetAllWorkOfArts();
+        bool CreateNewGallery(Gallery newGallery);
     }
 }

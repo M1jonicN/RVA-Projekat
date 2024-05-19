@@ -75,8 +75,8 @@ namespace Client.ViewModels
                     var window = new Window
                     {
                         Content = dashboard,
-                        Width = 800,
-                        Height = 450,
+                        Width = 1000,
+                        Height = 700,
                         Title = "Dashboard"
                     };
                     window.Show();
