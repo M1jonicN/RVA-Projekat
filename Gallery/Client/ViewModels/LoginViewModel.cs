@@ -22,6 +22,7 @@ namespace Client.ViewModels
             var binding = new NetTcpBinding();
             var endpoint = new EndpointAddress("net.tcp://localhost:8085/Authentifiaction");
             _channelFactory = new ChannelFactory<IAuthService>(binding, endpoint);
+            Username = "username";
 
             LoginCommand = new RelayCommand(Login);
         }
@@ -67,11 +68,9 @@ namespace Client.ViewModels
                 Common.DbModels.User loggedInUser = authServiceClient.Login(Username, Password);
                 if (loggedInUser != null && loggedInUser.IsLoggedIn)
                 {
-
                     var dashboard = new DashboardView();
                     var dashboardViewModel = new DashboardViewModel(loggedInUser);
                     dashboard.DataContext = dashboardViewModel;
-
 
                     var window = new Window
                     {

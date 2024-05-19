@@ -20,6 +20,12 @@ namespace Common.Contracts
         [OperationContract]
         bool Logout(string username);
 
+        [OperationContract]
+        User FindUser(string username);
+
+        [OperationContract]
+        bool SaveChanges(User user);
+
 
     }
 }

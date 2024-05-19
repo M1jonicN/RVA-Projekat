@@ -32,5 +32,56 @@ namespace Client.Views
             }
         }
 
+        private void tbUsername_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (tbUsername.Text == "username")
+            {
+                errorMessage.Text = "";
+                tbUsername.Text = "";
+                userBorder.BorderBrush = Brushes.Red;
+                userBorder.BorderThickness = new Thickness(0);
+            }
+        }
+
+        private void tbUsername_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (tbUsername.Text.Trim() == "")
+            {
+                errorMessage.Text = "Invalid username or password";
+                userBorder.BorderBrush = Brushes.Red;
+                userBorder.BorderThickness = new Thickness(1);
+                tbUsername.Text = "username";
+
+            }
+        }
+
+        private void pbPassword_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (pbPassword.Password == "" || lblPassword.Visibility == Visibility.Visible)
+            {
+                lblPassword.Visibility = Visibility.Hidden;
+                errorMessage.Text = "";
+                passBorder.BorderBrush = Brushes.Red;
+                passBorder.BorderThickness = new Thickness(0);
+            }
+        }
+
+        private void pbPassword_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (pbPassword.Password == "")
+            {
+                errorMessage.Text = "Invalid username or password";
+                passBorder.BorderBrush = Brushes.Red;
+                passBorder.BorderThickness = new Thickness(1);
+                lblPassword.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void lblPassword_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            lblPassword.Visibility = Visibility.Hidden;
+            pbPassword.Focus();
+
+        }
     }
 }

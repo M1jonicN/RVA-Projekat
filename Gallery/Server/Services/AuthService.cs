@@ -15,16 +15,20 @@ namespace Server
 
         public AuthService()
         {
-            dbContext = new MyDbContext();
+                dbContext = new MyDbContext();
         }
 
         public User Login(string username, string password)
         {
-            if(username == null || password == null) return null;
+            if(password == null) return null;
             string passwordHash = HashHelper.ConvertToHash(password);
             User user = dbContext.Users.FirstOrDefault(u => u.Username == username && u.PasswordHash == passwordHash);
-            user.IsLoggedIn = true;
-            return user;
+            if (user !=  null)
+            {
+                user.IsLoggedIn = true;
+                return user;
+            }
+            return null;
         }
 
         public bool Register(string username, string password)
@@ -52,6 +56,36 @@ namespace Server
             return true;
         }
 
+        public User FindUser(string username)
+        {
+            User user = dbContext.Users.FirstOrDefault(u => u.Username == username);
+            return user;
+        }
+
+        public bool SaveChanges(User user)
+        {
+            try
+            {
+                var existingUser = dbContext.Users.FirstOrDefault(u => u.ID == user.ID);
+                if (existingUser != null)
+                {
+                    existingUser.FirstName = user.FirstName;
+                    existingUser.LastName = user.LastName;
+                    existingUser.Username = user.Username;
+                    existingUser.PasswordHash = user.PasswordHash; 
+                    
+                    dbContext.SaveChanges();
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving user: {ex.Message}");
+                return false;
+            }
+        }
 
     }
 }
