@@ -6,11 +6,20 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBox Width="200" Margin="5" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" />
-            <PasswordBox Width="200" Margin="5" PasswordChanged="PasswordBox_PasswordChanged"/>
-            <Button Width="200" Margin="5" Content="Login" Command="{Binding LoginCommand}"/>
-            <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" Margin="5"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="170"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="Log in" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        <!-- Content -->
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBox x:Name="tbUsername" Width="300" Height="30" FontSize="18" Margin="5"  Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" />
+            <PasswordBox x:Name="pbPassword" Width="300" Height="30" FontSize="18" Margin="5" PasswordChanged="PasswordBox_PasswordChanged" HorizontalAlignment="Center" />
+            <Button Width="200" Height="30" Margin="5" Content="Login" FontSize="16" Command="{Binding LoginCommand}"/>
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" FontSize="16" Margin="50 5 5 5"/>
         </StackPanel>
     </Grid>
 </UserControl>

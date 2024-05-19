@@ -10,7 +10,7 @@ namespace Server
 {
     public class MyDbContext : DbContext
     {
-        private static string connectionString = "Data Source=localhost;Initial Catalog=GalleryDB;Integrated Security=True;";
+        private static string connectionString = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=GalleryDB;Integrated Security=True;";
 
         public MyDbContext() : base(connectionString)
         {

@@ -59,6 +59,7 @@
                         IsDeleted = c.Boolean(nullable: false),
                         UserType = c.Int(nullable: false),
                         PasswordHash = c.String(nullable: false),
+                        IsLoggedIn = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.ID);
             

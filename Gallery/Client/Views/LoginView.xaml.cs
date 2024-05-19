@@ -31,5 +31,6 @@ namespace Client.Views
                 viewModel.Password = ((PasswordBox)sender).Password;
             }
         }
+
     }
 }

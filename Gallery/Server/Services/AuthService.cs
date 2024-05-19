@@ -18,11 +18,13 @@ namespace Server
             dbContext = new MyDbContext();
         }
 
-        public bool Login(string username, string password)
+        public User Login(string username, string password)
         {
+            if(username == null || password == null) return null;
             string passwordHash = HashHelper.ConvertToHash(password);
-            var user = dbContext.Users.FirstOrDefault(u => u.Username == username && u.PasswordHash == passwordHash);
-            return user != null;
+            User user = dbContext.Users.FirstOrDefault(u => u.Username == username && u.PasswordHash == passwordHash);
+            user.IsLoggedIn = true;
+            return user;
         }
 
         public bool Register(string username, string password)
@@ -39,7 +41,17 @@ namespace Server
 
         public bool Logout(string username)
         {
-            return true; 
+            User user = dbContext.Users.FirstOrDefault(u => u.Username == username);
+            if (user == null)
+            {
+                return false; 
+            }
+
+            user.IsLoggedIn = false;
+            dbContext.SaveChanges();
+            return true;
         }
+
+
     }
 }

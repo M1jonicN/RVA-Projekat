@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.DbModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -11,13 +12,14 @@ namespace Common.Contracts
     public interface IAuthService
     {
         [OperationContract]
-        bool Login(string username, string password);
+        User Login(string username, string password);
 
         [OperationContract]
         bool Register(string username, string password);
 
         [OperationContract]
         bool Logout(string username);
+
 
     }
 }

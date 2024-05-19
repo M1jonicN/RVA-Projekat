@@ -14,8 +14,13 @@ namespace Server
         {
             try
             {
+
+                var pass = HashHelper.ConvertToHash("filip");
+                Console.WriteLine(pass);
+
+
                 dbContext = new MyDbContext();
-                InitializeDatabaseData();
+                InitializeDatabaseData();  
 
                 OpenCloseServices.Open();
                 Console.WriteLine("All services are up!");
@@ -53,7 +58,8 @@ namespace Server
                 Username = "admin",
                 UserType = UserType.Admin,
                 PasswordHash = HashHelper.ConvertToHash("admin"),
-                IsDeleted = false
+                IsDeleted = false,
+                IsLoggedIn = false, 
             };
 
             dbContext.Users.Add(admin);

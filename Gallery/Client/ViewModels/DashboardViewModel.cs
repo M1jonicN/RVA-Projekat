@@ -4,24 +4,39 @@ using System.Windows.Input;
 using Client.Models;
 using Client.Helpers;
 using System.Collections.Generic;
+using System.Windows;
+using System;
+using Common.Contracts;
+using System.ServiceModel;
 
 namespace Client.ViewModels
 {
     public class DashboardViewModel : BaseViewModel
     {
+        private readonly ChannelFactory<IAuthService> _channelFactory;
+        private readonly Common.DbModels.User _loggedInUser;
         private ObservableCollection<Gallery> _galleries;
         private ObservableCollection<WorkOfArt> _workOfArts;
         private ObservableCollection<Author> _authors;
         private string _searchText;
+        private string _loggedInUsername;
 
-        public DashboardViewModel()
+        public DashboardViewModel(Common.DbModels.User loggedInUser)
         {
+            _loggedInUser = loggedInUser;
+            LoggedInUsername = _loggedInUser.Username;
+
+            var binding = new NetTcpBinding();
+            var endpoint = new EndpointAddress("net.tcp://localhost:8085/Authentifiaction");
+            _channelFactory = new ChannelFactory<IAuthService>(binding, endpoint);
+
             // Initialize collections with dummy data or fetch from service
             Galleries = new ObservableCollection<Gallery>();
             WorkOfArts = new ObservableCollection<WorkOfArt>();
             Authors = new ObservableCollection<Author>();
 
             SearchCommand = new RelayCommand(Search);
+            LogoutCommand = new RelayCommand(Logout);
 
             // Load data (this should be replaced with actual data fetching logic)
             LoadData();
@@ -67,7 +82,18 @@ namespace Client.ViewModels
             }
         }
 
+        public string LoggedInUsername
+        {
+            get => _loggedInUsername;
+            set
+            {
+                _loggedInUsername = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand SearchCommand { get; }
+        public ICommand LogoutCommand { get; }
 
         private void LoadData()
         {
@@ -80,6 +106,29 @@ namespace Client.ViewModels
         {
             var filteredGalleries = Galleries.Where(g => g.Address.Contains(SearchText) || g.Pib.Contains(SearchText) || g.Mbr.Contains(SearchText)).ToList();
             Galleries = new ObservableCollection<Gallery>(filteredGalleries);
+        }
+
+        private void Logout()
+        {
+            try
+            {
+                var authServiceClient = _channelFactory.CreateChannel();
+                bool isLoggedOut = authServiceClient.Logout(_loggedInUser.Username);
+
+                if (isLoggedOut)
+                {
+                    MessageBox.Show($"Uspešna odjava {_loggedInUser.Username}!");
+                    Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Došlo je do greške pri odjavi.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
         }
     }
 }

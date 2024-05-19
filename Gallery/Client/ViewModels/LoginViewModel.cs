@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Linq;
 using System.ServiceModel;
 using System.Windows;
 using System.Windows.Input;
 using Client.Helpers;
+using Client.Models;
 using Client.Views;
 using Common.Contracts;
+using Common.DbModels;
 
 namespace Client.ViewModels
 {
@@ -56,18 +59,19 @@ namespace Client.ViewModels
 
         public ICommand LoginCommand { get; }
 
-        private async void Login()
+        private void Login()
         {
             try
             {
                 var authServiceClient = _channelFactory.CreateChannel();
-                bool result = authServiceClient.Login(Username, Password);
-                if (result)
+                Common.DbModels.User loggedInUser = authServiceClient.Login(Username, Password);
+                if (loggedInUser != null && loggedInUser.IsLoggedIn)
                 {
-                    MessageBox.Show("Uspesan Login!");
+
                     var dashboard = new DashboardView();
-                    var dashboardViewModel = new DashboardViewModel();
+                    var dashboardViewModel = new DashboardViewModel(loggedInUser);
                     dashboard.DataContext = dashboardViewModel;
+
 
                     var window = new Window
                     {
@@ -88,5 +92,8 @@ namespace Client.ViewModels
                 ErrorMessage = $"An error occurred: {ex.Message}";
             }
         }
+
+
+
     }
 }

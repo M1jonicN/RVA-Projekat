@@ -11,6 +11,9 @@ namespace Common.DbModels
 {
     public class User
     {
+
+        private string password;
+
         private string _passwordHash;
         [Key]
         public int ID { get; set; }
@@ -32,9 +35,13 @@ namespace Common.DbModels
         [DataType(DataType.Password)]
         public string PasswordHash
         {
-            get { return _passwordHash; }
-            set { _passwordHash = HashHelper.ConvertToHash(value); }
+            get;
+            set;
         }
+
+        [Required]
+        public bool IsLoggedIn { get; set; }
+
 
     }
 }
