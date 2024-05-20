@@ -30,6 +30,7 @@ namespace Client.ViewModels
         private string _loggedInUsername;
         private readonly MyDbContext dbContext;
         private readonly DispatcherTimer _dispatcherTimer; // Dodato za tajmer
+        private bool _isSearching; // Dodato za praćenje stanja pretrage
 
         public DashboardViewModel(Common.DbModels.User loggedInUser)
         {
@@ -57,9 +58,11 @@ namespace Client.ViewModels
             SearchCommand = new RelayCommand(Search);
             LogoutCommand = new RelayCommand(Logout);
             EditUserCommand = new RelayCommand(Edit);
+            CreateUserCommand = new RelayCommand(OpenCreateUserWindow);
             DetailsCommand = new RelayCommand<Gallery>(ShowDetails);
             DeleteCommand = new RelayCommand<Gallery>(DeleteGallery);
             CreateNewGalleryCommand = new RelayCommand(OpenCreateGalleryWindow);
+
 
             // Load data initially
             LoadData();
@@ -69,6 +72,55 @@ namespace Client.ViewModels
             _dispatcherTimer.Interval = TimeSpan.FromSeconds(2); // Set interval to 2 seconds
             _dispatcherTimer.Tick += (sender, args) => LoadData(); // Attach the LoadData method to the Tick event
             _dispatcherTimer.Start(); // Start the timer
+
+            Application.Current.MainWindow.Closing += OnWindowClosing;
+        }
+
+        public ICommand SearchCommand { get; }
+        public ICommand LogoutCommand { get; }
+        public ICommand EditUserCommand { get; }
+        public ICommand CreateNewGalleryCommand { get; }
+        public ICommand DetailsCommand { get; }
+        public ICommand DeleteCommand { get; }
+        public ICommand CreateUserCommand { get; }
+
+
+
+        private void EditWorkOfArt(WorkOfArt workOfArt)
+        {
+            MessageBox.Show($"Edit {workOfArt.ArtName}");
+            // Dodajte logiku za uređivanje umetničkog dela ovde
+        }
+
+        private void ViewWorkOfArtDetails(WorkOfArt workOfArt)
+        {
+            MessageBox.Show($"View details of {workOfArt.ArtName}");
+            // Dodajte logiku za prikaz detalja umetničkog dela ovde
+        }
+
+        private void OpenCreateUserWindow()
+        {
+            if (_loggedInUser.UserType == Common.DbModels.UserType.Admin)
+            {
+                var createUserViewModel = new CreateUserViewModel();
+                var createUserWindow = new CreateUserView
+                {
+                    DataContext = createUserViewModel,
+                    Width = 500,
+                    Height = 400
+                };
+                createUserWindow.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Only Admin can add new User");
+
+            }
+        }
+
+        private void OnWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Logout();
         }
 
         public ObservableCollection<Gallery> Galleries
@@ -108,6 +160,7 @@ namespace Client.ViewModels
             {
                 _searchText = value;
                 OnPropertyChanged();
+                Search(); // Trigger search whenever search text changes
             }
         }
 
@@ -121,12 +174,6 @@ namespace Client.ViewModels
             }
         }
 
-        public ICommand SearchCommand { get; }
-        public ICommand LogoutCommand { get; }
-        public ICommand EditUserCommand { get; }
-        public ICommand CreateNewGalleryCommand { get; }
-        public ICommand DetailsCommand { get; }
-        public ICommand DeleteCommand { get; }
 
         private void LoadData()
         {
@@ -136,13 +183,16 @@ namespace Client.ViewModels
             galleries = clientGallery.GetAllGalleries();
 
             _allGalleries.Clear();
-            Galleries.Clear();
-
             foreach (var gallery in galleries)
             {
-                if (!gallery.IsDeleted)
+                _allGalleries.Add(gallery);
+            }
+
+            if (!_isSearching) // Only update Galleries if not searching
+            {
+                Galleries.Clear();
+                foreach (var gallery in _allGalleries)
                 {
-                    _allGalleries.Add(gallery);
                     Galleries.Add(gallery);
                 }
             }
@@ -157,15 +207,18 @@ namespace Client.ViewModels
             var detailsViewModel = new GalleryDetailsViewModel(gallery);
             var detailsWindow = new GalleryDetailsWindow
             {
-                DataContext = detailsViewModel
+                DataContext = detailsViewModel,
+                Width = 650,
+                Height = 470
             };
-            detailsWindow.Show();
+            detailsWindow.ShowDialog();
         }
 
         private void DeleteGallery(Gallery gallery)
         {
             if (MessageBox.Show("Are you sure you want to delete this gallery?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
+                gallery.IsDeleted = true;
                 _allGalleries.Remove(gallery);
                 Galleries.Remove(gallery);
 
@@ -173,14 +226,17 @@ namespace Client.ViewModels
                 clientGallery.DeleteGallery(gallery.PIB);
             }
         }
+
         private void Search()
         {
             if (string.IsNullOrWhiteSpace(SearchText))
             {
+                _isSearching = false;
                 Galleries = new ObservableCollection<Gallery>(_allGalleries);
             }
             else
             {
+                _isSearching = true;
                 var filteredGalleries = _allGalleries
                     .Where(g => g.Address.ToLower().Contains(SearchText.ToLower())
                              || g.PIB.ToLower().Contains(SearchText.ToLower())
@@ -190,7 +246,7 @@ namespace Client.ViewModels
             }
         }
 
-        private void Logout()
+        public void Logout()
         {
             try
             {

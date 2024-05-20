@@ -29,7 +29,7 @@ namespace Server.Services
 
         public List<Gallery> GetAllGalleries()
         {
-            var galleries = dbContext.Galleries.ToList();
+            var galleries = dbContext.Galleries.Where(g=> !g.IsDeleted).ToList();
             return galleries;
         }
 
@@ -60,7 +60,7 @@ namespace Server.Services
                 gallery.IsDeleted = true;
                 dbContext.SaveChanges();
                 return true; // Galerija je uspešno obrisana
-            }   
+            }
 
             return false; // Galerija nije pronađena
         }

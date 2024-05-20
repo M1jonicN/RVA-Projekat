@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Client.Views.GalleryDetailsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Gallery Details" Height="450" Width="800">
+        Title="Gallery Details" Height="Auto" Width="Auto" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -9,22 +9,33 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical" Grid.Row="0" Margin="10">
             <TextBlock Text="Gallery Details" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
-            <TextBlock Text=" Gallery PIB"/>
+            <TextBlock Text="Gallery PIB"/>
             <TextBox Text="{Binding Gallery.PIB}" FontSize="16" IsEnabled="False"/>
-            <TextBlock Text=" Gallery MBR"/>
+            <TextBlock Text="Gallery MBR"/>
             <TextBox Text="{Binding Gallery.MBR}" FontSize="16" IsEnabled="False"/>
-            <TextBlock Text=" Gallery Address"/>
+            <TextBlock Text="Gallery Address"/>
             <TextBox Text="{Binding Gallery.Address}" FontSize="16" IsEnabled="False"/>
         </StackPanel>
         <ListView Grid.Row="1" ItemsSource="{Binding WorkOfArts}" Margin="10">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Art Name" DisplayMemberBinding="{Binding ArtName}" Width="170"/>
-                    <GridViewColumn Header="Art Movement" DisplayMemberBinding="{Binding ArtMovement}" Width="150"/>
-                    <GridViewColumn Header="Style" DisplayMemberBinding="{Binding Style}" Width="120"/>
-                    <GridViewColumn Header="Author ID" DisplayMemberBinding="{Binding AuthorID}" Width="70"/>
-                    <GridViewColumn Header="Author Name" DisplayMemberBinding="{Binding AuthorName}" Width="130"/>
-                    <GridViewColumn Header="Gallery PIB" DisplayMemberBinding="{Binding GalleryPIB}" Width="125"/>
+                    <GridViewColumn Header="Art Name" DisplayMemberBinding="{Binding ArtName}" Width="Auto"/>
+                    <GridViewColumn Header="Art Movement" DisplayMemberBinding="{Binding ArtMovement}" Width="Auto"/>
+                    <GridViewColumn Header="Style" DisplayMemberBinding="{Binding Style}" Width="Auto"/>
+                    <GridViewColumn Header="Author ID" DisplayMemberBinding="{Binding AuthorID}" Width="Auto"/>
+                    <GridViewColumn Header="Author Name" DisplayMemberBinding="{Binding AuthorName}" Width="Auto"/>
+                    <GridViewColumn Header="Gallery PIB" DisplayMemberBinding="{Binding GalleryPIB}" Width="Auto"/>
+                    <!-- Dodaj kolonu za akcije -->
+                    <GridViewColumn Header="Actions" Width="Auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="Details" Command="{Binding DataContext.DetailsWorkOfArtCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}" Margin="5"/>
+                                    <Button Content="Delete" Command="{Binding DataContext.DeleteWorkOfArtCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}" Margin="5"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>

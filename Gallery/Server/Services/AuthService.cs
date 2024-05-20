@@ -32,13 +32,19 @@ namespace Server
             return null;
         }
 
-        public bool Register(string username, string password)
+        public bool Register(string username, string password, string firstName, string lastName)
         {
             if (dbContext.Users.Any(u => u.Username == username))
                 return false; // Korisničko ime već postoji
 
             string passwordHash = HashHelper.ConvertToHash(password);
-            var newUser = new User { Username = username, PasswordHash = passwordHash };
+            var newUser = new User {
+                Username = username,
+                PasswordHash = passwordHash,
+                FirstName = firstName,
+                UserType = UserType.User,
+                LastName = lastName
+            };
             dbContext.Users.Add(newUser);
             dbContext.SaveChanges();
             return true;

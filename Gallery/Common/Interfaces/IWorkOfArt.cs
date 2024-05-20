@@ -13,5 +13,11 @@ namespace Common.Interfaces
     {
         [OperationContract]
         List<WorkOfArt> GetWorkOfArtsForGallery(string galleryPib);
+
+        [OperationContract]
+        bool UpdateWorkOfArt(WorkOfArt workOfArt);
+        [OperationContract]
+        bool DeleteWorkOfArt(int workOfArtId);
+
     }
 }

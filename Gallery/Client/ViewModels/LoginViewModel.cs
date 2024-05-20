@@ -68,18 +68,21 @@ namespace Client.ViewModels
                 Common.DbModels.User loggedInUser = authServiceClient.Login(Username, Password);
                 if (loggedInUser != null && loggedInUser.IsLoggedIn)
                 {
-                    var dashboard = new DashboardView();
+                    var dashboard = new DashboardView() 
+                    {
+                        Height = 600,
+                        Width = 900
+                    };
                     var dashboardViewModel = new DashboardViewModel(loggedInUser);
                     dashboard.DataContext = dashboardViewModel;
 
-                    var window = new Window
-                    {
-                        Content = dashboard,
-                        Width = 1000,
-                        Height = 700,
-                        Title = "Dashboard"
-                    };
-                    window.Show();
+                    // Postavljanje vlasnika i zatvaranje trenutnog prozora
+                    Window currentWindow = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive);
+                    dashboard.Owner = currentWindow;
+                    currentWindow?.Hide();
+
+                    dashboard.Show();
+                    currentWindow?.Show(); // Ponovo pokažite trenutni prozor nakon zatvaranja dashboarda
                 }
                 else
                 {
@@ -91,8 +94,6 @@ namespace Client.ViewModels
                 ErrorMessage = $"An error occurred: {ex.Message}";
             }
         }
-
-
 
     }
 }

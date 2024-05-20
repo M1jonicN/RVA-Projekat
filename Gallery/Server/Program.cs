@@ -14,6 +14,9 @@ namespace Server
         {
             try
             {
+                string has = HashHelper.ConvertToHash("filip");
+                Console.WriteLine(has);
+
                 dbContext = new MyDbContext();
                 InitializeDatabaseData();
 

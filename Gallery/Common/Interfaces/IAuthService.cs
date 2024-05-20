@@ -15,7 +15,7 @@ namespace Common.Contracts
         User Login(string username, string password);
 
         [OperationContract]
-        bool Register(string username, string password);
+        bool Register(string username, string password, string firstName, string lastName);
 
         [OperationContract]
         bool Logout(string username);
