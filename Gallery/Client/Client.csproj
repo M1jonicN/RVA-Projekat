@@ -70,6 +70,7 @@
     <Compile Include="ViewModels\GalleryDetailsViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\WorkOfArtDetailsViewModel.cs" />
     <Compile Include="Views\CreateGalleryView.xaml.cs">
       <DependentUpon>CreateGalleryView.xaml</DependentUpon>
     </Compile>
@@ -87,6 +88,9 @@
     </Compile>
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WorkOfArtDetailsWindow.xaml.cs">
+      <DependentUpon>WorkOfArtDetailsWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -124,6 +128,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\LoginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WorkOfArtDetailsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

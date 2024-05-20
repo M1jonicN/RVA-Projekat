@@ -15,6 +15,24 @@ namespace Server.Services
             dbContext = new MyDbContext();
         }
 
+        public Author GetAuthorById(int workOfArtId)
+        {
+            WorkOfArt workOfArt = dbContext.WorkOfArts.FirstOrDefault(woa => woa.ID == workOfArtId);
+            if (workOfArt == null)
+            {
+                throw new FaultException("Work of art not found.");
+            }
+
+            Author author = dbContext.Authors.FirstOrDefault(a => a.ID == workOfArt.AuthorID);
+            if (author == null)
+            {
+                throw new FaultException("Author not found.");
+            }
+
+            return author;
+        }
+
+
         public string GetAuthorNameForWorkOfArt(int workOfArtId, string galleryPIB)
         {
             var workOfArt = dbContext.WorkOfArts.FirstOrDefault(woa => woa.ID == workOfArtId && woa.GalleryPIB == galleryPIB);

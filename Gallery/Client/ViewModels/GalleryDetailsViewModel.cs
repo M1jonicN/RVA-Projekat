@@ -6,6 +6,7 @@ using System.ServiceModel;
 using System.Windows;
 using System.Windows.Input;
 using Client.Helpers;
+using Client.Views;
 
 namespace Client.ViewModels
 {
@@ -61,9 +62,23 @@ namespace Client.ViewModels
 
         private void DetailsWorkOfArt(WorkOfArt workOfArt)
         {
-            MessageBox.Show($"Viewing details for {workOfArt.ArtName}");
-            // Implementacija logike za prikaz detalja umetničkog dela
+            try
+            {
+                var clientAuthor = _channelFactoryAuthor.CreateChannel();
+                var author = clientAuthor.GetAuthorById(workOfArt.AuthorID);
+                var detailsViewModel = new WorkOfArtDetailsViewModel(workOfArt, author);
+                var detailsWindow = new WorkOfArtDetailsWindow()
+                {
+                    DataContext = detailsViewModel
+                };
+                detailsWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
         }
+
 
         private void DeleteWorkOfArt(WorkOfArt workOfArt)
         {

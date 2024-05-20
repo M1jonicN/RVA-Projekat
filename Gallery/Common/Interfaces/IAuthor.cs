@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.DbModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -12,5 +13,7 @@ namespace Common.Interfaces
     {
         [OperationContract]
         string GetAuthorNameForWorkOfArt(int workOfArtId, string galleryPIB);
+        [OperationContract]
+        Author GetAuthorById(int wokrOfArtId);
     }
 }
