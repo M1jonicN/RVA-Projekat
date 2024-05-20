@@ -23,9 +23,10 @@ namespace Server
             if(password == null) return null;
             string passwordHash = HashHelper.ConvertToHash(password);
             User user = dbContext.Users.FirstOrDefault(u => u.Username == username && u.PasswordHash == passwordHash);
-            if (user !=  null)
+            if (user !=  null && user.IsLoggedIn == false)
             {
                 user.IsLoggedIn = true;
+                dbContext.SaveChanges();
                 return user;
             }
             return null;

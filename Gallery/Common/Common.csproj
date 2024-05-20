@@ -66,6 +66,8 @@
     <Compile Include="DbModels\WorkOfArt.cs" />
     <Compile Include="HashHelper.cs" />
     <Compile Include="Interfaces\IAuthService.cs" />
+    <Compile Include="Interfaces\IAuthor.cs" />
+    <Compile Include="Interfaces\IWorkOfArt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interfaces\IGalleryService.cs" />
   </ItemGroup>

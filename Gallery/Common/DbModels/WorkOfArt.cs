@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Common.DbModels
 {
@@ -15,6 +10,8 @@ namespace Common.DbModels
         public ArtMovement ArtMovement { get; set; }
         public Style Style { get; set; }
         public int AuthorID { get; set; }
+        public string AuthorName { get; set; }
+        public string GalleryPIB { get; set; }
         public bool IsDeleted { get; set; }
     }
 }

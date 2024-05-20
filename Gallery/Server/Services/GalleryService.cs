@@ -49,5 +49,21 @@ namespace Server.Services
             dbContext.SaveChanges();
             return true;
         }
+
+        public bool DeleteGallery(string galleryPIB)
+        {
+            var gallery = dbContext.Galleries.FirstOrDefault(g => g.PIB == galleryPIB);
+
+            // Ako je galerija pronađena, obrišite je iz baze podataka
+            if (gallery != null)
+            {
+                gallery.IsDeleted = true;
+                dbContext.SaveChanges();
+                return true; // Galerija je uspešno obrisana
+            }   
+
+            return false; // Galerija nije pronađena
+        }
+
     }
 }

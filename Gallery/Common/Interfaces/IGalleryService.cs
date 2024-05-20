@@ -17,5 +17,8 @@ namespace Common.Services
 
         [OperationContract]
         bool CreateNewGallery(Gallery newGallery);
+
+        [OperationContract]
+        bool DeleteGallery(string galleryPIB);
     }
 }

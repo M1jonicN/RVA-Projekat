@@ -1,9 +1,9 @@
-namespace Server.Migrations
+﻿namespace Server.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class InitialCreate : DbMigration
+    public partial class CreateTables : DbMigration
     {
         public override void Up()
         {
@@ -41,12 +41,13 @@ namespace Server.Migrations
                         ArtMovement = c.Int(nullable: false),
                         Style = c.Int(nullable: false),
                         AuthorID = c.Int(nullable: false),
+                        AuthorName = c.String(),
+                        GalleryPIB = c.String(maxLength: 128),
                         IsDeleted = c.Boolean(nullable: false),
-                        Gallery_PIB = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.ID)
-                .ForeignKey("dbo.Galleries", t => t.Gallery_PIB)
-                .Index(t => t.Gallery_PIB);
+                .ForeignKey("dbo.Galleries", t => t.GalleryPIB)
+                .Index(t => t.GalleryPIB);
             
             CreateTable(
                 "dbo.Users",
@@ -67,8 +68,8 @@ namespace Server.Migrations
         
         public override void Down()
         {
-            DropForeignKey("dbo.WorkOfArts", "Gallery_PIB", "dbo.Galleries");
-            DropIndex("dbo.WorkOfArts", new[] { "Gallery_PIB" });
+            DropForeignKey("dbo.WorkOfArts", "GalleryPIB", "dbo.Galleries");
+            DropIndex("dbo.WorkOfArts", new[] { "GalleryPIB" });
             DropTable("dbo.Users");
             DropTable("dbo.WorkOfArts");
             DropTable("dbo.Galleries");
