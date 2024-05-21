@@ -20,5 +20,10 @@ namespace Common.Services
 
         [OperationContract]
         bool DeleteGallery(string galleryPIB);
+
+        [OperationContract]
+        bool SaveGalleryChanges(Gallery gallery);
+        [OperationContract]
+        Gallery GetGalleryByPIB(string pib);
     }
 }

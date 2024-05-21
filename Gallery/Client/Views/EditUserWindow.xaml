@@ -35,7 +35,7 @@
 
             <StackPanel Orientation="Horizontal" x:Name="spUserType" Visibility="Visible" Margin="0 0 0 5">
                 <TextBlock Width="80" Text="User Type:" VerticalAlignment="Center"/>
-                <TextBox Text="{Binding TypeOfUser}" Margin="10" Width="200" Height="30"
+                <TextBox IsEnabled="False" Text="{Binding TypeOfUser}" Margin="10" Width="200" Height="30" 
                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">

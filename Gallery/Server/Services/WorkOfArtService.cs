@@ -59,5 +59,10 @@ namespace Server.Services
 
             return false; // Galerija nije pronađena
         }
+
+        public WorkOfArt GetWorkOfArtById(int workOfArtId)
+        {
+            return dbContext.WorkOfArts.FirstOrDefault(woa => woa.ID == workOfArtId && !woa.IsDeleted);
+        }
     }
 }

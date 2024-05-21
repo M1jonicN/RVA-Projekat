@@ -11,10 +11,6 @@ namespace Common.DbModels
 {
     public class User
     {
-
-        private string password;
-
-        private string _passwordHash;
         [Key]
         public int ID { get; set; }
 

@@ -18,6 +18,8 @@ namespace Common.Interfaces
         bool UpdateWorkOfArt(WorkOfArt workOfArt);
         [OperationContract]
         bool DeleteWorkOfArt(int workOfArtId);
+        [OperationContract]
+        WorkOfArt GetWorkOfArtById(int workOfArtId);
 
     }
 }

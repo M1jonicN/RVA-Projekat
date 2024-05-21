@@ -65,5 +65,33 @@ namespace Server.Services
             return false; // Galerija nije pronađena
         }
 
+        public bool SaveGalleryChanges(Gallery gallery)
+        {
+            try
+            {
+                var existingGallery = dbContext.Galleries.FirstOrDefault(g => g.PIB == gallery.PIB);
+                if (existingGallery != null)
+                {
+                    existingGallery.PIB = gallery.PIB;
+                    existingGallery.MBR = gallery.MBR;
+                    existingGallery.Address = gallery.Address;
+
+                    dbContext.SaveChanges();
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving gallery: {ex.Message}");
+                return false;
+            }
+        }
+
+        public Gallery GetGalleryByPIB(string pib) // Implementacija nove metode
+        {
+            return dbContext.Galleries.FirstOrDefault(g => g.PIB == pib && !g.IsDeleted);
+        }
     }
 }

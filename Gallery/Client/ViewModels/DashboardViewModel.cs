@@ -7,7 +7,6 @@ using System.Windows;
 using System;
 using System.ServiceModel;
 using Client.Views;
-using Server;
 using Common.DbModels;
 using Common.Contracts;
 using Common.Services;
@@ -21,16 +20,20 @@ namespace Client.ViewModels
         private readonly ChannelFactory<IAuthService> _channelFactory;
         private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
         private readonly ChannelFactory<IWorkOfArt> _channelFactoryWOA;
-        private readonly Common.DbModels.User _loggedInUser;
+        private readonly User _loggedInUser;
         private ObservableCollection<Gallery> _galleries;
         private ObservableCollection<Gallery> _allGalleries; // Dodato za čuvanje svih galerija
         private ObservableCollection<WorkOfArt> _workOfArts;
         private ObservableCollection<Author> _authors;
         private string _searchText;
         private string _loggedInUsername;
-        private readonly MyDbContext dbContext;
         private readonly DispatcherTimer _dispatcherTimer; // Dodato za tajmer
         private bool _isSearching; // Dodato za praćenje stanja pretrage
+
+        private bool _isSearchByMBR;
+        private bool _isSearchByPIB;
+        private bool _isSearchByAddress;
+        private bool _isSearchByParameters;
 
         public DashboardViewModel(Common.DbModels.User loggedInUser)
         {
@@ -62,20 +65,22 @@ namespace Client.ViewModels
             DetailsCommand = new RelayCommand<Gallery>(ShowDetails);
             DeleteCommand = new RelayCommand<Gallery>(DeleteGallery);
             CreateNewGalleryCommand = new RelayCommand(OpenCreateGalleryWindow);
-
+            DuplicateGalleryCommand = new RelayCommand<Gallery>(DuplicateGallery);
 
             // Load data initially
             LoadData();
 
             // Initialize and start the DispatcherTimer
             _dispatcherTimer = new DispatcherTimer();
-            _dispatcherTimer.Interval = TimeSpan.FromSeconds(2); // Set interval to 2 seconds
+            _dispatcherTimer.Interval = TimeSpan.FromSeconds(1.5); // Set interval to 1.5 seconds
             _dispatcherTimer.Tick += (sender, args) => LoadData(); // Attach the LoadData method to the Tick event
             _dispatcherTimer.Start(); // Start the timer
 
             Application.Current.MainWindow.Closing += OnWindowClosing;
         }
 
+
+        public ICommand DuplicateGalleryCommand { get; }
         public ICommand SearchCommand { get; }
         public ICommand LogoutCommand { get; }
         public ICommand EditUserCommand { get; }
@@ -84,18 +89,91 @@ namespace Client.ViewModels
         public ICommand DeleteCommand { get; }
         public ICommand CreateUserCommand { get; }
 
-
-
-        private void EditWorkOfArt(WorkOfArt workOfArt)
+        private void DuplicateGallery(Gallery gallery)
         {
-            MessageBox.Show($"Edit {workOfArt.ArtName}");
-            // Dodajte logiku za uređivanje umetničkog dela ovde
+            // Kreiranje duboke kopije liste WorkOfArts
+            var duplicatedWorkOfArts = new List<WorkOfArt>();
+            if (gallery.WorkOfArts != null)
+            {
+                foreach (var workOfArt in gallery.WorkOfArts)
+                {
+                    duplicatedWorkOfArts.Add(new WorkOfArt
+                    {
+                        // Pretpostavljajući da WorkOfArt ima ove atribute, dodajte sve potrebne atribute za kopiranje
+                        ID = workOfArt.ID,
+                        ArtName = workOfArt.ArtName,
+                        ArtMovement = workOfArt.ArtMovement,
+                        Style = workOfArt.Style,
+                        AuthorID = workOfArt.AuthorID,
+                        AuthorName = workOfArt.AuthorName,
+                        GalleryPIB = workOfArt.GalleryPIB,
+                        IsDeleted = workOfArt.IsDeleted,
+                        // Dodajte ostale atribute koje je potrebno kopirati
+                    });
+                }
+            }
+
+            // Kreiranje duplikata galerije
+            var duplicateGallery = new Gallery
+            {
+                PIB = GenerateUniquePIB(),
+                Address = gallery.Address,
+                MBR = gallery.MBR,
+                WorkOfArts = duplicatedWorkOfArts,
+                IsDeleted = gallery.IsDeleted
+            };
+
+            // Dodavanje duplikata galerije u bazu podataka
+            var clientGallery = _channelFactoryGallery.CreateChannel();
+            clientGallery.CreateNewGallery(duplicateGallery);
+
+            // Dodavanje duplikata galerije u obe kolekcije
+            _allGalleries.Add(duplicateGallery);
+            Galleries.Add(duplicateGallery);
         }
 
-        private void ViewWorkOfArtDetails(WorkOfArt workOfArt)
+
+        private string GenerateUniquePIB()
         {
-            MessageBox.Show($"View details of {workOfArt.ArtName}");
-            // Dodajte logiku za prikaz detalja umetničkog dela ovde
+            string pib;
+            do
+            {
+                pib = GeneratePIB();
+            } while (_allGalleries.Any(g => g.PIB == pib));
+
+            return pib;
+        }
+
+        private readonly Random _random = new Random();
+
+        private string GeneratePIB()
+        {
+            // Generate a random number between 10000001 and 99999999
+            int number = _random.Next(10000001, 99999999);
+
+            // Convert the number to a string
+            string pib = number.ToString("D8");
+
+            // Calculate the control digit (simple example, customize as needed)
+            int controlDigit = CalculateControlDigit(pib);
+
+            // Append the control digit to the PIB
+            return pib + controlDigit.ToString();
+        }
+
+        private int CalculateControlDigit(string pib)
+        {
+            // Implement a control digit calculation (example provided)
+            // This is a simple checksum calculation, you may need a different algorithm
+            int sum = 0;
+            for (int i = 0; i < pib.Length; i++)
+            {
+                sum += (pib[i] - '0') * (i + 1);
+            }
+
+            // Modulus 11 to get a single digit
+            int controlDigit = sum % 11;
+            return controlDigit;
         }
 
         private void OpenCreateUserWindow()
@@ -106,15 +184,14 @@ namespace Client.ViewModels
                 var createUserWindow = new CreateUserView
                 {
                     DataContext = createUserViewModel,
-                    Width = 500,
-                    Height = 400
+                    Width = 400,
+                    Height = 210
                 };
                 createUserWindow.ShowDialog();
             }
             else
             {
                 MessageBox.Show("Only Admin can add new User");
-
             }
         }
 
@@ -174,13 +251,54 @@ namespace Client.ViewModels
             }
         }
 
+        public bool IsSearchByMBR
+        {
+            get => _isSearchByMBR;
+            set
+            {
+                _isSearchByMBR = value;
+                OnPropertyChanged();
+                Search();
+            }
+        }
+
+        public bool IsSearchByPIB
+        {
+            get => _isSearchByPIB;
+            set
+            {
+                _isSearchByPIB = value;
+                OnPropertyChanged();
+                Search();
+            }
+        }
+
+        public bool IsSearchByAddress
+        {
+            get => _isSearchByAddress;
+            set
+            {
+                _isSearchByAddress = value;
+                OnPropertyChanged();
+                Search();
+            }
+        }
+
+        public bool IsSearchByParameters
+        {
+            get => _isSearchByParameters;
+            set
+            {
+                _isSearchByParameters = value;
+                OnPropertyChanged();
+                Search();
+            }
+        }
 
         private void LoadData()
         {
-            var galleries = new List<Gallery>();
             var clientGallery = _channelFactoryGallery.CreateChannel();
-
-            galleries = clientGallery.GetAllGalleries();
+            var galleries = clientGallery.GetAllGalleries();
 
             _allGalleries.Clear();
             foreach (var gallery in galleries)
@@ -188,7 +306,8 @@ namespace Client.ViewModels
                 _allGalleries.Add(gallery);
             }
 
-            if (!_isSearching) // Only update Galleries if not searching
+            // Always update Galleries collection
+            if (!_isSearching)
             {
                 Galleries.Clear();
                 foreach (var gallery in _allGalleries)
@@ -204,14 +323,14 @@ namespace Client.ViewModels
             var workOfArts = clientWOA.GetWorkOfArtsForGallery(gallery.PIB);
             gallery.WorkOfArts = new List<WorkOfArt>(workOfArts);
 
-            var detailsViewModel = new GalleryDetailsViewModel(gallery);
+            var detailsViewModel = new GalleryDetailsViewModel(gallery, _loggedInUser);
             var detailsWindow = new GalleryDetailsWindow
             {
                 DataContext = detailsViewModel,
-                Width = 650,
-                Height = 470
+                Width = 670,
+                Height = 700
             };
-            detailsWindow.ShowDialog();
+            detailsWindow.Show();
         }
 
         private void DeleteGallery(Gallery gallery)
@@ -237,12 +356,34 @@ namespace Client.ViewModels
             else
             {
                 _isSearching = true;
-                var filteredGalleries = _allGalleries
-                    .Where(g => g.Address.ToLower().Contains(SearchText.ToLower())
+
+                var filteredGalleries = _allGalleries.AsQueryable();
+
+                if (IsSearchByParameters)
+                {
+                    if (IsSearchByMBR)
+                    {
+                        filteredGalleries = filteredGalleries.Where(g => g.MBR.ToLower().Contains(SearchText.ToLower()));
+                    }
+
+                    if (IsSearchByPIB)
+                    {
+                        filteredGalleries = filteredGalleries.Where(g => g.PIB.ToLower().Contains(SearchText.ToLower()));
+                    }
+
+                    if (IsSearchByAddress)
+                    {
+                        filteredGalleries = filteredGalleries.Where(g => g.Address.ToLower().Contains(SearchText.ToLower()));
+                    }
+                }
+                else
+                {
+                    filteredGalleries = filteredGalleries.Where(g => g.Address.ToLower().Contains(SearchText.ToLower())
                              || g.PIB.ToLower().Contains(SearchText.ToLower())
-                             || g.MBR.ToLower().Contains(SearchText.ToLower()))
-                    .ToList();
-                Galleries = new ObservableCollection<Gallery>(filteredGalleries);
+                             || g.MBR.ToLower().Contains(SearchText.ToLower()));
+                }
+
+                Galleries = new ObservableCollection<Gallery>(filteredGalleries.ToList());
             }
         }
 
@@ -273,7 +414,7 @@ namespace Client.ViewModels
             try
             {
                 var authServiceClient = _channelFactory.CreateChannel();
-                Common.DbModels.User user = authServiceClient.FindUser(_loggedInUser.Username);
+                User user = authServiceClient.FindUser(_loggedInUser.Username);
 
                 if (user != null)
                 {
@@ -307,7 +448,7 @@ namespace Client.ViewModels
                 Width = 400,
                 Height = 300
             };
-            createGalleryWindow.ShowDialog();
+            createGalleryWindow.Show();
         }
 
         private void OnGalleryCreated(object sender, Gallery newGallery)
@@ -322,7 +463,7 @@ namespace Client.ViewModels
             createGalleryWindow?.Close();
         }
 
-        private void OnUserUpdated(object sender, Common.DbModels.User updatedUser)
+        private void OnUserUpdated(object sender, User updatedUser)
         {
             _loggedInUser.Username = updatedUser.Username;
             LoggedInUsername = updatedUser.Username;

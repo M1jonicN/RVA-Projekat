@@ -14,6 +14,14 @@ namespace Common.Interfaces
         [OperationContract]
         string GetAuthorNameForWorkOfArt(int workOfArtId, string galleryPIB);
         [OperationContract]
-        Author GetAuthorById(int wokrOfArtId);
+        Author GetAuthorByWorkOfArtId(int wokrOfArtId);
+        [OperationContract]
+        bool SaveAuthorChanges(Author author);
+
+        [OperationContract]
+        bool DeleteAuhor(int authorID);
+
+        [OperationContract]
+        Author GetAuthorById(int authorId);
     }
 }

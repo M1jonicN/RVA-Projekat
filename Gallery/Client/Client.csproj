@@ -60,6 +60,7 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Converters\BooleanToVisibilityConverter .cs" />
     <Compile Include="Helper\RelayCommand.cs" />
     <Compile Include="Models\LoggedInUsers.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
