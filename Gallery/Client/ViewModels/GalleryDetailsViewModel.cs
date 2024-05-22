@@ -63,7 +63,7 @@ namespace Client.ViewModels
             DeleteWorkOfArtCommand = new RelayCommand<WorkOfArt>(DeleteWorkOfArt);
 
             _dispatcherTimer = new DispatcherTimer();
-            _dispatcherTimer.Interval = TimeSpan.FromSeconds(2);
+            _dispatcherTimer.Interval = TimeSpan.FromSeconds(1);
             _dispatcherTimer.Tick += (sender, args) => RefreshGallery();
             _dispatcherTimer.Start();
         }
@@ -105,6 +105,7 @@ namespace Client.ViewModels
                 if (updatedGallery != null)
                 {
                     Gallery = updatedGallery;
+                    Gallery.WorkOfArts = updatedGallery.WorkOfArts;
                     RefreshWorkOfArts();
                 }
             }

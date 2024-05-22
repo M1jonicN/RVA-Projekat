@@ -12,6 +12,9 @@ namespace Common.Interfaces
     public interface IAuthor
     {
         [OperationContract]
+        List<Author> GetAllAuthores();
+
+        [OperationContract]
         string GetAuthorNameForWorkOfArt(int workOfArtId, string galleryPIB);
         [OperationContract]
         Author GetAuthorByWorkOfArtId(int wokrOfArtId);
@@ -23,5 +26,8 @@ namespace Common.Interfaces
 
         [OperationContract]
         Author GetAuthorById(int authorId);
+
+        [OperationContract]
+        bool CreateNewAuthor(Author newAuthor);
     }
 }

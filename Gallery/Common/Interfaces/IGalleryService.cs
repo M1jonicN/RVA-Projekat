@@ -16,6 +16,9 @@ namespace Common.Services
         List<Gallery> GetAllGalleries();
 
         [OperationContract]
+        List<Gallery> GetAllGalleriesFromDb();
+
+        [OperationContract]
         bool CreateNewGallery(Gallery newGallery);
 
         [OperationContract]

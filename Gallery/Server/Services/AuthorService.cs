@@ -3,6 +3,7 @@ using Common.DbModels;
 using Common.Interfaces;
 using System.Linq;
 using System;
+using System.Collections.Generic;
 
 namespace Server.Services
 {
@@ -14,6 +15,26 @@ namespace Server.Services
         public AuthorService()
         {
             dbContext = new MyDbContext();
+        }
+
+        public bool CreateNewAuthor(Author newAuthor)
+        {
+
+            if (dbContext.Authors.Any(a => a.ID == newAuthor.ID))
+                return false;
+
+            var author = new Author
+            {
+                FirstName = newAuthor.FirstName,
+                LastName = newAuthor.LastName,
+                BirthYear = newAuthor.BirthYear,
+                DeathYear = newAuthor.DeathYear,
+                ArtMovement = newAuthor.ArtMovement,
+                IsDeleted = false
+            };
+            dbContext.Authors.Add(author);
+            dbContext.SaveChanges();
+            return true;
         }
 
         public bool DeleteAuhor(int authorID)
@@ -28,6 +49,12 @@ namespace Server.Services
             }
 
             return false;
+        }
+
+        public List<Author> GetAllAuthores()
+        {
+            var authores = dbContext.Authors.ToList();
+            return authores;
         }
 
         public Author GetAuthorById(int authorId)

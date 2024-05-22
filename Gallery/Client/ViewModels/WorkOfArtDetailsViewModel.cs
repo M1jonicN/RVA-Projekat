@@ -1,6 +1,4 @@
-﻿using Common.DbModels;
-using Common.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -8,6 +6,8 @@ using System.ServiceModel;
 using System.Timers;
 using System.Windows.Input;
 using Client.Helpers;
+using Common.DbModels;
+using Common.Interfaces;
 
 namespace Client.ViewModels
 {
@@ -69,6 +69,7 @@ namespace Client.ViewModels
         public ICommand SaveWorkOfArtCommand { get; }
         public ICommand EditAuthorCommand { get; }
         public ICommand SaveAuthorCommand { get; }
+        public ICommand DeleteAuthorCommand { get; }
 
         public WorkOfArtDetailsViewModel(WorkOfArt workOfArt, Author author, User loggedInUser)
         {
@@ -80,8 +81,9 @@ namespace Client.ViewModels
             SaveWorkOfArtCommand = new RelayCommand(SaveWorkOfArt);
             EditAuthorCommand = new RelayCommand(EditAuthor);
             SaveAuthorCommand = new RelayCommand(SaveAuthor);
+            DeleteAuthorCommand = new RelayCommand(DeleteAuthor);
 
-            _timer = new Timer(2000);
+            _timer = new Timer(1000);
             _timer.Elapsed += (sender, args) => RefreshData();
             _timer.Start();
         }
@@ -110,6 +112,25 @@ namespace Client.ViewModels
             var clientAuthor = new ChannelFactory<IAuthor>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8088/Author")).CreateChannel();
             clientAuthor.SaveAuthorChanges(Author);
             RefreshAuthor();
+        }
+
+        private void DeleteAuthor()
+        {
+            var clientAuthor = new ChannelFactory<IAuthor>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8088/Author")).CreateChannel();
+            var success = clientAuthor.DeleteAuhor(Author.ID);
+
+            if (success)
+            {
+                var clientWoa = new ChannelFactory<IWorkOfArt>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8087/WorkOfArt")).CreateChannel();
+                clientWoa.GetAllWorkOfArtsDeletedForAuthorId(Author.ID);
+                Console.WriteLine("Author deleted successfully.");
+                Author = new Author(); // or null, depending on your logic
+                OnPropertyChanged(nameof(Author));
+            }
+            else
+            {
+                Console.WriteLine("Failed to delete author.");
+            }
         }
 
         private void RefreshData()

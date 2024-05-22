@@ -1,0 +1,35 @@
+﻿<Window x:Class="Client.Views.CreateAuthorView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Create New Author" Height="320" Width="400">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="First Name:" Margin="5"/>
+        <TextBox Grid.Row="0" Margin="5,25,0,0" Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <TextBlock Grid.Row="1" Text="Last Name:" Margin="5"/>
+        <TextBox Grid.Row="1" Margin="5,25,0,0" Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <TextBlock Grid.Row="2" Text="Birth Year:" Margin="5"/>
+        <TextBox Grid.Row="2" Margin="5,25,0,0" Text="{Binding BirthYear, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <TextBlock Grid.Row="3" Text="Death Year:" Margin="5"/>
+        <TextBox Grid.Row="3" Margin="5,25,0,0" Text="{Binding DeathYear, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <TextBlock Grid.Row="4" Text="Art Movement:" Margin="5"/>
+        <ComboBox Grid.Row="4" Margin="5,25,0,0" ItemsSource="{Binding ArtMovements}" SelectedItem="{Binding SelectedArtMovement}"/>
+
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+            <Button Content="Save" Command="{Binding SaveCommand}" Margin="5"/>
+        </StackPanel>
+    </Grid>
+</Window>

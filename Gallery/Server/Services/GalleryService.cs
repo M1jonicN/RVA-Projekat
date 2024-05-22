@@ -38,7 +38,6 @@ namespace Server.Services
             if (dbContext.Galleries.Any(g => g.PIB == newGallery.PIB))
                 return false;
 
-
             var gallery = new Gallery {
                 PIB = newGallery.PIB,
                 MBR = newGallery.MBR,
@@ -92,6 +91,11 @@ namespace Server.Services
         public Gallery GetGalleryByPIB(string pib) // Implementacija nove metode
         {
             return dbContext.Galleries.FirstOrDefault(g => g.PIB == pib && !g.IsDeleted);
+        }
+
+        public List<Gallery> GetAllGalleriesFromDb()
+        {
+            return dbContext.Galleries.ToList();
         }
     }
 }

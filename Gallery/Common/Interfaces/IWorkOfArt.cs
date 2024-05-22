@@ -12,14 +12,24 @@ namespace Common.Interfaces
     public interface IWorkOfArt
     {
         [OperationContract]
+        List<WorkOfArt> GetAllWorkOfArts();
+
+        [OperationContract]
         List<WorkOfArt> GetWorkOfArtsForGallery(string galleryPib);
 
         [OperationContract]
         bool UpdateWorkOfArt(WorkOfArt workOfArt);
+
+        [OperationContract]
+        void GetAllWorkOfArtsDeletedForAuthorId(int authorID);
+
         [OperationContract]
         bool DeleteWorkOfArt(int workOfArtId);
+
         [OperationContract]
         WorkOfArt GetWorkOfArtById(int workOfArtId);
 
+        [OperationContract]
+        bool CreateNewWorkOfArt(WorkOfArt newWorkOfArt);
     }
 }

@@ -64,5 +64,44 @@ namespace Server.Services
         {
             return dbContext.WorkOfArts.FirstOrDefault(woa => woa.ID == workOfArtId && !woa.IsDeleted);
         }
+
+        public List<WorkOfArt> GetAllWorkOfArts()
+        {
+            return dbContext.WorkOfArts.ToList();
+        }
+
+        public bool CreateNewWorkOfArt(WorkOfArt newWorkOfArt)
+        {
+            if (dbContext.WorkOfArts.Any(wa => wa.ID == newWorkOfArt.ID))
+                return false;
+
+            var woa = new WorkOfArt
+            {
+                ArtName = newWorkOfArt.ArtName,
+                ArtMovement = newWorkOfArt.ArtMovement,
+                Style = newWorkOfArt.Style,
+                AuthorID = newWorkOfArt.AuthorID,
+                AuthorName = newWorkOfArt.AuthorName,
+                GalleryPIB = newWorkOfArt.GalleryPIB,
+                IsDeleted = false
+            };
+            dbContext.WorkOfArts.Add(woa);
+            dbContext.SaveChanges();
+            return true;
+        }
+
+        public void GetAllWorkOfArtsDeletedForAuthorId(int authorID)
+        {
+            var workOfArts = dbContext.WorkOfArts.ToList();
+            foreach (var woa in workOfArts) 
+            {
+                if (woa.AuthorID == authorID) 
+                {
+                    woa.IsDeleted = true;
+                }
+            }
+            dbContext.SaveChanges();
+        }
+        
     }
 }

@@ -74,6 +74,10 @@ namespace Client.ViewModels
                         Width = 900
                     };
                     var dashboardViewModel = new DashboardViewModel(loggedInUser);
+
+                    // Subscribe to the Closed event of DashboardView
+                   // dashboard.Closed += Dashboard_Closed;
+
                     dashboard.DataContext = dashboardViewModel;
 
                     // Ensure we have a current window to set as owner
@@ -84,7 +88,7 @@ namespace Client.ViewModels
                         currentWindow.Hide();
                     }
 
-                    dashboard.ShowDialog();
+                    dashboard.Show();
                     currentWindow?.Show(); // Show the current window again after closing the dashboard
 
                 }
@@ -99,6 +103,17 @@ namespace Client.ViewModels
             }
         }
 
-
+       /* private void Dashboard_Closed(object sender, EventArgs e)
+        {
+            // Show the login window again when Dashboard is closed
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is LoginView)
+                {
+                    window.Show();
+                    break;
+                }
+            }
+        }*/
     }
 }

@@ -66,6 +66,8 @@ namespace Client.ViewModels
             DeleteCommand = new RelayCommand<Gallery>(DeleteGallery);
             CreateNewGalleryCommand = new RelayCommand(OpenCreateGalleryWindow);
             DuplicateGalleryCommand = new RelayCommand<Gallery>(DuplicateGallery);
+            CreateNewAuthorCommand = new RelayCommand(OpenCreateAuthorWindow);
+            CreateNewWorkOfArtCommand = new RelayCommand(OpenCreateWorkOfArtView);
 
             // Load data initially
             LoadData();
@@ -88,7 +90,23 @@ namespace Client.ViewModels
         public ICommand DetailsCommand { get; }
         public ICommand DeleteCommand { get; }
         public ICommand CreateUserCommand { get; }
+        public ICommand CreateNewAuthorCommand { get; }
+        public ICommand CreateNewWorkOfArtCommand { get; }
 
+
+        private void OpenCreateAuthorWindow()
+        {
+            var createAuthorView = new CreateAuthorView
+            {
+                DataContext = new CreateAuthorViewModel()
+            };
+            createAuthorView.Show();
+        }
+        private void OpenCreateWorkOfArtView()
+        {
+            var createWorkOfArtView = new CreateWorkOfArtView();
+            createWorkOfArtView.Show();
+        }
         private void DuplicateGallery(Gallery gallery)
         {
             // Kreiranje duboke kopije liste WorkOfArts
