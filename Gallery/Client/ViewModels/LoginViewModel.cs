@@ -75,12 +75,12 @@ namespace Client.ViewModels
                     };
                     var dashboardViewModel = new DashboardViewModel(loggedInUser);
 
+
                     // Subscribe to the Closed event of DashboardView
                    // dashboard.Closed += Dashboard_Closed;
 
                     dashboard.DataContext = dashboardViewModel;
 
-                    // Ensure we have a current window to set as owner
                     Window currentWindow = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive);
                     if (currentWindow != null)
                     {
@@ -89,7 +89,7 @@ namespace Client.ViewModels
                     }
 
                     dashboard.Show();
-                    currentWindow?.Show(); // Show the current window again after closing the dashboard
+                    currentWindow?.Show(); 
 
                 }
                 else

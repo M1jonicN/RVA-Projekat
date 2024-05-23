@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         mc:Ignorable="d"
-        d:DesignHeight="400" d:DesignWidth="600"
+        d:DesignHeight="400" d:DesignWidth="800"
         WindowStyle="None" MouseLeftButtonDown="Window_MouseLeftButtonDown" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
@@ -57,7 +57,7 @@
             <Button Grid.Column="0" FontSize="16" Width="100" Margin="5" Content="View User" Command="{Binding EditUserCommand}" HorizontalAlignment="Left"/>
             <Button Grid.Column="2" FontSize="16" Width="150" Margin="5" Content="Create New User" Command="{Binding CreateUserCommand}" HorizontalAlignment="Left"/>
             <Button Grid.Column="3" FontSize="16" Width="150" Margin="5" Content="Create New Gallery" Command="{Binding CreateNewGalleryCommand}" HorizontalAlignment="Left"/>
-            <Button Grid.Column="1" FontSize="16" Width="150" Margin="5" Content="Create New Author" Command="{Binding CreateNewAuthorCommand}" HorizontalAlignment="Left"/>
+            <Button Grid.Column="1" FontSize="16" Width="150" Margin="205,5,0,5" Content="Create New Author" Command="{Binding CreateNewAuthorCommand}" HorizontalAlignment="Left" />
             <Button Grid.Column="1" FontSize="16" Width="190" Margin="5" Content="Create New Work Of Art" Command="{Binding CreateNewWorkOfArtCommand}" HorizontalAlignment="Left"/>
 
         </Grid>

@@ -64,7 +64,8 @@
     <Compile Include="DbModels\User.cs" />
     <Compile Include="DbModels\UserType.cs" />
     <Compile Include="DbModels\WorkOfArt.cs" />
-    <Compile Include="HashHelper.cs" />
+    <Compile Include="Helpers\HashHelper.cs" />
+    <Compile Include="Helpers\PibHelper.cs" />
     <Compile Include="Interfaces\IAuthService.cs" />
     <Compile Include="Interfaces\IAuthor.cs" />
     <Compile Include="Interfaces\IWorkOfArt.cs" />

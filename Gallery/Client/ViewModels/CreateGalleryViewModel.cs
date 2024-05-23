@@ -43,7 +43,6 @@ namespace Client.ViewModels
         {
             // Check if all required fields are filled
             return !string.IsNullOrWhiteSpace(NewGallery.Address) &&
-                   !string.IsNullOrWhiteSpace(NewGallery.PIB) &&
                    !string.IsNullOrWhiteSpace(NewGallery.MBR);
         }
 

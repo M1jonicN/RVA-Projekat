@@ -10,10 +10,10 @@ namespace Server.Services
 {
     public class WorkOfArtService : IWorkOfArt
     {
-        private readonly MyDbContext dbContext;
+        private static MyDbContext dbContext;
         public WorkOfArtService()
         {
-            dbContext = new MyDbContext();
+            dbContext = MyDbContext.SingletonInstance;
         }
         public List<WorkOfArt> GetWorkOfArtsForGallery(string galleryPib)
         {

@@ -1,20 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using log4net;
+using log4net.Config;
 using Common.Helper;
 using Common.DbModels;
+using System.Collections.Generic;
 
 namespace Server
 {
     internal class Program
     {
+
         private static MyDbContext dbContext;
 
         static void Main(string[] args)
         {
             try
             {
-                dbContext = new MyDbContext();
+
+
+                dbContext = MyDbContext.SingletonInstance;  // Koristi Singleton instancu
                 InitializeDatabaseData();
 
                 OpenCloseServices.Open();
@@ -34,7 +39,7 @@ namespace Server
             }
         }
 
-        // Method that initializes data for the first time running the program
+        // Metod koji inicijalizuje podatke prilikom prvog pokretanja programa
         private static void InitializeDatabaseData()
         {
             if (!(dbContext.Users.Count() == 0 &&
@@ -112,7 +117,7 @@ namespace Server
                 Style = Style.Realism,
                 GalleryPIB = gallery.PIB,
                 AuthorID = author1.ID,
-                AuthorName = $"{author1.FirstName} {author1.LastName}", // Dodavanje imena autora
+                AuthorName = $"{author1.FirstName} {author1.LastName}",
                 IsDeleted = false
             };
 
@@ -123,7 +128,7 @@ namespace Server
                 Style = Style.Expressionism,
                 GalleryPIB = gallery.PIB,
                 AuthorID = author2.ID,
-                AuthorName = $"{author2.FirstName} {author2.LastName}", // Dodavanje imena autora
+                AuthorName = $"{author2.FirstName} {author2.LastName}",
                 IsDeleted = false
             };
 
@@ -134,7 +139,7 @@ namespace Server
                 Style = Style.Surrealism,
                 GalleryPIB = gallery.PIB,
                 AuthorID = author3.ID,
-                AuthorName = $"{author3.FirstName} {author3.LastName}", // Dodavanje imena autora
+                AuthorName = $"{author3.FirstName} {author3.LastName}",
                 IsDeleted = false
             };
 
@@ -143,7 +148,7 @@ namespace Server
             dbContext.WorkOfArts.Add(art3);
             dbContext.SaveChanges();
 
-            // Assign WorkOfArts to Gallery
+            // Dodela WorkOfArts galeriji
             gallery.WorkOfArts = new List<WorkOfArt>() { art1, art2, art3 };
             dbContext.SaveChanges();
         }

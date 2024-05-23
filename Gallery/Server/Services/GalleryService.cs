@@ -7,24 +7,23 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Common.DbModels;
 using System.ServiceModel;
+using Common.Helpers;
 
 namespace Server.Services
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class GalleryService : IGalleryService
     {
-        private readonly MyDbContext dbContext;
-        private readonly IMapper mapper;
+        private static MyDbContext dbContext;
 
-        public GalleryService(MyDbContext context, IMapper mapper)
+        public GalleryService(MyDbContext context)
         {
-            this.dbContext = context;
-            this.mapper = mapper;
+            dbContext = MyDbContext.SingletonInstance;
         }
 
         public GalleryService()
         {
-            this.dbContext = new MyDbContext();
+            dbContext = MyDbContext.SingletonInstance;
         }
 
         public List<Gallery> GetAllGalleries()
@@ -37,9 +36,9 @@ namespace Server.Services
         {
             if (dbContext.Galleries.Any(g => g.PIB == newGallery.PIB))
                 return false;
-
+            var _allGalleries = dbContext.Galleries.ToList();
             var gallery = new Gallery {
-                PIB = newGallery.PIB,
+                PIB = PibHelper.GenerateUniquePIB(_allGalleries),
                 MBR = newGallery.MBR,
                 Address = newGallery.Address,
                 IsDeleted = false

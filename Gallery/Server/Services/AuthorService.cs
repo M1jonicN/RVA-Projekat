@@ -10,11 +10,11 @@ namespace Server.Services
     [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
     public class AuthorService : IAuthor
     {
-        private readonly MyDbContext dbContext;
+        private static MyDbContext dbContext;
 
         public AuthorService()
         {
-            dbContext = new MyDbContext();
+            dbContext = MyDbContext.SingletonInstance;
         }
 
         public bool CreateNewAuthor(Author newAuthor)

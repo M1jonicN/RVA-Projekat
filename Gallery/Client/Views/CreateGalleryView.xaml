@@ -4,14 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="400">
+             d:DesignHeight="180" d:DesignWidth="400">
     <Grid>
         <StackPanel Margin="10">
             <TextBlock Text="Create New Gallery" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
-            <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
-                <TextBlock Width="100" Text="PIB:" VerticalAlignment="Center"/>
-                <TextBox Text="{Binding NewGallery.PIB}" Width="200" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-            </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
                 <TextBlock Width="100" Text="MBR:" VerticalAlignment="Center"/>
                 <TextBox Text="{Binding NewGallery.MBR}" Width="200" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>

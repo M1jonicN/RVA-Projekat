@@ -6,16 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Common.Helper;
 using Common.DbModels;
+using log4net;
 
 namespace Server
 {
     public class AuthService : IAuthService
     {
-        private readonly MyDbContext dbContext;
-
+        private static MyDbContext dbContext;
         public AuthService()
         {
-                dbContext = new MyDbContext();
+            dbContext = MyDbContext.SingletonInstance;
         }
 
         public User Login(string username, string password)
@@ -31,6 +31,7 @@ namespace Server
             }
             return null;
         }
+
 
         public bool Register(string username, string password, string firstName, string lastName)
         {

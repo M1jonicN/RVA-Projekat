@@ -45,6 +45,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=2.0.17.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.17\lib\net45\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -59,11 +62,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Migrations\202405201335241_CreateTables.cs" />
-    <Compile Include="Migrations\202405201335241_CreateTables.designer.cs">
-      <DependentUpon>202405201335241_CreateTables.cs</DependentUpon>
+    <Compile Include="Migrations\202405231232464_InitialCreate.cs" />
+    <Compile Include="Migrations\202405231232464_InitialCreate.designer.cs">
+      <DependentUpon>202405231232464_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="MyDbContextFactory.cs" />
     <Compile Include="OpenCloseServices.cs" />
     <Compile Include="Services\AuthorService.cs" />
     <Compile Include="Services\AuthService.cs" />
@@ -84,8 +88,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202405201335241_CreateTables.resx">
-      <DependentUpon>202405201335241_CreateTables.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202405231232464_InitialCreate.resx">
+      <DependentUpon>202405231232464_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
