@@ -15,6 +15,8 @@ namespace Client.ViewModels
 {
     public class CreateAuthorViewModel : BaseViewModel
     {
+        #region Fields
+
         private string _firstName;
         private string _lastName;
         private int _birthYear;
@@ -23,6 +25,8 @@ namespace Client.ViewModels
         private ObservableCollection<ArtMovement> _artMovements;
         private readonly ChannelFactory<IAuthor> _channelFactoryAuthor;
         private string _loggedInUser;
+
+        #endregion
 
         public CreateAuthorViewModel(string username)
         {
@@ -35,7 +39,8 @@ namespace Client.ViewModels
             _channelFactoryAuthor = new ChannelFactory<IAuthor>(bindingAuthor, endpointAuthor);
 
         }
-
+        public ICommand SaveCommand { get; }
+        #region Properties
         public string FirstName
         {
             get => _firstName;
@@ -72,8 +77,9 @@ namespace Client.ViewModels
             set => SetProperty(ref _artMovements, value);
         }
 
-        public ICommand SaveCommand { get; }
+        #endregion 
 
+        #region Methods
         private void Save()
         {
             if (!CanCreateAuthor()) 
@@ -114,5 +120,6 @@ namespace Client.ViewModels
                    !string.IsNullOrWhiteSpace(FirstName) &&
                    !string.IsNullOrWhiteSpace(LastName);
         }
+        #endregion
     }
 }

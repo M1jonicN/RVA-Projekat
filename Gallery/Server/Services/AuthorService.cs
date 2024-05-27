@@ -20,6 +20,7 @@ namespace Server.Services
             log.Info("AuthorService instance created.");
         }
 
+        #region Methods
         public bool CreateNewAuthor(Author newAuthor)
         {
             if (dbContext.Authors.Any(a => a.ID == newAuthor.ID))
@@ -140,5 +141,6 @@ namespace Server.Services
                 return false;
             }
         }
+        #endregion
     }
 }

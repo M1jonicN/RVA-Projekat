@@ -11,6 +11,8 @@ namespace Client.ViewModels
 {
     public class CreateUserViewModel : BaseViewModel
     {
+        #region Fields
+
         private string _username;
         private string _password;
         private string _firstName;
@@ -18,6 +20,7 @@ namespace Client.ViewModels
         private readonly ChannelFactory<IAuthService> _channelFactory;
         private string _loggedInUser;
 
+        #endregion
         public CreateUserViewModel(string username)
         {
             _loggedInUser= username;
@@ -27,7 +30,7 @@ namespace Client.ViewModels
 
             CreateUserCommand = new RelayCommand(CreateUser, CanCreateUser);
         }
-
+        #region Properties
         public string Username
         {
             get => _username;
@@ -68,9 +71,10 @@ namespace Client.ViewModels
                 OnPropertyChanged();
             }
         }
-
+        #endregion
         public ICommand CreateUserCommand { get; }
 
+        #region Methods
         private void CreateUser()
         {
             try
@@ -104,5 +108,6 @@ namespace Client.ViewModels
                    !string.IsNullOrWhiteSpace(FirstName) &&
                    !string.IsNullOrWhiteSpace(LastName);
         }
+        #endregion
     }
 }

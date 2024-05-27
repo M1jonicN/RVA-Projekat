@@ -15,6 +15,7 @@ namespace Client.ViewModels
 {
     public class GalleryDetailsViewModel : BaseViewModel
     {
+        #region Fields
         private Common.DbModels.Gallery _gallery;
         private bool _isEditing;
         private readonly ChannelFactory<IAuthor> _channelFactoryAuthor;
@@ -22,7 +23,9 @@ namespace Client.ViewModels
         private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
         private readonly Common.DbModels.User _loggedInUser;
         private readonly DispatcherTimer _dispatcherTimer;
+        #endregion
 
+        #region Properties
         public Common.DbModels.Gallery Gallery
         {
             get => _gallery;
@@ -36,7 +39,18 @@ namespace Client.ViewModels
         public ObservableCollection<Common.DbModels.WorkOfArt> WorkOfArts { get; set; }
 
         public string LoggedInUsername => _loggedInUser.Username;
+        public bool IsEditing
+        {
+            get => _isEditing;
+            set
+            {
+                _isEditing = value;
+                OnPropertyChanged();
+            }
+        }
 
+
+        #endregion
         public GalleryDetailsViewModel(Common.DbModels.Gallery gallery, Common.DbModels.User loggedInUser)
         {
             _loggedInUser = loggedInUser;
@@ -69,6 +83,14 @@ namespace Client.ViewModels
             _dispatcherTimer.Start();
         }
 
+        #region Commands
+        public ICommand DetailsWorkOfArtCommand { get; }
+        public ICommand DeleteWorkOfArtCommand { get; }
+        public ICommand EditCommand { get; }
+        public ICommand SaveCommand { get; }
+        #endregion
+
+        #region Methods
         private void FetchAuthorNames()
         {
             var clientAuthor = _channelFactoryAuthor.CreateChannel();
@@ -116,20 +138,8 @@ namespace Client.ViewModels
             }
         }
 
-        public bool IsEditing
-        {
-            get => _isEditing;
-            set
-            {
-                _isEditing = value;
-                OnPropertyChanged();
-            }
-        }
 
-        public ICommand DetailsWorkOfArtCommand { get; }
-        public ICommand DeleteWorkOfArtCommand { get; }
-        public ICommand EditCommand { get; }
-        public ICommand SaveCommand { get; }
+
 
         private void Edit()
         {
@@ -181,5 +191,6 @@ namespace Client.ViewModels
                 UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" failed to deleted Work of Art with name: {workOfArt.ArtName}.");
             }
         }
+        #endregion
     }
 }

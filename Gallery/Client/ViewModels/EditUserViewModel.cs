@@ -16,10 +16,13 @@ namespace Client.ViewModels
 {
     public class EditUserViewModel : BaseViewModel
     {
+        #region Fields
         public event EventHandler<Common.DbModels.User> UserUpdated;
         private readonly IAuthService _authService;
-
         private Common.DbModels.User _user;
+        #endregion
+
+        #region Properties
         public Common.DbModels.User User
         {
             get { return _user; }
@@ -91,11 +94,13 @@ namespace Client.ViewModels
         }
 
         public bool IsReadOnly => !IsEditMode;
-       
-     
 
+        #endregion
+
+        #region Commands
         public ICommand EditUserCommand { get; }
         public ICommand SaveUserCommand { get; }
+        #endregion
 
         public EditUserViewModel(Common.DbModels.User user, IAuthService authService)
         {
@@ -107,7 +112,7 @@ namespace Client.ViewModels
             EditUserCommand = new RelayCommand(EditUser);
             LoadUserTypes();
         }
-
+        #region Methods
         private void LoadUserTypes()
         {
             UserTypes = Enum.GetValues(typeof(UserType)).Cast<UserType>().ToList();
@@ -166,5 +171,6 @@ namespace Client.ViewModels
         {
             IsEditMode = true;
         }
+        #endregion
     }
 }

@@ -15,12 +15,15 @@ namespace Client.ViewModels
 {
     public class WorkOfArtDetailsViewModel : BaseViewModel
     {
+        #region Fields
         private Timer _timer;
         private Common.DbModels.WorkOfArt _workOfArt;
         private Common.DbModels.Author _author;
         private bool _isWorkOfArtEditing;
         private bool _isAuthorEditing;
+        #endregion
 
+        #region Properties
         public Common.DbModels.WorkOfArt WorkOfArt
         {
             get => _workOfArt;
@@ -63,16 +66,18 @@ namespace Client.ViewModels
                 OnPropertyChanged();
             }
         }
-
         public IEnumerable<ArtMovement> ArtMovements => Enum.GetValues(typeof(ArtMovement)).Cast<ArtMovement>();
         public IEnumerable<Style> Styles => Enum.GetValues(typeof(Style)).Cast<Style>();
+        #endregion
 
+        #region Commands
         public ICommand EditWorkOfArtCommand { get; }
         public ICommand SaveWorkOfArtCommand { get; }
         public ICommand EditAuthorCommand { get; }
         public ICommand SaveAuthorCommand { get; }
         public ICommand DeleteAuthorCommand { get; }
 
+        #endregion
         public WorkOfArtDetailsViewModel(Common.DbModels.WorkOfArt workOfArt, Common.DbModels.Author author, Common.DbModels.User loggedInUser)
         {
             WorkOfArt = workOfArt;
@@ -90,6 +95,7 @@ namespace Client.ViewModels
             _timer.Start();
         }
 
+        #region Methods
         private void EditWorkOfArt()
         {
             IsWorkOfArtEditing = true;
@@ -188,5 +194,6 @@ namespace Client.ViewModels
                 Console.WriteLine("Failed to refresh Author.");
             }
         }
+        #endregion
     }
 }

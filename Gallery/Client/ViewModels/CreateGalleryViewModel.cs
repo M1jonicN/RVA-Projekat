@@ -13,11 +13,14 @@ namespace Client.ViewModels
 {
     public class CreateGalleryViewModel : BaseViewModel
     {
+        #region Fields
+
         private Common.DbModels.Gallery _newGallery;
         private readonly IGalleryService _galleryService;
-
         public event EventHandler<Common.DbModels.Gallery> GalleryCreated;
         private string _loggedInUser;
+
+        #endregion
 
         public CreateGalleryViewModel(string username)
         {
@@ -43,6 +46,7 @@ namespace Client.ViewModels
 
         public ICommand CreateGalleryCommand { get; }
 
+        #region Methods
         private bool AreFieldsValid()
         {
             // Check if all required fields are filled
@@ -73,5 +77,6 @@ namespace Client.ViewModels
                 UserActionLoggerService.Instance.Log(_loggedInUser, " unsuccessfully created new Gallery.");
             }
         }
+        #endregion
     }
 }

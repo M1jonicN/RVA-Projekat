@@ -18,6 +18,7 @@ namespace Server
             log.Info("AuthService instance created.");
         }
 
+        #region Methods
         public User Login(string username, string password)
         {
             if (password == null) return null;
@@ -105,5 +106,6 @@ namespace Server
                 return false;
             }
         }
+        #endregion
     }
 }

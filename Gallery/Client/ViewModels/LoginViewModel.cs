@@ -13,10 +13,12 @@ namespace Client.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
+        #region Fields
         private string _username;
         private string _errorMessage;
         private readonly ChannelFactory<IAuthService> _channelFactory;
         private static UserActionsView _userActionsView;
+        #endregion
 
         public LoginViewModel()
         {
@@ -27,7 +29,7 @@ namespace Client.ViewModels
 
             LoginCommand = new RelayCommand(Login);
         }
-
+        #region Properties
         public string Username
         {
             get => _username;
@@ -58,9 +60,10 @@ namespace Client.ViewModels
                 OnPropertyChanged();
             }
         }
-
+        #endregion
         public ICommand LoginCommand { get; }
 
+        #region Methods
         private void Login()
         {
             try
@@ -114,5 +117,6 @@ namespace Client.ViewModels
                 UserActionLoggerService.Instance.Log(Username, $" unsuccessfully logged in. Error: {ex.Message}");
             }
         }
+        #endregion
     }
 }

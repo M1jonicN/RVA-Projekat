@@ -18,6 +18,7 @@ namespace Server.Services
             log.Info("WorkOfArtService instance created.");
         }
 
+        #region Methods
         public List<WorkOfArt> GetWorkOfArtsForGallery(string galleryPib)
         {
             var workOfArtsForGallery = dbContext.WorkOfArts.Where(woa => woa.GalleryPIB.Equals(galleryPib) && !woa.IsDeleted);
@@ -118,5 +119,6 @@ namespace Server.Services
             dbContext.SaveChanges();
             log.Info($"Marked all works of art as deleted for author ID {authorID}.");
         }
+        #endregion
     }
 }

@@ -28,6 +28,7 @@ namespace Server.Services
             log.Info("GalleryService instance created.");
         }
 
+        #region Methods
         public List<Gallery> GetAllGalleries()
         {
             var galleries = dbContext.Galleries.Where(g => !g.IsDeleted).ToList();
@@ -111,5 +112,6 @@ namespace Server.Services
             log.Info("Retrieved all galleries from database.");
             return galleries;
         }
+        #endregion
     }
 }

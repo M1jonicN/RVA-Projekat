@@ -16,6 +16,7 @@ namespace Client.ViewModels
 {
     public class CreateWorkOfArtViewModel : BaseViewModel
     {
+        #region Fields
         private string _artName;
         private ArtMovement _selectedArtMovement;
         private DbStyle _selectedStyle;
@@ -25,6 +26,7 @@ namespace Client.ViewModels
         private readonly ChannelFactory<IWorkOfArt> _channelFactoryWoa;
         private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
         private string _loggedInUser;
+        #endregion
 
         public CreateWorkOfArtViewModel()
         {
@@ -54,7 +56,7 @@ namespace Client.ViewModels
 
             SaveCommand = new RelayCommand(Save);
         }
-
+        #region Properties
         public string ArtName
         {
             get => _artName;
@@ -90,9 +92,10 @@ namespace Client.ViewModels
         public ObservableCollection<DbStyle> Styles { get; }
         public ObservableCollection<string> AuthorNames { get; }
         public ObservableCollection<string> GalleryPIBs { get; }
-
+        #endregion
         public ICommand SaveCommand { get; }
 
+        #region Methods
         private void LoadAuthors()
         {
             var clientAuthor = _channelFactoryAuthor.CreateChannel();
@@ -172,5 +175,6 @@ namespace Client.ViewModels
                    !string.IsNullOrWhiteSpace(SelectedStyle.ToString()) &&
                    !string.IsNullOrWhiteSpace(SelectedGalleryPIB);
         }
+        #endregion
     }
 }
