@@ -4,8 +4,8 @@ using System.ServiceModel;
 using System.Windows;
 using System.Windows.Input;
 using Client.Helpers;
-using Client.Models;
 using Client.Views;
+using Client.Services;
 using Common.Contracts;
 using Common.DbModels;
 
@@ -16,6 +16,7 @@ namespace Client.ViewModels
         private string _username;
         private string _errorMessage;
         private readonly ChannelFactory<IAuthService> _channelFactory;
+        private static UserActionsView _userActionsView;
 
         public LoginViewModel()
         {
@@ -66,54 +67,52 @@ namespace Client.ViewModels
             {
                 var authServiceClient = _channelFactory.CreateChannel();
                 Common.DbModels.User loggedInUser = authServiceClient.Login(Username, Password);
+
                 if (loggedInUser != null && loggedInUser.IsLoggedIn)
                 {
-                    var dashboard = new DashboardView()
+                    // Open UserActionsView if not already open
+                    if (_userActionsView == null)
+                    {
+                        _userActionsView = new UserActionsView()
+                        {
+                            Height = 450,
+                            Width = 800
+                        };
+                        var userActionsViewModel = new UserActionsViewModel();
+                        _userActionsView.DataContext = userActionsViewModel;
+
+                        _userActionsView.Closed += (s, e) => _userActionsView = null;
+                        _userActionsView.Show();
+                    }
+
+                    UserActionLoggerService.Instance.Log(Username, " logged in successfully.");
+
+                    var dashboardView = new DashboardView()
                     {
                         Height = 600,
                         Width = 900
                     };
                     var dashboardViewModel = new DashboardViewModel(loggedInUser);
-
-
-                    // Subscribe to the Closed event of DashboardView
-                   // dashboard.Closed += Dashboard_Closed;
-
-                    dashboard.DataContext = dashboardViewModel;
+                    dashboardView.DataContext = dashboardViewModel;
 
                     Window currentWindow = Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive);
                     if (currentWindow != null)
                     {
-                        dashboard.Owner = currentWindow;
-                        currentWindow.Hide();
+                        dashboardView.Owner = currentWindow;
+                        dashboardView.Show();
                     }
-
-                    dashboard.Show();
-                    currentWindow?.Show(); 
-
                 }
                 else
                 {
                     ErrorMessage = "Invalid username or password";
+                    UserActionLoggerService.Instance.Log(Username, " unsuccessfully logged in.");
                 }
             }
             catch (Exception ex)
             {
                 ErrorMessage = $"An error occurred: {ex.Message}";
+                UserActionLoggerService.Instance.Log(Username, $" unsuccessfully logged in. Error: {ex.Message}");
             }
         }
-
-       /* private void Dashboard_Closed(object sender, EventArgs e)
-        {
-            // Show the login window again when Dashboard is closed
-            foreach (Window window in Application.Current.Windows)
-            {
-                if (window is LoginView)
-                {
-                    window.Show();
-                    break;
-                }
-            }
-        }*/
     }
 }

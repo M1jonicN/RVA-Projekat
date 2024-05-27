@@ -4,6 +4,7 @@ using System.ServiceModel;
 using System.Windows;
 using System.Windows.Input;
 using Client.Helpers;
+using Client.Services;
 using Common.Contracts;
 
 namespace Client.ViewModels
@@ -15,9 +16,11 @@ namespace Client.ViewModels
         private string _firstName;
         private string _lastName;
         private readonly ChannelFactory<IAuthService> _channelFactory;
+        private string _loggedInUser;
 
-        public CreateUserViewModel()
+        public CreateUserViewModel(string username)
         {
+            _loggedInUser= username;
             var binding = new NetTcpBinding();
             var endpoint = new EndpointAddress("net.tcp://localhost:8085/Authentifiaction");
             _channelFactory = new ChannelFactory<IAuthService>(binding, endpoint);
@@ -78,15 +81,18 @@ namespace Client.ViewModels
                 if (isCreated)
                 {
                     MessageBox.Show("User created successfully!");
+                    UserActionLoggerService.Instance.Log(_loggedInUser, $" user {Username} created successfully.");
                     Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
                 }
                 else
                 {
                     MessageBox.Show("Failed to create user.");
+                    UserActionLoggerService.Instance.Log(_loggedInUser, $" failed to create user.");
                 }
             }
             catch (Exception ex)
             {
+                UserActionLoggerService.Instance.Log(_loggedInUser, " failed to create user.");
                 MessageBox.Show($"An error occurred: {ex.Message}");
             }
         }

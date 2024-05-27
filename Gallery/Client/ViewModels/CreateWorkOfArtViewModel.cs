@@ -10,6 +10,7 @@ using Common.Interfaces;
 using DbStyle = Common.DbModels.Style; // Alias za Common.DbModels.Style
 using System.Linq;
 using Common.Services;
+using Client.Services;
 
 namespace Client.ViewModels
 {
@@ -23,6 +24,7 @@ namespace Client.ViewModels
         private readonly ChannelFactory<IAuthor> _channelFactoryAuthor;
         private readonly ChannelFactory<IWorkOfArt> _channelFactoryWoa;
         private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
+        private string _loggedInUser;
 
         public CreateWorkOfArtViewModel()
         {
@@ -83,6 +85,7 @@ namespace Client.ViewModels
             set => SetProperty(ref _selectedGalleryPIB, value);
         }
 
+
         public ObservableCollection<ArtMovement> ArtMovements { get; }
         public ObservableCollection<DbStyle> Styles { get; }
         public ObservableCollection<string> AuthorNames { get; }
@@ -107,6 +110,7 @@ namespace Client.ViewModels
             if (!CanCreateWoa())
             {
                 MessageBox.Show("Unsuccessfully create new Work of Art!");
+                UserActionLoggerService.Instance.Log(_loggedInUser, " unsuccessfully created new Work of Art.");
                 return;
             }
 
@@ -142,16 +146,19 @@ namespace Client.ViewModels
                 if (success)
                 {
                     MessageBox.Show("Successfully created new Work of Art!");
+                    UserActionLoggerService.Instance.Log(_loggedInUser, $" successfully created new Work of Art with name: {ArtName}.");
                     Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
                 }
                 else
                 {
                     MessageBox.Show("Unsuccessfully create new Work of Art!");
+                    UserActionLoggerService.Instance.Log(_loggedInUser, " unsuccessfully created new Work of Art.");
                     Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
                 }
             }
             catch (Exception ex)
             {
+                UserActionLoggerService.Instance.Log(_loggedInUser, " unsuccessfully created new Work of Art.");
                 MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

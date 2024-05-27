@@ -62,7 +62,9 @@
     </ApplicationDefinition>
     <Compile Include="Converters\BooleanToVisibilityConverter .cs" />
     <Compile Include="Helper\RelayCommand.cs" />
+    <Compile Include="Interfaces\ILog.cs" />
     <Compile Include="Models\LoggedInUsers.cs" />
+    <Compile Include="Services\UserActionLoggerService.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\CreateAuthorViewModel.cs" />
     <Compile Include="ViewModels\CreateGalleryViewModel.cs" />
@@ -73,6 +75,7 @@
     <Compile Include="ViewModels\GalleryDetailsViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\UserActionsViewModel.cs" />
     <Compile Include="ViewModels\WorkOfArtDetailsViewModel.cs" />
     <Compile Include="Views\CreateAuthorView.xaml.cs">
       <DependentUpon>CreateAuthorView.xaml</DependentUpon>
@@ -97,6 +100,9 @@
     </Compile>
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserActionsView.xaml.cs">
+      <DependentUpon>UserActionsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WorkOfArtDetailsWindow.xaml.cs">
       <DependentUpon>WorkOfArtDetailsWindow.xaml</DependentUpon>
@@ -145,6 +151,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\LoginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserActionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -10,6 +10,7 @@ using Common.DbModels;
 using Common.Helper;
 using Common.Contracts;
 using System.Windows;
+using Client.Services;
 
 namespace Client.ViewModels
 {
@@ -119,6 +120,7 @@ namespace Client.ViewModels
                 if (NewPassword != ConfirmPassword)
                 {
                     MessageBox.Show("Passwords doesn't match", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    UserActionLoggerService.Instance.Log(User.Username, " unsuccessfully edited user data, passwords doesn't match.");
                     return;
                 }
                 else if (!string.IsNullOrEmpty(NewPassword))
@@ -128,6 +130,7 @@ namespace Client.ViewModels
                 else
                 {
                     MessageBox.Show("U must enter password", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    UserActionLoggerService.Instance.Log(User.Username, " unsuccessfully edited user data, u must enter password.");
                     return;
                 }
 
@@ -135,6 +138,7 @@ namespace Client.ViewModels
                 if (updated)
                 {
                     MessageBox.Show("User saved successfully!");
+                    UserActionLoggerService.Instance.Log(User.Username, " successfully edited user data.");
 
                     // Poziv događaja
                     UserUpdated?.Invoke(this, User);
@@ -144,6 +148,7 @@ namespace Client.ViewModels
                 else
                 {
                     MessageBox.Show("Failed to save user.");
+                    UserActionLoggerService.Instance.Log(User.Username, " unsuccessfully edited user data, failed to save user.");
                 }
 
                 IsEditMode = false;
@@ -151,6 +156,9 @@ namespace Client.ViewModels
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred: {ex.Message}");
+                UserActionLoggerService.Instance.Log(User.Username, $" unsuccessfully edited user data, an error occurred: {ex.Message}.");
+
+
             }
         }
 

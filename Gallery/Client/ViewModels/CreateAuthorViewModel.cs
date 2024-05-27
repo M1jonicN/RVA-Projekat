@@ -6,6 +6,8 @@ using System.ServiceModel;
 using System.Windows;
 using System.Windows.Input;
 using Client.Helpers;
+using Client.Models;
+using Client.Services;
 using Common.DbModels;
 using Common.Interfaces;
 
@@ -20,9 +22,11 @@ namespace Client.ViewModels
         private ArtMovement _selectedArtMovement;
         private ObservableCollection<ArtMovement> _artMovements;
         private readonly ChannelFactory<IAuthor> _channelFactoryAuthor;
+        private string _loggedInUser;
 
-        public CreateAuthorViewModel()
+        public CreateAuthorViewModel(string username)
         {
+            _loggedInUser = username;
             ArtMovements = new ObservableCollection<ArtMovement>(Enum.GetValues(typeof(ArtMovement)) as IEnumerable<ArtMovement>);
             SaveCommand = new RelayCommand(Save);
 
@@ -75,10 +79,11 @@ namespace Client.ViewModels
             if (!CanCreateAuthor()) 
             {
                 MessageBox.Show("Unsuccessfully create new Author!");
+                UserActionLoggerService.Instance.Log(_loggedInUser, $" unsuccessfully created new Author.");
                 return;
             }
             var clientAuthor = _channelFactoryAuthor.CreateChannel();
-            Author newAuthor = new Author()
+            Common.DbModels.Author newAuthor = new Common.DbModels.Author()
             {
                 FirstName = FirstName,
                 LastName = LastName,
@@ -91,11 +96,13 @@ namespace Client.ViewModels
             if (success)
             {
                 MessageBox.Show("Successfully created new Author!");
+                UserActionLoggerService.Instance.Log(_loggedInUser, $" successfully created new Author.");
                 Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
             }
             else
             {
                 MessageBox.Show("Unsuccessfully create new Author!");
+                UserActionLoggerService.Instance.Log(_loggedInUser, $" unseccessfully created new Author.");
                 Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
             }
         }

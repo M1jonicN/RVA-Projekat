@@ -13,101 +13,98 @@ using Common.Services;
 using Common.Interfaces;
 using System.Windows.Threading;
 using Common.Helpers;
+using Client.Services;
 
 namespace Client.ViewModels
 {
-    public class DashboardViewModel : BaseViewModel
-    {
-        private readonly ChannelFactory<IAuthService> _channelFactory;
-        private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
-        private readonly ChannelFactory<IWorkOfArt> _channelFactoryWOA;
-        private readonly User _loggedInUser;
-        private ObservableCollection<Gallery> _galleries;
-        private ObservableCollection<Gallery> _allGalleries; // Dodato za čuvanje svih galerija
-        private ObservableCollection<WorkOfArt> _workOfArts;
-        private ObservableCollection<Author> _authors;
-        private string _searchText;
-        private string _loggedInUsername;
-        private readonly DispatcherTimer _dispatcherTimer; // Dodato za tajmer
-        private bool _isSearching; // Dodato za praćenje stanja pretrage
-
-        private bool _isSearchByMBR;
-        private bool _isSearchByPIB;
-        private bool _isSearchByAddress;
-        private bool _isSearchByParameters;
-
-        public DashboardViewModel(Common.DbModels.User loggedInUser)
+        public class DashboardViewModel : BaseViewModel
         {
-            _loggedInUser = loggedInUser;
-            LoggedInUsername = _loggedInUser.Username;
+            private readonly ChannelFactory<IAuthService> _channelFactory;
+            private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
+            private readonly ChannelFactory<IWorkOfArt> _channelFactoryWOA;
+            private readonly User _loggedInUser;
+            private ObservableCollection<Gallery> _galleries;
+            private ObservableCollection<Gallery> _allGalleries; // Dodato za čuvanje svih galerija
+            private ObservableCollection<WorkOfArt> _workOfArts;
+            private ObservableCollection<Author> _authors;
+            private string _searchText;
+            private string _loggedInUsername;
+            private readonly DispatcherTimer _dispatcherTimer; // Dodato za tajmer
+            private bool _isSearching; // Dodato za praćenje stanja pretrage
 
-            var binding = new NetTcpBinding();
-            var endpoint = new EndpointAddress("net.tcp://localhost:8085/Authentifiaction");
-            _channelFactory = new ChannelFactory<IAuthService>(binding, endpoint);
+            private bool _isSearchByMBR;
+            private bool _isSearchByPIB;
+            private bool _isSearchByAddress;
+            private bool _isSearchByParameters;
 
-            var bindingGallery = new NetTcpBinding();
-            var endpointGallery = new EndpointAddress("net.tcp://localhost:8086/Gallery");
-            _channelFactoryGallery = new ChannelFactory<IGalleryService>(bindingGallery, endpointGallery);
-
-            var bindingWOA = new NetTcpBinding();
-            var endpointWOA = new EndpointAddress("net.tcp://localhost:8087/WorkOfArt");
-            _channelFactoryWOA = new ChannelFactory<IWorkOfArt>(bindingWOA, endpointWOA);
-
-            // Initialize collections with dummy data or fetch from service
-            _allGalleries = new ObservableCollection<Gallery>();
-            Galleries = new ObservableCollection<Gallery>();
-            WorkOfArts = new ObservableCollection<WorkOfArt>();
-            Authors = new ObservableCollection<Author>();
-
-            SearchCommand = new RelayCommand(Search);
-            LogoutCommand = new RelayCommand(Logout);
-            EditUserCommand = new RelayCommand(Edit);
-            CreateUserCommand = new RelayCommand(OpenCreateUserWindow);
-            DetailsCommand = new RelayCommand<Gallery>(ShowDetails);
-            DeleteCommand = new RelayCommand<Gallery>(DeleteGallery);
-            CreateNewGalleryCommand = new RelayCommand(OpenCreateGalleryWindow);
-            DuplicateGalleryCommand = new RelayCommand<Gallery>(DuplicateGallery);
-            CreateNewAuthorCommand = new RelayCommand(OpenCreateAuthorWindow);
-            CreateNewWorkOfArtCommand = new RelayCommand(OpenCreateWorkOfArtView);
-
-            // Load data initially
-            LoadData();
-
-            // Initialize and start the DispatcherTimer
-            _dispatcherTimer = new DispatcherTimer();
-            _dispatcherTimer.Interval = TimeSpan.FromSeconds(1.5); // Set interval to 1.5 seconds
-            _dispatcherTimer.Tick += (sender, args) => LoadData(); // Attach the LoadData method to the Tick event
-            _dispatcherTimer.Start(); // Start the timer
-
-            Application.Current.MainWindow.Closing += OnWindowClosing;
-        }
-
-
-        public ICommand DuplicateGalleryCommand { get; }
-        public ICommand SearchCommand { get; }
-        public ICommand LogoutCommand { get; }
-        public ICommand EditUserCommand { get; }
-        public ICommand CreateNewGalleryCommand { get; }
-        public ICommand DetailsCommand { get; }
-        public ICommand DeleteCommand { get; }
-        public ICommand CreateUserCommand { get; }
-        public ICommand CreateNewAuthorCommand { get; }
-        public ICommand CreateNewWorkOfArtCommand { get; }
-
-
-        private void OpenCreateAuthorWindow()
-        {
-            var createAuthorView = new CreateAuthorView
+            public DashboardViewModel(Common.DbModels.User loggedInUser)
             {
-                DataContext = new CreateAuthorViewModel()
-            };
-            createAuthorView.Show();
-        }
-        private void OpenCreateWorkOfArtView()
-        {
-            var createWorkOfArtView = new CreateWorkOfArtView();
-            createWorkOfArtView.Show();
-        }
+                _loggedInUser = loggedInUser;
+                LoggedInUsername = _loggedInUser.Username;
+
+                var binding = new NetTcpBinding();
+                var endpoint = new EndpointAddress("net.tcp://localhost:8085/Authentifiaction");
+                _channelFactory = new ChannelFactory<IAuthService>(binding, endpoint);
+
+                var bindingGallery = new NetTcpBinding();
+                var endpointGallery = new EndpointAddress("net.tcp://localhost:8086/Gallery");
+                _channelFactoryGallery = new ChannelFactory<IGalleryService>(bindingGallery, endpointGallery);
+
+                var bindingWOA = new NetTcpBinding();
+                var endpointWOA = new EndpointAddress("net.tcp://localhost:8087/WorkOfArt");
+                _channelFactoryWOA = new ChannelFactory<IWorkOfArt>(bindingWOA, endpointWOA);
+
+                // Initialize collections with dummy data or fetch from service
+                _allGalleries = new ObservableCollection<Gallery>();
+                Galleries = new ObservableCollection<Gallery>();
+                WorkOfArts = new ObservableCollection<WorkOfArt>();
+                Authors = new ObservableCollection<Author>();
+
+                SearchCommand = new RelayCommand(Search);
+                LogoutCommand = new RelayCommand(Logout);
+                EditUserCommand = new RelayCommand(Edit);
+                CreateUserCommand = new RelayCommand(OpenCreateUserWindow);
+                DetailsCommand = new RelayCommand<Gallery>(ShowDetails);
+                DeleteCommand = new RelayCommand<Gallery>(DeleteGallery);
+                CreateNewGalleryCommand = new RelayCommand(OpenCreateGalleryWindow);
+                DuplicateGalleryCommand = new RelayCommand<Gallery>(DuplicateGallery);
+                CreateNewAuthorCommand = new RelayCommand(OpenCreateAuthorWindow);
+                CreateNewWorkOfArtCommand = new RelayCommand(OpenCreateWorkOfArtView);
+
+                // Load data initially
+                LoadData();
+
+                Application.Current.MainWindow.Closing += OnWindowClosing;
+            }
+
+
+            public ICommand DuplicateGalleryCommand { get; }
+            public ICommand SearchCommand { get; }
+            public ICommand LogoutCommand { get; }
+            public ICommand EditUserCommand { get; }
+            public ICommand CreateNewGalleryCommand { get; }
+            public ICommand DetailsCommand { get; }
+            public ICommand DeleteCommand { get; }
+            public ICommand CreateUserCommand { get; }
+            public ICommand CreateNewAuthorCommand { get; }
+            public ICommand CreateNewWorkOfArtCommand { get; }
+
+
+            private void OpenCreateAuthorWindow()
+            {
+                var createAuthorView = new CreateAuthorView
+                {
+                    DataContext = new CreateAuthorViewModel(_loggedInUser.Username)
+                };
+                UserActionLoggerService.Instance.Log(_loggedInUser.Username, " successfully opened Create New Author Window.");
+                createAuthorView.Show();
+            }
+            private void OpenCreateWorkOfArtView()
+            {
+                var createWorkOfArtView = new CreateWorkOfArtView() { };
+                UserActionLoggerService.Instance.Log(_loggedInUser.Username, " successfully opened Create New Work of Art Window.");
+                createWorkOfArtView.Show();
+            }
         private void DuplicateGallery(Gallery gallery)
         {
             // Kreiranje duboke kopije liste WorkOfArts
@@ -149,6 +146,7 @@ namespace Client.ViewModels
             // Dodavanje duplikata galerije u obe kolekcije
             _allGalleries.Add(duplicateGallery);
             Galleries.Add(duplicateGallery);
+            UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully duplicated Gallery with MBR: {duplicateGallery.MBR}, Address: {duplicateGallery.Address}.");
         }
 
 
@@ -156,13 +154,14 @@ namespace Client.ViewModels
         {
             if (_loggedInUser.UserType == Common.DbModels.UserType.Admin)
             {
-                var createUserViewModel = new CreateUserViewModel();
+                var createUserViewModel = new CreateUserViewModel(_loggedInUser.Username);
                 var createUserWindow = new CreateUserView
                 {
                     DataContext = createUserViewModel,
                     Width = 400,
                     Height = 210
                 };
+                UserActionLoggerService.Instance.Log(_loggedInUser.Username, " successfully opened Create New User Window.");
                 createUserWindow.ShowDialog();
             }
             else
@@ -306,6 +305,7 @@ namespace Client.ViewModels
                 Width = 670,
                 Height = 700
             };
+            UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully opened Show Gallery Details Window for Gallery PIB: {gallery.PIB}.");
             detailsWindow.Show();
         }
 
@@ -317,9 +317,11 @@ namespace Client.ViewModels
                 _allGalleries.Remove(gallery);
                 Galleries.Remove(gallery);
 
+                UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully deleted Gallery for PIB: {gallery.PIB}.");
+
                 var clientGallery = _channelFactoryGallery.CreateChannel();
                 clientGallery.DeleteGallery(gallery.PIB);
-            }
+            }else UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" unsuccessfully deleted Gallery for PIB: {gallery.PIB}.");
         }
 
         private void Search()
@@ -340,16 +342,19 @@ namespace Client.ViewModels
                     if (IsSearchByMBR)
                     {
                         filteredGalleries = filteredGalleries.Where(g => g.MBR.ToLower().Contains(SearchText.ToLower()));
+                     //   UserActionLoggerService.Instance.Log(_loggedInUser.Username, " searched data by MBR.");
                     }
 
                     if (IsSearchByPIB)
                     {
                         filteredGalleries = filteredGalleries.Where(g => g.PIB.ToLower().Contains(SearchText.ToLower()));
+                     //   UserActionLoggerService.Instance.Log(_loggedInUser.Username, " searched data by PIB.");
                     }
 
                     if (IsSearchByAddress)
                     {
                         filteredGalleries = filteredGalleries.Where(g => g.Address.ToLower().Contains(SearchText.ToLower()));
+                     //   UserActionLoggerService.Instance.Log(_loggedInUser.Username, " searched data by Address.");
                     }
                 }
                 else
@@ -372,16 +377,19 @@ namespace Client.ViewModels
 
                 if (isLoggedOut)
                 {
+                    UserActionLoggerService.Instance.Log(_loggedInUser.Username, " logged out successfully.");
+
                     Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
                 }
                 else
                 {
-                    MessageBox.Show("Došlo je do greške pri odjavi.");
+                    MessageBox.Show("Error while logout.");
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred: {ex.Message}");
+                UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" logged out unsuccessfully. Error: {ex.Message}");
             }
         }
 
@@ -394,6 +402,7 @@ namespace Client.ViewModels
 
                 if (user != null)
                 {
+                    UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully opened Edit Window for user with username: {user.Username}.");
                     var editUserViewModel = new EditUserViewModel(user, authServiceClient);
                     editUserViewModel.UserUpdated += OnUserUpdated;
                     var editUserWindow = new EditUserWindow
@@ -405,13 +414,14 @@ namespace Client.ViewModels
             }
             catch (Exception ex)
             {
+                UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" unsuccessfully opened Edit Window for user with username: {_loggedInUser.Username}.");
                 MessageBox.Show($"An error occurred: {ex.Message}");
             }
         }
 
         private void OpenCreateGalleryWindow()
         {
-            var createGalleryViewModel = new CreateGalleryViewModel();
+            var createGalleryViewModel = new CreateGalleryViewModel(_loggedInUser.Username);
             createGalleryViewModel.GalleryCreated += OnGalleryCreated;
 
             var createGalleryWindow = new Window
@@ -424,6 +434,7 @@ namespace Client.ViewModels
                 Width = 400,
                 Height = 300
             };
+            UserActionLoggerService.Instance.Log(_loggedInUser.Username, " successfully opened Create New Gallery Window.");
             createGalleryWindow.Show();
         }
 

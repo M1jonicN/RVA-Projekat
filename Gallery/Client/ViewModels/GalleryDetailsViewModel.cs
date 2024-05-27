@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Client.Helpers;
+using Client.Services;
 using Client.Views;
 using Common.DbModels;
 using Common.Interfaces;
@@ -14,15 +15,15 @@ namespace Client.ViewModels
 {
     public class GalleryDetailsViewModel : BaseViewModel
     {
-        private Gallery _gallery;
+        private Common.DbModels.Gallery _gallery;
         private bool _isEditing;
         private readonly ChannelFactory<IAuthor> _channelFactoryAuthor;
         private readonly ChannelFactory<IWorkOfArt> _channelFactoryWorkOfArt;
         private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
-        private readonly User _loggedInUser;
+        private readonly Common.DbModels.User _loggedInUser;
         private readonly DispatcherTimer _dispatcherTimer;
 
-        public Gallery Gallery
+        public Common.DbModels.Gallery Gallery
         {
             get => _gallery;
             set
@@ -32,11 +33,11 @@ namespace Client.ViewModels
             }
         }
 
-        public ObservableCollection<WorkOfArt> WorkOfArts { get; set; }
+        public ObservableCollection<Common.DbModels.WorkOfArt> WorkOfArts { get; set; }
 
         public string LoggedInUsername => _loggedInUser.Username;
 
-        public GalleryDetailsViewModel(Gallery gallery, User loggedInUser)
+        public GalleryDetailsViewModel(Common.DbModels.Gallery gallery, Common.DbModels.User loggedInUser)
         {
             _loggedInUser = loggedInUser;
 
@@ -133,6 +134,7 @@ namespace Client.ViewModels
         private void Edit()
         {
             IsEditing = true;
+            UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully enabled edit.");
         }
 
         private void Save()
@@ -140,10 +142,11 @@ namespace Client.ViewModels
             IsEditing = false;
 
             var clientGallery = _channelFactoryGallery.CreateChannel();
+            UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully saved changes.");
             clientGallery.SaveGalleryChanges(Gallery);
         }
 
-        private void DetailsWorkOfArt(WorkOfArt workOfArt)
+        private void DetailsWorkOfArt(Common.DbModels.WorkOfArt workOfArt)
         {
             try
             {
@@ -162,7 +165,7 @@ namespace Client.ViewModels
             }
         }
 
-        private void DeleteWorkOfArt(WorkOfArt workOfArt)
+        private void DeleteWorkOfArt(Common.DbModels.WorkOfArt workOfArt)
         {
             var clientWorkOfArt = _channelFactoryWorkOfArt.CreateChannel();
             try
@@ -170,10 +173,12 @@ namespace Client.ViewModels
                 clientWorkOfArt.DeleteWorkOfArt(workOfArt.ID);
                 WorkOfArts.Remove(workOfArt);
                 MessageBox.Show($"Deleted {workOfArt.ArtName}");
+                UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully deleted Work of Art with name: {workOfArt.ArtName}.");
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Failed to delete {workOfArt.ArtName}: {ex.Message}");
+                UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" failed to deleted Work of Art with name: {workOfArt.ArtName}.");
             }
         }
     }

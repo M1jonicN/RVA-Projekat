@@ -6,20 +6,24 @@ using Client.Helpers;
 using System.ServiceModel;
 using Common.Services;
 using System.Linq;
+using Client.Models;
+using Client.Services;
 
 namespace Client.ViewModels
 {
     public class CreateGalleryViewModel : BaseViewModel
     {
-        private Gallery _newGallery;
+        private Common.DbModels.Gallery _newGallery;
         private readonly IGalleryService _galleryService;
 
-        public event EventHandler<Gallery> GalleryCreated;
+        public event EventHandler<Common.DbModels.Gallery> GalleryCreated;
+        private string _loggedInUser;
 
-        public CreateGalleryViewModel()
+        public CreateGalleryViewModel(string username)
         {
-            NewGallery = new Gallery();
+            NewGallery = new Common.DbModels.Gallery();
             CreateGalleryCommand = new RelayCommand(CreateGallery);
+            _loggedInUser = username;
 
             var binding = new NetTcpBinding();
             var endpoint = new EndpointAddress("net.tcp://localhost:8086/Gallery");
@@ -27,7 +31,7 @@ namespace Client.ViewModels
             _galleryService = channelFactory.CreateChannel();
         }
 
-        public Gallery NewGallery
+        public Common.DbModels.Gallery NewGallery
         {
             get => _newGallery;
             set
@@ -51,6 +55,7 @@ namespace Client.ViewModels
             if (!AreFieldsValid())
             {
                 MessageBox.Show("All fields must be filled out.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                UserActionLoggerService.Instance.Log(_loggedInUser, " unsuccessfully created new Gallery.");
                 return;
             }
 
@@ -59,11 +64,13 @@ namespace Client.ViewModels
             {
                 GalleryCreated?.Invoke(this, NewGallery);
                 MessageBox.Show("Gallery created successfully.");
+                UserActionLoggerService.Instance.Log(_loggedInUser, " successfully created new Gallery.");
                 Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
             }
             else
             {
                 MessageBox.Show("Failed to create gallery. A gallery with the same PIB might already exist.");
+                UserActionLoggerService.Instance.Log(_loggedInUser, " unsuccessfully created new Gallery.");
             }
         }
     }

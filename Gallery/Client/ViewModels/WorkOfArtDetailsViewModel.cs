@@ -6,6 +6,8 @@ using System.ServiceModel;
 using System.Timers;
 using System.Windows.Input;
 using Client.Helpers;
+using Client.Models;
+using Client.Services;
 using Common.DbModels;
 using Common.Interfaces;
 
@@ -14,12 +16,12 @@ namespace Client.ViewModels
     public class WorkOfArtDetailsViewModel : BaseViewModel
     {
         private Timer _timer;
-        private WorkOfArt _workOfArt;
-        private Author _author;
+        private Common.DbModels.WorkOfArt _workOfArt;
+        private Common.DbModels.Author _author;
         private bool _isWorkOfArtEditing;
         private bool _isAuthorEditing;
 
-        public WorkOfArt WorkOfArt
+        public Common.DbModels.WorkOfArt WorkOfArt
         {
             get => _workOfArt;
             set
@@ -29,7 +31,7 @@ namespace Client.ViewModels
             }
         }
 
-        public Author Author
+        public Common.DbModels.Author Author
         {
             get => _author;
             set
@@ -39,7 +41,7 @@ namespace Client.ViewModels
             }
         }
 
-        private readonly User _loggedInUser;
+        private readonly Common.DbModels.User _loggedInUser;
         public string LoggedInUsername => _loggedInUser.Username;
 
         public bool IsWorkOfArtEditing
@@ -71,7 +73,7 @@ namespace Client.ViewModels
         public ICommand SaveAuthorCommand { get; }
         public ICommand DeleteAuthorCommand { get; }
 
-        public WorkOfArtDetailsViewModel(WorkOfArt workOfArt, Author author, User loggedInUser)
+        public WorkOfArtDetailsViewModel(Common.DbModels.WorkOfArt workOfArt, Common.DbModels.Author author, Common.DbModels.User loggedInUser)
         {
             WorkOfArt = workOfArt;
             Author = author;
@@ -124,7 +126,8 @@ namespace Client.ViewModels
                 var clientWoa = new ChannelFactory<IWorkOfArt>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8087/WorkOfArt")).CreateChannel();
                 clientWoa.GetAllWorkOfArtsDeletedForAuthorId(Author.ID);
                 Console.WriteLine("Author deleted successfully.");
-                Author = new Author(); // or null, depending on your logic
+                UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" author {Author.FirstName} {Author.LastName} deleted successfully.");
+                Author = new Common.DbModels.Author(); // or null, depending on your logic
                 OnPropertyChanged(nameof(Author));
             }
             else

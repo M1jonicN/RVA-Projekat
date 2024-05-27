@@ -15,14 +15,13 @@ using System.Windows.Shapes;
 namespace Client.Views
 {
     /// <summary>
-    /// Interaction logic for CreateWorkOfArtView.xaml
+    /// Interaction logic for UserActionsView.xaml
     /// </summary>
-    public partial class CreateWorkOfArtView : Window
+    public partial class UserActionsView : Window
     {
-        public  CreateWorkOfArtView()
+        public UserActionsView()
         {
             InitializeComponent();
-
         }
     }
 }
