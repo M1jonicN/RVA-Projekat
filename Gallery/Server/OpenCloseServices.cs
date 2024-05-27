@@ -10,6 +10,7 @@ namespace Server
 {
     public class OpenCloseServices
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(OpenCloseServices));
 
         private static ServiceHost authService;
         private static ServiceHost galleryService;
@@ -41,17 +42,17 @@ namespace Server
                 authorService.AddServiceEndpoint(typeof(IAuthor), bindingAuthor, addressAuthor);
 
                 authService.Open();
-                Console.WriteLine("Authentication Service opened...");
+                log.Info("Authentication Service opened...");
                 galleryService.Open();
-                Console.WriteLine("Gallery Service opened...");
+                log.Info("Gallery Service opened...");
                 woaService.Open();
-                Console.WriteLine("Work Of Art Service opened...");
+                log.Info("Work Of Art Service opened...");
                 authorService.Open();
-                Console.WriteLine("Author Service opened...");
+                log.Info("Author Service opened...");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while opening services. {ex}");
+                log.Error("An error occurred while opening services", ex);
                 throw;
             }
         }
@@ -61,17 +62,17 @@ namespace Server
             try
             {
                 authService.Close();
-                Console.WriteLine("Authentication Service closed...");
+                log.Info("Authentication Service closed...");
                 galleryService.Close();
-                Console.WriteLine("Gallery Service closed...");
+                log.Info("Gallery Service closed...");
                 woaService.Close();
-                Console.WriteLine("Work Of Art Service closed...");
+                log.Info("Work Of Art Service closed...");
                 authorService.Close();
-                Console.WriteLine("Author Service closed...");
+                log.Info("Author Service closed...");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An error occurred while closing services", ex);
+                log.Error("An error occurred while closing services", ex);
                 throw;
             }
         }
