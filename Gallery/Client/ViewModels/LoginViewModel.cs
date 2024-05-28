@@ -8,16 +8,20 @@ using Client.Views;
 using Client.Services;
 using Common.Contracts;
 using Common.DbModels;
+using log4net;
 
 namespace Client.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
         #region Fields
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(LoginViewModel));
         private string _username;
         private string _errorMessage;
         private readonly ChannelFactory<IAuthService> _channelFactory;
         private static UserActionsView _userActionsView;
+
         #endregion
 
         public LoginViewModel()
@@ -28,7 +32,10 @@ namespace Client.ViewModels
             Username = "username";
 
             LoginCommand = new RelayCommand(Login);
+
+            log.Info("LoginViewModel initialized.");
         }
+
         #region Properties
         public string Username
         {
@@ -37,6 +44,7 @@ namespace Client.ViewModels
             {
                 _username = value;
                 OnPropertyChanged();
+                log.Debug($"Username property changed to: {_username}");
             }
         }
 
@@ -48,6 +56,7 @@ namespace Client.ViewModels
             {
                 _password = value;
                 OnPropertyChanged();
+                log.Debug($"Password property changed.");
             }
         }
 
@@ -58,9 +67,11 @@ namespace Client.ViewModels
             {
                 _errorMessage = value;
                 OnPropertyChanged();
+                log.Debug($"ErrorMessage property changed to: {_errorMessage}");
             }
         }
         #endregion
+
         public ICommand LoginCommand { get; }
 
         #region Methods
@@ -68,15 +79,18 @@ namespace Client.ViewModels
         {
             try
             {
+                log.Info("Attempting to log in.");
                 var authServiceClient = _channelFactory.CreateChannel();
-                Common.DbModels.User loggedInUser = authServiceClient.Login(Username, Password);
+                User loggedInUser = authServiceClient.Login(Username, Password);
 
                 if (loggedInUser != null && loggedInUser.IsLoggedIn)
                 {
+                    log.Info($"User {Username} logged in successfully.");
+
                     // Open UserActionsView if not already open
                     if (_userActionsView == null)
                     {
-                        _userActionsView = new UserActionsView()
+                        _userActionsView = new UserActionsView
                         {
                             Height = 450,
                             Width = 800
@@ -86,11 +100,13 @@ namespace Client.ViewModels
 
                         _userActionsView.Closed += (s, e) => _userActionsView = null;
                         _userActionsView.Show();
+                        log.Info("Successfully opened User Actions Window.");
                     }
 
                     UserActionLoggerService.Instance.Log(Username, " logged in successfully.");
+                    log.Info(Username + " logged in successfully.");
 
-                    var dashboardView = new DashboardView()
+                    var dashboardView = new DashboardView
                     {
                         Height = 600,
                         Width = 900
@@ -103,17 +119,20 @@ namespace Client.ViewModels
                     {
                         dashboardView.Owner = currentWindow;
                         dashboardView.Show();
+                        log.Info("Dashboard window opened successfully.");
                     }
                 }
                 else
                 {
                     ErrorMessage = "Invalid username or password";
+                    log.Warn("Invalid username or password.");
                     UserActionLoggerService.Instance.Log(Username, " unsuccessfully logged in.");
                 }
             }
             catch (Exception ex)
             {
                 ErrorMessage = $"An error occurred: {ex.Message}";
+                log.Error("An error occurred during login.", ex);
                 UserActionLoggerService.Instance.Log(Username, $" unsuccessfully logged in. Error: {ex.Message}");
             }
         }

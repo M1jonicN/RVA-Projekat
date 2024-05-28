@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace Client.Services
 {
-    public class UserActionLoggerService : ILog
+    public class UserActionLoggerService : ILogInterface
     {
         private static UserActionLoggerService _instance;
         private readonly ObservableCollection<string> _logMessages;

@@ -19,7 +19,7 @@ namespace Client.ViewModels
 {
     public class DashboardViewModel : BaseViewModel
     {
-    #region Fields
+        #region Fields
 
         private readonly ChannelFactory<IAuthService> _channelFactory;
             private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
@@ -40,7 +40,7 @@ namespace Client.ViewModels
 
         #endregion
 
-    public DashboardViewModel(Common.DbModels.User loggedInUser)
+        public DashboardViewModel(Common.DbModels.User loggedInUser)
         {
             _loggedInUser = loggedInUser;
             LoggedInUsername = _loggedInUser.Username;
@@ -76,6 +76,12 @@ namespace Client.ViewModels
 
             // Load data initially
             LoadData();
+
+            // Initialize and start the DispatcherTimer
+            _dispatcherTimer = new DispatcherTimer();
+            _dispatcherTimer.Interval = TimeSpan.FromSeconds(1.5); // Set interval to 1.5 seconds
+            _dispatcherTimer.Tick += (sender, args) => LoadData(); // Attach the LoadData method to the Tick event
+            _dispatcherTimer.Start(); // Start the timer
 
             Application.Current.MainWindow.Closing += OnWindowClosing;
         }
@@ -195,22 +201,27 @@ namespace Client.ViewModels
 
         #endregion
 
-    #region Methods
+        #region Methods
         private void OpenCreateAuthorWindow()
+        {
+            var createAuthorView = new CreateAuthorView
             {
-                var createAuthorView = new CreateAuthorView
-                {
-                    DataContext = new CreateAuthorViewModel(_loggedInUser.Username)
-                };
-                UserActionLoggerService.Instance.Log(_loggedInUser.Username, " successfully opened Create New Author Window.");
-                createAuthorView.Show();
-            }
+                DataContext = new CreateAuthorViewModel(_loggedInUser.Username)
+            };
+            UserActionLoggerService.Instance.Log(_loggedInUser.Username, " successfully opened Create New Author Window.");
+            createAuthorView.Show();
+        }
+
         private void OpenCreateWorkOfArtView()
         {
-            var createWorkOfArtView = new CreateWorkOfArtView() { };
+            var createWorkOfArtView = new CreateWorkOfArtView
+            {
+                DataContext = new CreateWorkOfArtViewModel(_loggedInUser.Username) // Pass the logged-in user's username to the ViewModel
+            };
             UserActionLoggerService.Instance.Log(_loggedInUser.Username, " successfully opened Create New Work of Art Window.");
             createWorkOfArtView.Show();
         }
+
         private void DuplicateGallery(Gallery gallery)
         {
             // Kreiranje duboke kopije liste WorkOfArts

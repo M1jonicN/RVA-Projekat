@@ -7,7 +7,7 @@ using System.Windows;
 using Client.Helpers;
 using Common.DbModels;
 using Common.Interfaces;
-using DbStyle = Common.DbModels.Style; // Alias za Common.DbModels.Style
+using DbStyle = Common.DbModels.Style;
 using System.Linq;
 using Common.Services;
 using Client.Services;
@@ -25,11 +25,18 @@ namespace Client.ViewModels
         private readonly ChannelFactory<IAuthor> _channelFactoryAuthor;
         private readonly ChannelFactory<IWorkOfArt> _channelFactoryWoa;
         private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
-        private string _loggedInUser;
+        private readonly string _loggedInUser; // Add this field to store the logged-in user
         #endregion
 
         public CreateWorkOfArtViewModel()
         {
+
+        }
+
+        public CreateWorkOfArtViewModel(string loggedInUser) // Modify constructor to accept logged-in user's username
+        {
+            _loggedInUser = loggedInUser; // Store the logged-in user's username
+
             var bindingAuthor = new NetTcpBinding();
             var endpointAuthor = new EndpointAddress("net.tcp://localhost:8088/Author");
             _channelFactoryAuthor = new ChannelFactory<IAuthor>(bindingAuthor, endpointAuthor);
@@ -45,17 +52,15 @@ namespace Client.ViewModels
             var clientGallery = _channelFactoryGallery.CreateChannel();
             var galleries = clientGallery.GetAllGalleriesFromDb();
 
-            // In galleriesWithPIB se nalaze sve galerije, njih isto ponuditi u obliku comboboxa na CreateWorkOfArt windowu.
             GalleryPIBs = new ObservableCollection<string>(galleries.Select(g => g.PIB));
-
-            ArtMovements = new ObservableCollection<ArtMovement>(Enum.GetValues(typeof(ArtMovement)) as IEnumerable<ArtMovement>);
-            Styles = new ObservableCollection<DbStyle>(Enum.GetValues(typeof(DbStyle)) as IEnumerable<DbStyle>);
+            ArtMovements = new ObservableCollection<ArtMovement>(Enum.GetValues(typeof(ArtMovement)).Cast<ArtMovement>());
+            Styles = new ObservableCollection<DbStyle>(Enum.GetValues(typeof(DbStyle)).Cast<DbStyle>());
             AuthorNames = new ObservableCollection<string>();
 
             LoadAuthors();
-
             SaveCommand = new RelayCommand(Save);
         }
+
         #region Properties
         public string ArtName
         {
@@ -87,12 +92,12 @@ namespace Client.ViewModels
             set => SetProperty(ref _selectedGalleryPIB, value);
         }
 
-
         public ObservableCollection<ArtMovement> ArtMovements { get; }
         public ObservableCollection<DbStyle> Styles { get; }
         public ObservableCollection<string> AuthorNames { get; }
         public ObservableCollection<string> GalleryPIBs { get; }
         #endregion
+
         public ICommand SaveCommand { get; }
 
         #region Methods
@@ -109,7 +114,6 @@ namespace Client.ViewModels
 
         private void Save()
         {
-            // Prikazivanje poruke za testiranje
             if (!CanCreateWoa())
             {
                 MessageBox.Show("Unsuccessfully create new Work of Art!");
@@ -120,7 +124,7 @@ namespace Client.ViewModels
             var clientWoa = _channelFactoryWoa.CreateChannel();
             var clientAuthor = _channelFactoryAuthor.CreateChannel();
             var authors = clientAuthor.GetAllAuthores();
-            int authorId = -1; // Inicijalizujemo authorId na -1 (ako ne pronađemo podudaranje)
+            int authorId = -1;
 
             foreach (var author in authors)
             {
@@ -128,18 +132,18 @@ namespace Client.ViewModels
                 if (fullName.Equals(SelectedAuthorName, StringComparison.OrdinalIgnoreCase))
                 {
                     authorId = author.ID;
-                    break; // Prekidamo petlju ako smo pronašli podudaranje
+                    break;
                 }
             }
 
-            WorkOfArt newWoa = new WorkOfArt()
+            var newWoa = new WorkOfArt
             {
                 ArtName = ArtName,
                 ArtMovement = SelectedArtMovement,
                 Style = SelectedStyle,
                 AuthorName = SelectedAuthorName,
-                GalleryPIB = SelectedGalleryPIB, // Updated to use SelectedGalleryPIB
-                AuthorID = authorId, // Postavljamo authorId
+                GalleryPIB = SelectedGalleryPIB,
+                AuthorID = authorId,
                 IsDeleted = false
             };
 
@@ -166,13 +170,12 @@ namespace Client.ViewModels
             }
         }
 
-
         private bool CanCreateWoa()
         {
             return !string.IsNullOrWhiteSpace(ArtName) &&
                    !string.IsNullOrWhiteSpace(SelectedAuthorName) &&
-                   !string.IsNullOrWhiteSpace(SelectedArtMovement.ToString()) &&
-                   !string.IsNullOrWhiteSpace(SelectedStyle.ToString()) &&
+                   SelectedArtMovement != default &&
+                   SelectedStyle != default &&
                    !string.IsNullOrWhiteSpace(SelectedGalleryPIB);
         }
         #endregion

@@ -6,9 +6,6 @@
         xmlns:vm="clr-namespace:Client.ViewModels"
         mc:Ignorable="d"
         Title="Create New Work Of Art" Height="270" Width="600">
-    <Window.DataContext>
-        <vm:CreateWorkOfArtViewModel />
-    </Window.DataContext>
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
