@@ -18,8 +18,8 @@ namespace Client.ViewModels
         #region Fields
         private Common.DbModels.Gallery _gallery;
         private bool _isEditing;
-        private readonly ChannelFactory<IAuthor> _channelFactoryAuthor;
-        private readonly ChannelFactory<IWorkOfArt> _channelFactoryWorkOfArt;
+        private readonly ChannelFactory<IAuthorService> _channelFactoryAuthor;
+        private readonly ChannelFactory<IWorkOfArtService> _channelFactoryWorkOfArt;
         private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
         private readonly Common.DbModels.User _loggedInUser;
         private readonly DispatcherTimer _dispatcherTimer;
@@ -57,11 +57,11 @@ namespace Client.ViewModels
 
             var bindingAuthor = new NetTcpBinding();
             var endpointAuthor = new EndpointAddress("net.tcp://localhost:8088/Author");
-            _channelFactoryAuthor = new ChannelFactory<IAuthor>(bindingAuthor, endpointAuthor);
+            _channelFactoryAuthor = new ChannelFactory<IAuthorService>(bindingAuthor, endpointAuthor);
 
             var bindingWorkOfArt = new NetTcpBinding();
             var endpointWorkOfArt = new EndpointAddress("net.tcp://localhost:8087/WorkOfArt");
-            _channelFactoryWorkOfArt = new ChannelFactory<IWorkOfArt>(bindingWorkOfArt, endpointWorkOfArt);
+            _channelFactoryWorkOfArt = new ChannelFactory<IWorkOfArtService>(bindingWorkOfArt, endpointWorkOfArt);
 
             var bindingGallery = new NetTcpBinding();
             var endpointGallery = new EndpointAddress("net.tcp://localhost:8086/Gallery");
@@ -144,6 +144,10 @@ namespace Client.ViewModels
         private void Edit()
         {
             IsEditing = true;
+            Gallery.IsInEditingMode = true;
+            Gallery.GalleryIsEdditedBy = _loggedInUser.Username;
+            var clientGallery = _channelFactoryGallery.CreateChannel();
+            clientGallery.SaveGalleryChanges(Gallery);
             UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully enabled edit.");
         }
 
@@ -153,15 +157,17 @@ namespace Client.ViewModels
 
             var clientGallery = _channelFactoryGallery.CreateChannel();
             UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully saved changes.");
+            Gallery.IsInEditingMode = false;
+            Gallery.GalleryIsEdditedBy = "";
             clientGallery.SaveGalleryChanges(Gallery);
         }
 
-        private void DetailsWorkOfArt(Common.DbModels.WorkOfArt workOfArt)
+        private void DetailsWorkOfArt(WorkOfArt workOfArt)
         {
             try
             {
                 var clientAuthor = _channelFactoryAuthor.CreateChannel();
-                var author = clientAuthor.GetAuthorByWorkOfArtId(workOfArt.AuthorID);
+                var author = clientAuthor.GetAuthorByWorkOfArtId(workOfArt.ID);
                 var detailsViewModel = new WorkOfArtDetailsViewModel(workOfArt, author, _loggedInUser);
                 var detailsWindow = new WorkOfArtDetailsWindow()
                 {
@@ -175,7 +181,7 @@ namespace Client.ViewModels
             }
         }
 
-        private void DeleteWorkOfArt(Common.DbModels.WorkOfArt workOfArt)
+        private void DeleteWorkOfArt(WorkOfArt workOfArt)
         {
             var clientWorkOfArt = _channelFactoryWorkOfArt.CreateChannel();
             try

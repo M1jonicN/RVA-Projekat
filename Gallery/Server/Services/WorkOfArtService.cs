@@ -7,14 +7,14 @@ using System.Linq;
 
 namespace Server.Services
 {
-    public class WorkOfArtService : IWorkOfArt
+    public class WorkOfArtService : IWorkOfArtService
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(WorkOfArtService));
         private static MyDbContext dbContext;
 
         public WorkOfArtService()
         {
-            dbContext = MyDbContext.SingletonInstance;
+            dbContext = MyDbContext.Instance;
             log.Info("WorkOfArtService instance created.");
         }
 

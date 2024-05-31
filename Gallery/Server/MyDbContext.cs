@@ -13,14 +13,14 @@ namespace Server
         // Lazy initialization for the singleton instance
         private static readonly Lazy<MyDbContext> instance = new Lazy<MyDbContext>(() => new MyDbContext());
 
-        // Public constructor to allow instantiation by the factory
+        // Private constructor to prevent direct instantiation
         public MyDbContext() : base(connectionString)
         {
             log.Info("MyDbContext instance created.");
         }
 
         // Public static property to access the singleton instance
-        public static MyDbContext SingletonInstance => instance.Value;
+        public static MyDbContext Instance => instance.Value;
 
         public DbSet<Author> Authors { get; set; }
         public DbSet<WorkOfArt> WorkOfArts { get; set; }
@@ -34,6 +34,16 @@ namespace Server
             // Configure entity properties and relationships if needed
             // Example:
             // modelBuilder.Entity<Gallery>().HasKey(g => g.PIB);
+        }
+
+        // Method to dispose the singleton instance
+        public static void DisposeInstance()
+        {
+            if (instance.IsValueCreated)
+            {
+                instance.Value.Dispose();
+                log.Info("MyDbContext singleton instance disposed.");
+            }
         }
     }
 }

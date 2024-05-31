@@ -21,22 +21,22 @@ namespace Client.ViewModels
     {
         #region Fields
 
-        private readonly ChannelFactory<IAuthService> _channelFactory;
-            private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
-            private readonly ChannelFactory<IWorkOfArt> _channelFactoryWOA;
-            private readonly User _loggedInUser;
-            private ObservableCollection<Gallery> _galleries;
-            private ObservableCollection<Gallery> _allGalleries; 
-            private ObservableCollection<WorkOfArt> _workOfArts;
-            private ObservableCollection<Author> _authors;
-            private string _searchText;
-            private string _loggedInUsername;
-            private readonly DispatcherTimer _dispatcherTimer; 
-            private bool _isSearching; 
-            private bool _isSearchByMBR;
-            private bool _isSearchByPIB;
-            private bool _isSearchByAddress;
-            private bool _isSearchByParameters;
+        private readonly ChannelFactory<IUserAuthenticationService> _channelFactory;
+        private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
+        private readonly ChannelFactory<IWorkOfArtService> _channelFactoryWOA;
+        private readonly User _loggedInUser;
+        private ObservableCollection<Gallery> _galleries;
+        private ObservableCollection<Gallery> _allGalleries; 
+        private ObservableCollection<WorkOfArt> _workOfArts;
+        private ObservableCollection<Author> _authors;
+        private string _searchText;
+        private string _loggedInUsername;
+        private readonly DispatcherTimer _dispatcherTimer; 
+        private bool _isSearching; 
+        private bool _isSearchByMBR;
+        private bool _isSearchByPIB;
+        private bool _isSearchByAddress;
+        private bool _isSearchByParameters;
 
         #endregion
 
@@ -47,7 +47,7 @@ namespace Client.ViewModels
 
             var binding = new NetTcpBinding();
             var endpoint = new EndpointAddress("net.tcp://localhost:8085/Authentifiaction");
-            _channelFactory = new ChannelFactory<IAuthService>(binding, endpoint);
+            _channelFactory = new ChannelFactory<IUserAuthenticationService>(binding, endpoint);
 
             var bindingGallery = new NetTcpBinding();
             var endpointGallery = new EndpointAddress("net.tcp://localhost:8086/Gallery");
@@ -55,7 +55,7 @@ namespace Client.ViewModels
 
             var bindingWOA = new NetTcpBinding();
             var endpointWOA = new EndpointAddress("net.tcp://localhost:8087/WorkOfArt");
-            _channelFactoryWOA = new ChannelFactory<IWorkOfArt>(bindingWOA, endpointWOA);
+            _channelFactoryWOA = new ChannelFactory<IWorkOfArtService>(bindingWOA, endpointWOA);
 
             // Initialize collections with dummy data or fetch from service
             _allGalleries = new ObservableCollection<Gallery>();
@@ -331,17 +331,29 @@ namespace Client.ViewModels
 
         private void DeleteGallery(Gallery gallery)
         {
-            if (MessageBox.Show("Are you sure you want to delete this gallery?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+
+            if (!gallery.IsInEditingMode)
             {
-                gallery.IsDeleted = true;
-                _allGalleries.Remove(gallery);
-                Galleries.Remove(gallery);
+                if (MessageBox.Show("Are you sure you want to delete this gallery?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    gallery.IsDeleted = true;
+                    _allGalleries.Remove(gallery);
+                    Galleries.Remove(gallery);
 
-                UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully deleted Gallery for PIB: {gallery.PIB}.");
-
-                var clientGallery = _channelFactoryGallery.CreateChannel();
-                clientGallery.DeleteGallery(gallery.PIB);
-            }else UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" unsuccessfully deleted Gallery for PIB: {gallery.PIB}.");
+                    UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully deleted Gallery for PIB: {gallery.PIB}.");
+                    var clientGallery = _channelFactoryGallery.CreateChannel();
+                    clientGallery.DeleteGallery(gallery.PIB);
+                }
+                else
+                {
+                    UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" unsuccessfully deleted Gallery for PIB: {gallery.PIB}.");
+                }
+            }
+            else
+            {
+                UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" unsuccessfully deleted Gallery \n for PIB: {gallery.PIB} becouse gallery\n is being edited by user: {gallery.GalleryIsEdditedBy}.");
+                MessageBox.Show($"{_loggedInUser.Username} unsuccessfully deleted Gallery \n for PIB: {gallery.PIB} becouse gallery\n is being edited by user: {gallery.GalleryIsEdditedBy}.");
+            }
         }
 
         private void Search()
@@ -392,8 +404,8 @@ namespace Client.ViewModels
         {
             try
             {
-                var authServiceClient = _channelFactory.CreateChannel();
-                bool isLoggedOut = authServiceClient.Logout(_loggedInUser.Username);
+                var UserAuthenticationServiceClient = _channelFactory.CreateChannel();
+                bool isLoggedOut = UserAuthenticationServiceClient.Logout(_loggedInUser.Username);
 
                 if (isLoggedOut)
                 {
@@ -417,13 +429,13 @@ namespace Client.ViewModels
         {
             try
             {
-                var authServiceClient = _channelFactory.CreateChannel();
-                User user = authServiceClient.FindUser(_loggedInUser.Username);
+                var UserAuthenticationServiceClient = _channelFactory.CreateChannel();
+                User user = UserAuthenticationServiceClient.FindUser(_loggedInUser.Username);
 
                 if (user != null)
                 {
                     UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully opened Edit Window for user with username: {user.Username}.");
-                    var editUserViewModel = new EditUserViewModel(user, authServiceClient);
+                    var editUserViewModel = new EditUserViewModel(user, UserAuthenticationServiceClient);
                     editUserViewModel.UserUpdated += OnUserUpdated;
                     var editUserWindow = new EditUserWindow
                     {

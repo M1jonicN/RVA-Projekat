@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Common.Interfaces
 {
     [ServiceContract]
-    public interface IAuthor
+    public interface IAuthorService
     {
         [OperationContract]
         List<Author> GetAllAuthores();

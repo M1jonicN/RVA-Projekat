@@ -23,7 +23,7 @@ namespace Client.ViewModels
         private int _deathYear;
         private ArtMovement _selectedArtMovement;
         private ObservableCollection<ArtMovement> _artMovements;
-        private readonly ChannelFactory<IAuthor> _channelFactoryAuthor;
+        private readonly ChannelFactory<IAuthorService> _channelFactoryAuthor;
         private string _loggedInUser;
 
         #endregion
@@ -36,7 +36,7 @@ namespace Client.ViewModels
 
             var bindingAuthor = new NetTcpBinding();
             var endpointAuthor = new EndpointAddress("net.tcp://localhost:8088/Author");
-            _channelFactoryAuthor = new ChannelFactory<IAuthor>(bindingAuthor, endpointAuthor);
+            _channelFactoryAuthor = new ChannelFactory<IAuthorService>(bindingAuthor, endpointAuthor);
 
         }
         public ICommand SaveCommand { get; }

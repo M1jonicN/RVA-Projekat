@@ -9,14 +9,14 @@ using System.ServiceModel;
 namespace Server.Services
 {
     [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
-    public class AuthorService : IAuthor
+    public class AuthorService : IAuthorService
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(AuthorService));
         private static MyDbContext dbContext;
 
         public AuthorService()
         {
-            dbContext = MyDbContext.SingletonInstance;
+            dbContext = MyDbContext.Instance;
             log.Info("AuthorService instance created.");
         }
 

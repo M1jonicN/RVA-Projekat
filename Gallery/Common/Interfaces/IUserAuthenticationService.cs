@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Common.Contracts
 {
     [ServiceContract]
-    public interface IAuthService
+    public interface IUserAuthenticationService
     {
         [OperationContract]
         User Login(string username, string password);

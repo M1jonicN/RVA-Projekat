@@ -22,8 +22,8 @@ namespace Client.ViewModels
         private DbStyle _selectedStyle;
         private string _selectedAuthorName;
         private string _selectedGalleryPIB;
-        private readonly ChannelFactory<IAuthor> _channelFactoryAuthor;
-        private readonly ChannelFactory<IWorkOfArt> _channelFactoryWoa;
+        private readonly ChannelFactory<IAuthorService> _channelFactoryAuthor;
+        private readonly ChannelFactory<IWorkOfArtService> _channelFactoryWoa;
         private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
         private readonly string _loggedInUser; // Add this field to store the logged-in user
         #endregion
@@ -39,11 +39,11 @@ namespace Client.ViewModels
 
             var bindingAuthor = new NetTcpBinding();
             var endpointAuthor = new EndpointAddress("net.tcp://localhost:8088/Author");
-            _channelFactoryAuthor = new ChannelFactory<IAuthor>(bindingAuthor, endpointAuthor);
+            _channelFactoryAuthor = new ChannelFactory<IAuthorService>(bindingAuthor, endpointAuthor);
 
             var bindingWoa = new NetTcpBinding();
             var endpointWoa = new EndpointAddress("net.tcp://localhost:8087/WorkOfArt");
-            _channelFactoryWoa = new ChannelFactory<IWorkOfArt>(bindingWoa, endpointWoa);
+            _channelFactoryWoa = new ChannelFactory<IWorkOfArtService>(bindingWoa, endpointWoa);
 
             var bindingGallery = new NetTcpBinding();
             var endpointGallery = new EndpointAddress("net.tcp://localhost:8086/Gallery");

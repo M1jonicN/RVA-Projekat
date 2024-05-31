@@ -12,7 +12,7 @@ namespace Server
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(OpenCloseServices));
 
-        private static ServiceHost authService;
+        private static ServiceHost UserAuthenticationService;
         private static ServiceHost galleryService;
         private static ServiceHost woaService;
         private static ServiceHost authorService;
@@ -23,8 +23,8 @@ namespace Server
             {
                 NetTcpBinding bindingAuth = new NetTcpBinding();
                 string addressAuth = "net.tcp://localhost:8085/Authentifiaction";
-                authService = new ServiceHost(typeof(AuthService));
-                authService.AddServiceEndpoint(typeof(IAuthService), bindingAuth, addressAuth);
+                UserAuthenticationService = new ServiceHost(typeof(UserAuthenticationService));
+                UserAuthenticationService.AddServiceEndpoint(typeof(IUserAuthenticationService), bindingAuth, addressAuth);
 
                 NetTcpBinding bindingGallery = new NetTcpBinding();
                 string addressGallery = "net.tcp://localhost:8086/Gallery";
@@ -34,14 +34,14 @@ namespace Server
                 NetTcpBinding bindingWoa = new NetTcpBinding();
                 string addressWoa = "net.tcp://localhost:8087/WorkOfArt";
                 woaService = new ServiceHost(typeof(WorkOfArtService));
-                woaService.AddServiceEndpoint(typeof(IWorkOfArt), bindingWoa, addressWoa);
+                woaService.AddServiceEndpoint(typeof(IWorkOfArtService), bindingWoa, addressWoa);
 
                 NetTcpBinding bindingAuthor = new NetTcpBinding();
                 string addressAuthor = "net.tcp://localhost:8088/Author";
                 authorService = new ServiceHost(typeof(AuthorService));
-                authorService.AddServiceEndpoint(typeof(IAuthor), bindingAuthor, addressAuthor);
+                authorService.AddServiceEndpoint(typeof(IAuthorService), bindingAuthor, addressAuthor);
 
-                authService.Open();
+                UserAuthenticationService.Open();
                 log.Info("Authentication Service opened...");
                 galleryService.Open();
                 log.Info("Gallery Service opened...");
@@ -61,7 +61,7 @@ namespace Server
         {
             try
             {
-                authService.Close();
+                UserAuthenticationService.Close();
                 log.Info("Authentication Service closed...");
                 galleryService.Close();
                 log.Info("Gallery Service closed...");

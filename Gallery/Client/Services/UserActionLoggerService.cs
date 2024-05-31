@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using Common.Interfaces;
 
 namespace Client.Services
 {
-    public class UserActionLoggerService : ILogInterface
+    public class UserActionLoggerService : IUserActionLoggerService
     {
         private static UserActionLoggerService _instance;
         private readonly ObservableCollection<string> _logMessages;
@@ -27,6 +28,8 @@ namespace Client.Services
             }
         }
 
+
+
         public ObservableCollection<string> LogMessages => _logMessages;
 
         public void Log(string username, string message)
@@ -35,5 +38,7 @@ namespace Client.Services
             _logMessages.Add(logMessage);
             LogMessageAdded?.Invoke(logMessage);
         }
+
+
     }
 }

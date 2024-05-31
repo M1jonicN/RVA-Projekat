@@ -1,4 +1,4 @@
-﻿namespace Server.Migrations
+namespace Server.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;
@@ -29,6 +29,8 @@
                         Address = c.String(),
                         MBR = c.String(),
                         IsDeleted = c.Boolean(nullable: false),
+                        IsInEditingMode = c.Boolean(nullable: false),
+                        GalleryIsEdditedBy = c.String(),
                     })
                 .PrimaryKey(t => t.PIB);
             

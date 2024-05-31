@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Common.Interfaces
 {
     [ServiceContract]
-    public interface IWorkOfArt
+    public interface IWorkOfArtService
     {
         [OperationContract]
         List<WorkOfArt> GetAllWorkOfArts();

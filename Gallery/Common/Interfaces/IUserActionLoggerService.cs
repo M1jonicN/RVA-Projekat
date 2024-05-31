@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Client
+namespace Common.Interfaces
 {
-    public interface ILogInterface
+    public interface IUserActionLoggerService
     {
         void Log(string username, string message);
     }

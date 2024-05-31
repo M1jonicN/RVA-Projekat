@@ -18,7 +18,7 @@ namespace Client.ViewModels
     {
         #region Fields
         public event EventHandler<Common.DbModels.User> UserUpdated;
-        private readonly IAuthService _authService;
+        private readonly IUserAuthenticationService _UserAuthenticationService;
         private Common.DbModels.User _user;
         #endregion
 
@@ -102,9 +102,9 @@ namespace Client.ViewModels
         public ICommand SaveUserCommand { get; }
         #endregion
 
-        public EditUserViewModel(Common.DbModels.User user, IAuthService authService)
+        public EditUserViewModel(Common.DbModels.User user, IUserAuthenticationService UserAuthenticationService)
         {
-            _authService = authService;
+            _UserAuthenticationService = UserAuthenticationService;
             User = user;
             IsEditMode = false;
             TypeOfUser = user.UserType.ToString();
@@ -139,7 +139,7 @@ namespace Client.ViewModels
                     return;
                 }
 
-                var updated = _authService.SaveChanges(User);
+                var updated = _UserAuthenticationService.SaveChanges(User);
                 if (updated)
                 {
                     MessageBox.Show("User saved successfully!");

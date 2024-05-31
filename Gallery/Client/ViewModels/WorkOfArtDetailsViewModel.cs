@@ -104,7 +104,7 @@ namespace Client.ViewModels
         private void SaveWorkOfArt()
         {
             IsWorkOfArtEditing = false;
-            var clientWorkOfArt = new ChannelFactory<IWorkOfArt>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8087/WorkOfArt")).CreateChannel();
+            var clientWorkOfArt = new ChannelFactory<IWorkOfArtService>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8087/WorkOfArt")).CreateChannel();
             clientWorkOfArt.UpdateWorkOfArt(WorkOfArt);
             RefreshWorkOfArt();
         }
@@ -117,19 +117,19 @@ namespace Client.ViewModels
         private void SaveAuthor()
         {
             IsAuthorEditing = false;
-            var clientAuthor = new ChannelFactory<IAuthor>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8088/Author")).CreateChannel();
+            var clientAuthor = new ChannelFactory<IAuthorService>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8088/Author")).CreateChannel();
             clientAuthor.SaveAuthorChanges(Author);
             RefreshAuthor();
         }
 
         private void DeleteAuthor()
         {
-            var clientAuthor = new ChannelFactory<IAuthor>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8088/Author")).CreateChannel();
+            var clientAuthor = new ChannelFactory<IAuthorService>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8088/Author")).CreateChannel();
             var success = clientAuthor.DeleteAuhor(Author.ID);
 
             if (success)
             {
-                var clientWoa = new ChannelFactory<IWorkOfArt>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8087/WorkOfArt")).CreateChannel();
+                var clientWoa = new ChannelFactory<IWorkOfArtService>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8087/WorkOfArt")).CreateChannel();
                 clientWoa.GetAllWorkOfArtsDeletedForAuthorId(Author.ID);
                 Console.WriteLine("Author deleted successfully.");
                 UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" author {Author.FirstName} {Author.LastName} deleted successfully.");
@@ -156,7 +156,7 @@ namespace Client.ViewModels
 
         private void RefreshWorkOfArt()
         {
-            var clientWorkOfArt = new ChannelFactory<IWorkOfArt>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8087/WorkOfArt")).CreateChannel();
+            var clientWorkOfArt = new ChannelFactory<IWorkOfArtService>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8087/WorkOfArt")).CreateChannel();
             var updatedWorkOfArt = clientWorkOfArt.GetWorkOfArtById(WorkOfArt.ID);
 
             if (updatedWorkOfArt != null)
@@ -176,7 +176,7 @@ namespace Client.ViewModels
 
         private void RefreshAuthor()
         {
-            var clientAuthor = new ChannelFactory<IAuthor>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8088/Author")).CreateChannel();
+            var clientAuthor = new ChannelFactory<IAuthorService>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8088/Author")).CreateChannel();
             var updatedAuthor = clientAuthor.GetAuthorById(Author.ID);
 
             if (updatedAuthor != null)

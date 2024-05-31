@@ -17,7 +17,7 @@ namespace Client.ViewModels
         private string _password;
         private string _firstName;
         private string _lastName;
-        private readonly ChannelFactory<IAuthService> _channelFactory;
+        private readonly ChannelFactory<IUserAuthenticationService> _channelFactory;
         private string _loggedInUser;
 
         #endregion
@@ -26,7 +26,7 @@ namespace Client.ViewModels
             _loggedInUser= username;
             var binding = new NetTcpBinding();
             var endpoint = new EndpointAddress("net.tcp://localhost:8085/Authentifiaction");
-            _channelFactory = new ChannelFactory<IAuthService>(binding, endpoint);
+            _channelFactory = new ChannelFactory<IUserAuthenticationService>(binding, endpoint);
 
             CreateUserCommand = new RelayCommand(CreateUser, CanCreateUser);
         }
@@ -79,8 +79,8 @@ namespace Client.ViewModels
         {
             try
             {
-                var authServiceClient = _channelFactory.CreateChannel();
-                bool isCreated = authServiceClient.Register(Username,Password,FirstName,LastName);
+                var UserAuthenticationServiceClient = _channelFactory.CreateChannel();
+                bool isCreated = UserAuthenticationServiceClient.Register(Username,Password,FirstName,LastName);
 
                 if (isCreated)
                 {

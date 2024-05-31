@@ -22,7 +22,7 @@ namespace Server
             {
                 log.Info("Application is starting...");
 
-                dbContext = MyDbContext.SingletonInstance;  // Koristi Singleton instancu
+                dbContext = MyDbContext.Instance;  // Koristi Singleton instancu
                 InitializeDatabaseData();
 
                 OpenCloseServices.Open();
@@ -114,7 +114,9 @@ namespace Server
                     PIB = "123456789",
                     Address = "123 Gallery Street, City, Country",
                     MBR = "987654321",
-                    IsDeleted = false
+                    IsDeleted = false,
+                    IsInEditingMode = false,
+                    GalleryIsEdditedBy = ""
                 };
 
                 dbContext.Galleries.Add(gallery);

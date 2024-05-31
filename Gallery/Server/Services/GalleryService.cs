@@ -16,15 +16,9 @@ namespace Server.Services
         private static readonly ILog log = LogManager.GetLogger(typeof(GalleryService));
         private static MyDbContext dbContext;
 
-        public GalleryService(MyDbContext context)
-        {
-            dbContext = MyDbContext.SingletonInstance;
-            log.Info("GalleryService instance created with context.");
-        }
-
         public GalleryService()
         {
-            dbContext = MyDbContext.SingletonInstance;
+            dbContext = MyDbContext.Instance;
             log.Info("GalleryService instance created.");
         }
 
@@ -61,7 +55,7 @@ namespace Server.Services
         {
             var gallery = dbContext.Galleries.FirstOrDefault(g => g.PIB == galleryPIB);
 
-            if (gallery != null)
+            if (gallery != null && gallery.IsInEditingMode == false)
             {
                 gallery.IsDeleted = true;
                 dbContext.SaveChanges();
@@ -83,6 +77,8 @@ namespace Server.Services
                     existingGallery.PIB = gallery.PIB;
                     existingGallery.MBR = gallery.MBR;
                     existingGallery.Address = gallery.Address;
+                    existingGallery.IsInEditingMode = gallery.IsInEditingMode;
+                    existingGallery.GalleryIsEdditedBy = gallery.GalleryIsEdditedBy;
 
                     dbContext.SaveChanges();
                     log.Info($"Gallery with PIB {gallery.PIB} updated successfully.");

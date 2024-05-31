@@ -29,11 +29,7 @@ namespace Common.DbModels
 
         [Required]
         [DataType(DataType.Password)]
-        public string PasswordHash
-        {
-            get;
-            set;
-        }
+        public string PasswordHash  { get; set; }
 
         [Required]
         public bool IsLoggedIn { get; set; }

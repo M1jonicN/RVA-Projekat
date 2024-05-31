@@ -19,7 +19,7 @@ namespace Client.ViewModels
         private static readonly ILog log = LogManager.GetLogger(typeof(LoginViewModel));
         private string _username;
         private string _errorMessage;
-        private readonly ChannelFactory<IAuthService> _channelFactory;
+        private readonly ChannelFactory<IUserAuthenticationService> _channelFactory;
         private static UserActionsView _userActionsView;
 
         #endregion
@@ -28,7 +28,7 @@ namespace Client.ViewModels
         {
             var binding = new NetTcpBinding();
             var endpoint = new EndpointAddress("net.tcp://localhost:8085/Authentifiaction");
-            _channelFactory = new ChannelFactory<IAuthService>(binding, endpoint);
+            _channelFactory = new ChannelFactory<IUserAuthenticationService>(binding, endpoint);
             Username = "username";
 
             LoginCommand = new RelayCommand(Login);
@@ -80,8 +80,8 @@ namespace Client.ViewModels
             try
             {
                 log.Info("Attempting to log in.");
-                var authServiceClient = _channelFactory.CreateChannel();
-                User loggedInUser = authServiceClient.Login(Username, Password);
+                var UserAuthenticationServiceClient = _channelFactory.CreateChannel();
+                User loggedInUser = UserAuthenticationServiceClient.Login(Username, Password);
 
                 if (loggedInUser != null && loggedInUser.IsLoggedIn)
                 {

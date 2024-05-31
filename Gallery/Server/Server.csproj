@@ -61,15 +61,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Migrations\202405231232464_InitialCreate.cs" />
-    <Compile Include="Migrations\202405231232464_InitialCreate.designer.cs">
-      <DependentUpon>202405231232464_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\202405311213463_InitialCreate.cs" />
+    <Compile Include="Migrations\202405311213463_InitialCreate.Designer.cs">
+      <DependentUpon>202405311213463_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="MyDbContextFactory.cs" />
     <Compile Include="OpenCloseServices.cs" />
     <Compile Include="Services\AuthorService.cs" />
-    <Compile Include="Services\AuthService.cs" />
+    <Compile Include="Services\UserAuthenticationService.cs" />
     <Compile Include="MyDbContext.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,8 +87,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202405231232464_InitialCreate.resx">
-      <DependentUpon>202405231232464_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202405311213463_InitialCreate.resx">
+      <DependentUpon>202405311213463_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

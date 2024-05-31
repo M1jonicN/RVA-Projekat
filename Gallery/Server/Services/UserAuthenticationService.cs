@@ -7,15 +7,15 @@ using System;
 
 namespace Server
 {
-    public class AuthService : IAuthService
+    public class UserAuthenticationService : IUserAuthenticationService
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(AuthService));
+        private static readonly ILog log = LogManager.GetLogger(typeof(UserAuthenticationService));
         private static MyDbContext dbContext;
 
-        public AuthService()
+        public UserAuthenticationService()
         {
-            dbContext = MyDbContext.SingletonInstance;
-            log.Info("AuthService instance created.");
+            dbContext = MyDbContext.Instance;
+            log.Info("UserAuthenticationService instance created.");
         }
 
         #region Methods

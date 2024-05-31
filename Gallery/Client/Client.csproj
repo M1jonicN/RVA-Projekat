@@ -62,7 +62,6 @@
     </ApplicationDefinition>
     <Compile Include="Converters\BooleanToVisibilityConverter .cs" />
     <Compile Include="Helper\RelayCommand.cs" />
-    <Compile Include="Interfaces\ILogInterface.cs" />
     <Compile Include="Models\LoggedInUsers.cs" />
     <Compile Include="Services\UserActionLoggerService.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />

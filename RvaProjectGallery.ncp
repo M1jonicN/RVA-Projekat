@@ -1,0 +1,430 @@
+<Project>
+  <Name>RvaProjectGallery</Name>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Gallery</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>Gallery</Name>
+        <Access>Public</Access>
+        <Location left="101" top="61" />
+        <Size width="282" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public string PIB { get; set; }</Member>
+        <Member type="Property">public string Address { get; set; }</Member>
+        <Member type="Property">public string MBR { get; set; }</Member>
+        <Member type="Property">public bool IsDeleted { get; set; }</Member>
+        <Member type="Property">public List&lt;WorkOfArts&gt; WorkOfArts { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>Author</Name>
+        <Access>Public</Access>
+        <Location left="420" top="61" />
+        <Size width="254" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int ID { get; set; }</Member>
+        <Member type="Property">public string FirstName { get; set; }</Member>
+        <Member type="Property">public string LastName { get; set; }</Member>
+        <Member type="Property">public int BirthYear { get; set; }</Member>
+        <Member type="Property">public int DeathYear { get; set; }</Member>
+        <Member type="Property">public ArtMovement ArtMovement { get; set; }</Member>
+        <Member type="Property">public bool IsDeleted { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>WorkOfArt</Name>
+        <Access>Public</Access>
+        <Location left="706" top="61" />
+        <Size width="282" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int ID { get; set; }</Member>
+        <Member type="Property">public string ArtName { get; set; }</Member>
+        <Member type="Property">public ArtMovement ArtMovement { get; set; }</Member>
+        <Member type="Property">public Style Style { get; set; }</Member>
+        <Member type="Property">public int AuthorID { get; set; }</Member>
+        <Member type="Property">public string AuthorName { get; set; }</Member>
+        <Member type="Property">public string GalleryPIB { get; set; }</Member>
+        <Member type="Property">public bool IsDeleted { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Enum">
+        <Name>ArtMovement</Name>
+        <Access>Public</Access>
+        <Location left="101" top="305" />
+        <Size width="162" height="350" />
+        <Collapsed>False</Collapsed>
+        <Value>Renaissance</Value>
+        <Value>Baroque</Value>
+        <Value>Classicism</Value>
+        <Value>Romanticism</Value>
+        <Value>Impressionism</Value>
+        <Value>Expressionism</Value>
+        <Value>Cubism</Value>
+        <Value>Contemporary_art</Value>
+        <Value>PostImpressionism</Value>
+        <Value>Postmodernism</Value>
+        <Value>Minimalism</Value>
+        <Value>Pop_art</Value>
+        <Value>Painting</Value>
+        <Value>Sculpture</Value>
+        <Value>Architecture</Value>
+        <Value>Photography</Value>
+        <Value>Film</Value>
+      </Entity>
+      <Entity type="Enum">
+        <Name>Style</Name>
+        <Access>Public</Access>
+        <Location left="316" top="305" />
+        <Size width="162" height="350" />
+        <Collapsed>False</Collapsed>
+        <Value>Realism</Value>
+        <Value>Naturalism</Value>
+        <Value>Photorealism</Value>
+        <Value>Surrealism</Value>
+        <Value>Magical_realism</Value>
+        <Value>Symbolism</Value>
+        <Value>Minimalism</Value>
+        <Value>Expressionism</Value>
+        <Value>Colorism</Value>
+        <Value>Constructivism</Value>
+        <Value>Dadaism</Value>
+        <Value>Fauvism</Value>
+        <Value>Geometricism</Value>
+        <Value>Hyperrealism</Value>
+        <Value>Naive_art</Value>
+        <Value>Op_art</Value>
+        <Value>Suprematism</Value>
+      </Entity>
+      <Entity type="Enum">
+        <Name>UserType</Name>
+        <Access>Public</Access>
+        <Location left="502" top="305" />
+        <Size width="162" height="100" />
+        <Collapsed>False</Collapsed>
+        <Value>Admin</Value>
+        <Value>User</Value>
+      </Entity>
+      <Entity type="Class">
+        <Name>User</Name>
+        <Access>Public</Access>
+        <Location left="1004" top="61" />
+        <Size width="217" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public int ID { get; set; }</Member>
+        <Member type="Property">public string FirstName { get; set; }</Member>
+        <Member type="Property">public string LastName { get; set; }</Member>
+        <Member type="Property">public string Username { get; set; }</Member>
+        <Member type="Property">public bool IsDeleted { get; set; }</Member>
+        <Member type="Property">public UserType UserType { get; set; }</Member>
+        <Member type="Property">public string PasswordHash { get; set; }</Member>
+        <Member type="Property">public bool IsLoggedIn { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>MyDbContext</Name>
+        <Access>Public</Access>
+        <Location left="2503" top="138" />
+        <Size width="318" height="264" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private static readonly ILog log</Member>
+        <Member type="Field">private static readonly string connectionString</Member>
+        <Member type="Field">private static readonly Lazy&lt;MyDbContext&gt; instance</Member>
+        <Member type="Constructor">public MyDbContext()</Member>
+        <Member type="Property">public static MyDbContext Instance { get; set; }</Member>
+        <Member type="Property">public DbSet&lt;Author&gt; Authors { get; set; }</Member>
+        <Member type="Property">public DbSet&lt;WorkOfArt&gt; WorkOfArts { get; set; }</Member>
+        <Member type="Property">public DbSet&lt;Gallery&gt; Galleries { get; set; }</Member>
+        <Member type="Property">public DbSet&lt;User&gt; Users { get; set; }</Member>
+        <Member type="Method">protected override void OnModelCreating(DbModelBuilder modelBuilder)</Member>
+        <Member type="Method">public static void DisposeInstance()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>MyDbContextFactory</Name>
+        <Access>Public</Access>
+        <Location left="2866" top="299" />
+        <Size width="162" height="114" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private static readonly ILog log</Member>
+        <Member type="Method">public MyDbContext Create()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IDbContextFactory&lt;MyDbContext&gt;</Name>
+        <Access>Public</Access>
+        <Location left="2851" top="138" />
+        <Size width="314" height="97" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">MyDbContext Create()</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>UserAuthenticationService</Name>
+        <Access>Public</Access>
+        <Location left="54" top="1008" />
+        <Size width="454" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private static readonly ILog log</Member>
+        <Member type="Field">private static MyDbContext dbContext</Member>
+        <Member type="Method">public User Login(string username, string password)</Member>
+        <Member type="Method">public bool Register(string username, string password, string firstName, string lastName)</Member>
+        <Member type="Method">public bool Logout(string username)</Member>
+        <Member type="Method">public User FindUser(string username)</Member>
+        <Member type="Method">public bool SaveChanges(User user)</Member>
+        <Member type="Constructor">public UserAuthenticationService()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IUserAuthenticationService</Name>
+        <Access>Public</Access>
+        <Location left="54" top="776" />
+        <Size width="459" height="164" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">User Login(string username, string password)</Member>
+        <Member type="Method">bool Register(string username, string password, string firstName, string lastName)</Member>
+        <Member type="Method">bool Logout(string username)</Member>
+        <Member type="Method">User FindUser(string username)</Member>
+        <Member type="Method">bool SaveChanges(User user)</Member>
+      </Entity>
+      <Entity type="Comment">
+        <Text>Singleton pattern je dizajn obrazac koji osigurava da određena klasa ima samo jednu instancu i pruža globalnu tačku pristupa toj instanci.
+
+
+MyDbContextFactory je implementiran kako bi se zadovoljili zahtevi Entity Framework-a koji traži konstruktor bez parametara za kreiranje konekcije sa bazom podataka. S obzirom na to da je u MyDbContext klasi primenjen Singleton pattern, gde se ne kreira nova instanca DbContext-a svaki put već se dobavlja postojeća, bilo je neophodno implementirati ovu klasu.
+
+
+Svaki servis na serverskoj strani kreiraće polje za dbContext koje poziva MyDbContext.Instance, čime se dobavlja postojeća instanca DbContext-a bez potrebe za kreiranjem novog objekta. Ovo osigurava konzistentan i efikasan pristup bazi podataka.
+
+
+IDbContextFactory&lt;MyDbContext&gt; je generički interfejs. Generički interfejsi u C# omogućavaju kreiranje interfejsa sa parametrizovanim tipovima, što omogućava definisanje interfejsa koji mogu raditi sa različitim tipovima podataka. U našem slučaju, implementira se jedina metoda tog interfejsa Create(), koja kreira i vraća jednu instancu DbContext-a.
+
+
+Ova implementacija osigurava da postoji samo jedna instanca MyDbContext koja se koristi kroz celu aplikaciju, čime se smanjuje potrošnja resursa i izbegavaju potencijalni konflikti prilikom rada sa bazom podataka. MyDbContextFactory omogućava Entity Framework-u da kreira DbContext instance kada je to potrebno, čime se postiže kompatibilnost sa zahtevima frameworka.</Text>
+        <Location left="3211" top="138" />
+        <Size width="452" height="394" />
+      </Entity>
+      <Entity type="Interface">
+        <Name>IGalleryService</Name>
+        <Access>Public</Access>
+        <Location left="553" top="776" />
+        <Size width="278" height="164" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">List&lt;Gallery&gt; GetAllGalleries()</Member>
+        <Member type="Method">List&lt;Gallery&gt; GetAllGalleriesFromDb()</Member>
+        <Member type="Method">bool CreateNewGallery(Gallery newGallery)</Member>
+        <Member type="Method">bool DeleteGallery(string galleryPIB)</Member>
+        <Member type="Method">bool SaveGalleryChanges(Gallery gallery)</Member>
+        <Member type="Method">Gallery GetGalleryByPIB(string pib)</Member>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IAuthorService</Name>
+        <Access>Public</Access>
+        <Location left="881" top="776" />
+        <Size width="393" height="180" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">List&lt;Author&gt; GetAllAuthores()</Member>
+        <Member type="Method">string GetAuthorNameForWorkOfArt(int workOfArtId, string galleryPIB)</Member>
+        <Member type="Method">Author GetAuthorByWorkOfArtId(int wokrOfArtId)</Member>
+        <Member type="Method">bool SaveAuthorChanges(Author author)</Member>
+        <Member type="Method">bool DeleteAuhor(int authorID)</Member>
+        <Member type="Method">Author GetAuthorById(int authorId)</Member>
+        <Member type="Method">bool CreateNewAuthor(Author newAuthor)</Member>
+      </Entity>
+      <Entity type="Interface">
+        <Name>IWorkOfArtService</Name>
+        <Access>Public</Access>
+        <Location left="1338" top="776" />
+        <Size width="342" height="180" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">List&lt;WorkOfArt&gt; GetAllWorkOfArts()</Member>
+        <Member type="Method">List&lt;WorkOfArt&gt; GetWorkOfArtsForGallery(string galleryPib)</Member>
+        <Member type="Method">bool UpdateWorkOfArt(WorkOfArt workOfArt)</Member>
+        <Member type="Method">void GetAllWorkOfArtsDeletedForAuthorId(int authorID)</Member>
+        <Member type="Method">bool DeleteWorkOfArt(int workOfArtId)</Member>
+        <Member type="Method">WorkOfArt GetWorkOfArtById(int workOfArtId)</Member>
+        <Member type="Method">bool CreateNewWorkOfArt(WorkOfArt newWorkOfArt)</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>GalleryService</Name>
+        <Access>Public</Access>
+        <Location left="553" top="1008" />
+        <Size width="282" height="242" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private static readonly ILog log</Member>
+        <Member type="Field">private static MyDbContext dbContext</Member>
+        <Member type="Method">public List&lt;Gallery&gt; GetAllGalleries()</Member>
+        <Member type="Method">public List&lt;Gallery&gt; GetAllGalleriesFromDb()</Member>
+        <Member type="Method">public bool CreateNewGallery(Gallery newGallery)</Member>
+        <Member type="Method">public bool DeleteGallery(string galleryPIB)</Member>
+        <Member type="Method">public bool SaveGalleryChanges(Gallery gallery)</Member>
+        <Member type="Method">public Gallery GetGalleryByPIB(string pib)</Member>
+        <Member type="Constructor">public GalleryService()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>AuthorService</Name>
+        <Access>Public</Access>
+        <Location left="881" top="1008" />
+        <Size width="393" height="253" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private static readonly ILog log</Member>
+        <Member type="Field">private static MyDbContext dbContext</Member>
+        <Member type="Method">public List&lt;Author&gt; GetAllAuthores()</Member>
+        <Member type="Method">public string GetAuthorNameForWorkOfArt(int workOfArtId, string galleryPIB)</Member>
+        <Member type="Method">public Author GetAuthorByWorkOfArtId(int wokrOfArtId)</Member>
+        <Member type="Method">public bool SaveAuthorChanges(Author author)</Member>
+        <Member type="Method">public bool DeleteAuhor(int authorID)</Member>
+        <Member type="Method">public Author GetAuthorById(int authorId)</Member>
+        <Member type="Method">public bool CreateNewAuthor(Author newAuthor)</Member>
+        <Member type="Constructor">public AuthorService()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>WorkOfArtService</Name>
+        <Access>Public</Access>
+        <Location left="1338" top="1008" />
+        <Size width="345" height="253" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private static readonly ILog log</Member>
+        <Member type="Field">private static MyDbContext dbContext</Member>
+        <Member type="Method">public List&lt;WorkOfArt&gt; GetAllWorkOfArts()</Member>
+        <Member type="Method">public List&lt;WorkOfArt&gt; GetWorkOfArtsForGallery(string galleryPib)</Member>
+        <Member type="Method">public bool UpdateWorkOfArt(WorkOfArt workOfArt)</Member>
+        <Member type="Method">public void GetAllWorkOfArtsDeletedForAuthorId(int authorID)</Member>
+        <Member type="Method">public bool DeleteWorkOfArt(int workOfArtId)</Member>
+        <Member type="Method">public WorkOfArt GetWorkOfArtById(int workOfArtId)</Member>
+        <Member type="Method">public bool CreateNewWorkOfArt(WorkOfArt newWorkOfArt)</Member>
+        <Member type="Constructor">public WorkOfArtService()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>ILogInterface</Name>
+        <Access>Public</Access>
+        <Location left="2503" top="750" />
+        <Size width="280" height="89" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">void Log(string username, string message)</Member>
+      </Entity>
+      <Entity type="Comment">
+        <Text>
+  SINGLETON PATTERN</Text>
+        <Location left="2898" top="55" />
+        <Size width="160" height="52" />
+      </Entity>
+      <Entity type="Comment">
+        <Text>
+  OBSERVER PATTERN</Text>
+        <Location left="2907" top="645" />
+        <Size width="160" height="52" />
+      </Entity>
+      <Entity type="Class">
+        <Name>UserActionLoggerService</Name>
+        <Access>Public</Access>
+        <Location left="2503" top="906" />
+        <Size width="280" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private static UserActionLoggerService _instance</Member>
+        <Member type="Field">private readonly ObservableCollection&lt;string&gt; _logMessages</Member>
+        <Member type="Event">public event Action&lt;string&gt; LogMessageAdded</Member>
+        <Member type="Constructor">public UserActionLoggerService()</Member>
+        <Member type="Property">public static UserActionLoggerService Instance { get; }</Member>
+        <Member type="Property">public ObservableCollection&lt;string&gt; LogMessages { get; }</Member>
+        <Member type="Method">public void Log(string username, string message)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>UserActionViewModel</Name>
+        <Access>Public</Access>
+        <Location left="2847" top="1099" />
+        <Size width="323" height="150" />
+        <Collapsed>False</Collapsed>
+        <Member type="Constructor">public UserActionViewModel()</Member>
+        <Member type="Property">public ObservableCollection&lt;string&gt; UserActions { get; }</Member>
+        <Member type="Method">private void OnLogMessageAdded(string message)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>BaseViewModel</Name>
+        <Access>Public</Access>
+        <Location left="2847" top="906" />
+        <Size width="323" height="136" />
+        <Collapsed>False</Collapsed>
+        <Member type="Event">public event PropertyChangedEventHandler PropertyChanged</Member>
+        <Member type="Method">protected void OnPropertyChanged()</Member>
+        <Member type="Method">protected bool SetProperty&lt;T&gt;()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>INotifyPropertyChanged</Name>
+        <Access>Public</Access>
+        <Location left="2847" top="750" />
+        <Size width="323" height="93" />
+        <Collapsed>False</Collapsed>
+        <Member type="Event">event PropertyChangedEventHandler PropertyChanged</Member>
+      </Entity>
+      <Entity type="Comment">
+        <Text>Observer pattern je behavioralni dizajn pattern koji definiše relaciju jedan-prema-više između objekata, tako da kada jedan objekat promeni svoje stanje, svi zavisni objekti budu obavešteni i ažurirani automatski.
+
+
+UserActionLoggerService igra ulogu subjekta u Observer patternu. Ona održava kolekciju log poruka i obaveštava pretplaćene posmatrače kada se nova poruka doda.
+Događaj LogMessageAdded omogućava posmatračima da budu obavešteni kada se doda nova log poruka.
+
+
+UserActionsViewModel je posmatrač koji se pretplaćuje na događaj LogMessageAdded u konstruktoru.
+Kada se događaj aktivira, OnLogMessageAdded metoda se poziva (iako ovde ne sadrži dodatnu logiku, samo osigurava da je posmatrač pravilno ažuriran).
+
+
+Kada se pozove metoda Log u UserActionLoggerService, nova poruka se dodaje u kolekciju LogMessages i aktivira se događaj LogMessageAdded.
+Svi pretplaćeni posmatrači (kao što je UserActionsViewModel) primaju obaveštenje o dodavanju nove poruke putem događaja i ažuriraju svoje stanje u skladu s tim.</Text>
+        <Location left="3227" top="750" />
+        <Size width="412" height="335" />
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Realization" first="8" second="9">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="True">
+          <X>2920</X>
+          <Y>274</Y>
+        </BendPoint>
+        <BendPoint relativeToStartShape="False">
+          <X>2920</X>
+          <Y>260</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Realization" first="10" second="11">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="16" second="13">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="17" second="14">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="18" second="15">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="22" second="19">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Generalization" first="23" second="24">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="24" second="25">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>3010</X>
+          <Y>868</Y>
+        </BendPoint>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+</Project>
