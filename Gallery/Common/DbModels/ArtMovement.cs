@@ -24,6 +24,7 @@ namespace Common.DbModels
         Sculpture,
         Architecture,
         Photography,
-        Film
+        Film,
+        Entity_Deleted
     }
 }

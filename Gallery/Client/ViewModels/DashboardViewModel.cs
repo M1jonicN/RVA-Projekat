@@ -14,6 +14,7 @@ using Common.Interfaces;
 using System.Windows.Threading;
 using Common.Helpers;
 using Client.Services;
+using log4net;
 
 namespace Client.ViewModels
 {
@@ -21,18 +22,20 @@ namespace Client.ViewModels
     {
         #region Fields
 
+        private static readonly ILog log = LogManager.GetLogger(typeof(DashboardViewModel));
+
         private readonly ChannelFactory<IUserAuthenticationService> _channelFactory;
         private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
         private readonly ChannelFactory<IWorkOfArtService> _channelFactoryWOA;
         private readonly User _loggedInUser;
         private ObservableCollection<Gallery> _galleries;
-        private ObservableCollection<Gallery> _allGalleries; 
+        private ObservableCollection<Gallery> _allGalleries;
         private ObservableCollection<WorkOfArt> _workOfArts;
         private ObservableCollection<Author> _authors;
         private string _searchText;
         private string _loggedInUsername;
-        private readonly DispatcherTimer _dispatcherTimer; 
-        private bool _isSearching; 
+        private readonly DispatcherTimer _dispatcherTimer;
+        private bool _isSearching;
         private bool _isSearchByMBR;
         private bool _isSearchByPIB;
         private bool _isSearchByAddress;
@@ -86,22 +89,21 @@ namespace Client.ViewModels
             Application.Current.MainWindow.Closing += OnWindowClosing;
         }
 
-    #region Commands
+        #region Commands
         public ICommand DuplicateGalleryCommand { get; }
-            public ICommand SearchCommand { get; }
-            public ICommand LogoutCommand { get; }
-            public ICommand EditUserCommand { get; }
-            public ICommand CreateNewGalleryCommand { get; }
-            public ICommand DetailsCommand { get; }
-            public ICommand DeleteCommand { get; }
-            public ICommand CreateUserCommand { get; }
-            public ICommand CreateNewAuthorCommand { get; }
-            public ICommand CreateNewWorkOfArtCommand { get; }
+        public ICommand SearchCommand { get; }
+        public ICommand LogoutCommand { get; }
+        public ICommand EditUserCommand { get; }
+        public ICommand CreateNewGalleryCommand { get; }
+        public ICommand DetailsCommand { get; }
+        public ICommand DeleteCommand { get; }
+        public ICommand CreateUserCommand { get; }
+        public ICommand CreateNewAuthorCommand { get; }
+        public ICommand CreateNewWorkOfArtCommand { get; }
 
         #endregion
 
-
-    #region Properties
+        #region Properties
 
         public ObservableCollection<Gallery> Galleries
         {
@@ -198,7 +200,6 @@ namespace Client.ViewModels
             }
         }
 
-
         #endregion
 
         #region Methods
@@ -208,7 +209,7 @@ namespace Client.ViewModels
             {
                 DataContext = new CreateAuthorViewModel(_loggedInUser.Username)
             };
-            UserActionLoggerService.Instance.Log(_loggedInUser.Username, " successfully opened Create New Author Window.");
+            log.Info($"{_loggedInUser.Username} successfully opened Create New Author Window.");
             createAuthorView.Show();
         }
 
@@ -218,7 +219,7 @@ namespace Client.ViewModels
             {
                 DataContext = new CreateWorkOfArtViewModel(_loggedInUser.Username) // Pass the logged-in user's username to the ViewModel
             };
-            UserActionLoggerService.Instance.Log(_loggedInUser.Username, " successfully opened Create New Work of Art Window.");
+            log.Info($"{_loggedInUser.Username} successfully opened Create New Work of Art Window.");
             createWorkOfArtView.Show();
         }
 
@@ -263,7 +264,7 @@ namespace Client.ViewModels
             // Dodavanje duplikata galerije u obe kolekcije
             _allGalleries.Add(duplicateGallery);
             Galleries.Add(duplicateGallery);
-            UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully duplicated Gallery with MBR: {duplicateGallery.MBR}, Address: {duplicateGallery.Address}.");
+            log.Info($"{_loggedInUser.Username} successfully duplicated Gallery with MBR: {duplicateGallery.MBR}, Address: {duplicateGallery.Address}.");
         }
 
         private void OpenCreateUserWindow()
@@ -277,7 +278,7 @@ namespace Client.ViewModels
                     Width = 400,
                     Height = 210
                 };
-                UserActionLoggerService.Instance.Log(_loggedInUser.Username, " successfully opened Create New User Window.");
+                log.Info($"{_loggedInUser.Username} successfully opened Create New User Window.");
                 createUserWindow.ShowDialog();
             }
             else
@@ -285,6 +286,7 @@ namespace Client.ViewModels
                 MessageBox.Show("Only Admin can add new User");
             }
         }
+
         private void OnWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Logout();
@@ -325,13 +327,12 @@ namespace Client.ViewModels
                 Width = 670,
                 Height = 700
             };
-            UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully opened Show Gallery Details Window for Gallery PIB: {gallery.PIB}.");
+            log.Info($"{_loggedInUser.Username} successfully opened Show Gallery Details Window for Gallery PIB: {gallery.PIB}.");
             detailsWindow.Show();
         }
 
         private void DeleteGallery(Gallery gallery)
         {
-
             if (!gallery.IsInEditingMode)
             {
                 if (MessageBox.Show("Are you sure you want to delete this gallery?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
@@ -340,19 +341,19 @@ namespace Client.ViewModels
                     _allGalleries.Remove(gallery);
                     Galleries.Remove(gallery);
 
-                    UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully deleted Gallery for PIB: {gallery.PIB}.");
+                    log.Info($"{_loggedInUser.Username} successfully deleted Gallery for PIB: {gallery.PIB}.");
                     var clientGallery = _channelFactoryGallery.CreateChannel();
                     clientGallery.DeleteGallery(gallery.PIB);
                 }
                 else
                 {
-                    UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" unsuccessfully deleted Gallery for PIB: {gallery.PIB}.");
+                    log.Warn($"{_loggedInUser.Username} canceled deletion of Gallery for PIB: {gallery.PIB}.");
                 }
             }
             else
             {
-                UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" unsuccessfully deleted Gallery \n for PIB: {gallery.PIB} becouse gallery\n is being edited by user: {gallery.GalleryIsEdditedBy}.");
-                MessageBox.Show($"{_loggedInUser.Username} unsuccessfully deleted Gallery \n for PIB: {gallery.PIB} becouse gallery\n is being edited by user: {gallery.GalleryIsEdditedBy}.");
+                log.Warn($"{_loggedInUser.Username} unsuccessfully deleted Gallery for PIB: {gallery.PIB} because gallery is being edited by user: {gallery.GalleryIsEdditedBy}.");
+                MessageBox.Show($"{_loggedInUser.Username} unsuccessfully deleted Gallery for PIB: {gallery.PIB} because gallery is being edited by user: {gallery.GalleryIsEdditedBy}.");
             }
         }
 
@@ -374,19 +375,19 @@ namespace Client.ViewModels
                     if (IsSearchByMBR)
                     {
                         filteredGalleries = filteredGalleries.Where(g => g.MBR.ToLower().Contains(SearchText.ToLower()));
-                     //   UserActionLoggerService.Instance.Log(_loggedInUser.Username, " searched data by MBR.");
+                        log.Info($"{_loggedInUser.Username} searched data by MBR.");
                     }
 
                     if (IsSearchByPIB)
                     {
                         filteredGalleries = filteredGalleries.Where(g => g.PIB.ToLower().Contains(SearchText.ToLower()));
-                     //   UserActionLoggerService.Instance.Log(_loggedInUser.Username, " searched data by PIB.");
+                        log.Info($"{_loggedInUser.Username} searched data by PIB.");
                     }
 
                     if (IsSearchByAddress)
                     {
                         filteredGalleries = filteredGalleries.Where(g => g.Address.ToLower().Contains(SearchText.ToLower()));
-                     //   UserActionLoggerService.Instance.Log(_loggedInUser.Username, " searched data by Address.");
+                        log.Info($"{_loggedInUser.Username} searched data by Address.");
                     }
                 }
                 else
@@ -409,8 +410,7 @@ namespace Client.ViewModels
 
                 if (isLoggedOut)
                 {
-                    UserActionLoggerService.Instance.Log(_loggedInUser.Username, " logged out successfully.");
-
+                    log.Info($"{_loggedInUser.Username} logged out successfully.");
                     Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
                 }
                 else
@@ -420,8 +420,8 @@ namespace Client.ViewModels
             }
             catch (Exception ex)
             {
+                log.Error($"{_loggedInUser.Username} logged out unsuccessfully. Error: {ex.Message}");
                 MessageBox.Show($"An error occurred: {ex.Message}");
-                UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" logged out unsuccessfully. Error: {ex.Message}");
             }
         }
 
@@ -434,7 +434,7 @@ namespace Client.ViewModels
 
                 if (user != null)
                 {
-                    UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully opened Edit Window for user with username: {user.Username}.");
+                    log.Info($"{_loggedInUser.Username} successfully opened Edit Window for user with username: {user.Username}.");
                     var editUserViewModel = new EditUserViewModel(user, UserAuthenticationServiceClient);
                     editUserViewModel.UserUpdated += OnUserUpdated;
                     var editUserWindow = new EditUserWindow
@@ -446,7 +446,7 @@ namespace Client.ViewModels
             }
             catch (Exception ex)
             {
-                UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" unsuccessfully opened Edit Window for user with username: {_loggedInUser.Username}.");
+                log.Error($"{_loggedInUser.Username} unsuccessfully opened Edit Window for user with username: {_loggedInUser.Username}. Error: {ex.Message}");
                 MessageBox.Show($"An error occurred: {ex.Message}");
             }
         }
@@ -466,7 +466,7 @@ namespace Client.ViewModels
                 Width = 400,
                 Height = 300
             };
-            UserActionLoggerService.Instance.Log(_loggedInUser.Username, " successfully opened Create New Gallery Window.");
+            log.Info($"{_loggedInUser.Username} successfully opened Create New Gallery Window.");
             createGalleryWindow.Show();
         }
 

@@ -10,12 +10,14 @@ using Client.Models;
 using Client.Services;
 using Common.DbModels;
 using Common.Interfaces;
+using log4net;
 
 namespace Client.ViewModels
 {
     public class WorkOfArtDetailsViewModel : BaseViewModel
     {
         #region Fields
+        private static readonly ILog log = LogManager.GetLogger(typeof(WorkOfArtDetailsViewModel));
         private Timer _timer;
         private Common.DbModels.WorkOfArt _workOfArt;
         private Common.DbModels.Author _author;
@@ -66,6 +68,7 @@ namespace Client.ViewModels
                 OnPropertyChanged();
             }
         }
+
         public IEnumerable<ArtMovement> ArtMovements => Enum.GetValues(typeof(ArtMovement)).Cast<ArtMovement>();
         public IEnumerable<Style> Styles => Enum.GetValues(typeof(Style)).Cast<Style>();
         #endregion
@@ -93,12 +96,15 @@ namespace Client.ViewModels
             _timer = new Timer(1000);
             _timer.Elapsed += (sender, args) => RefreshData();
             _timer.Start();
+
+            log.Info("WorkOfArtDetailsViewModel initialized.");
         }
 
         #region Methods
         private void EditWorkOfArt()
         {
             IsWorkOfArtEditing = true;
+            log.Info("Edit mode for Work of Art enabled.");
         }
 
         private void SaveWorkOfArt()
@@ -107,11 +113,13 @@ namespace Client.ViewModels
             var clientWorkOfArt = new ChannelFactory<IWorkOfArtService>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8087/WorkOfArt")).CreateChannel();
             clientWorkOfArt.UpdateWorkOfArt(WorkOfArt);
             RefreshWorkOfArt();
+            log.Info($"Work of Art {WorkOfArt.ArtName} saved.");
         }
 
         private void EditAuthor()
         {
             IsAuthorEditing = true;
+            log.Info("Edit mode for Author enabled.");
         }
 
         private void SaveAuthor()
@@ -120,6 +128,7 @@ namespace Client.ViewModels
             var clientAuthor = new ChannelFactory<IAuthorService>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8088/Author")).CreateChannel();
             clientAuthor.SaveAuthorChanges(Author);
             RefreshAuthor();
+            log.Info($"Author {Author.FirstName} {Author.LastName} saved.");
         }
 
         private void DeleteAuthor()
@@ -132,6 +141,7 @@ namespace Client.ViewModels
                 var clientWoa = new ChannelFactory<IWorkOfArtService>(new NetTcpBinding(), new EndpointAddress("net.tcp://localhost:8087/WorkOfArt")).CreateChannel();
                 clientWoa.GetAllWorkOfArtsDeletedForAuthorId(Author.ID);
                 Console.WriteLine("Author deleted successfully.");
+                log.Info($"Author {Author.FirstName} {Author.LastName} deleted successfully.");
                 UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" author {Author.FirstName} {Author.LastName} deleted successfully.");
                 Author = new Common.DbModels.Author(); // or null, depending on your logic
                 OnPropertyChanged(nameof(Author));
@@ -139,6 +149,7 @@ namespace Client.ViewModels
             else
             {
                 Console.WriteLine("Failed to delete author.");
+                log.Error($"Failed to delete Author {Author.FirstName} {Author.LastName}.");
             }
         }
 
@@ -167,10 +178,12 @@ namespace Client.ViewModels
                 WorkOfArt.GalleryPIB = updatedWorkOfArt.GalleryPIB;
                 OnPropertyChanged(nameof(WorkOfArt));
                 Console.WriteLine("Work of Art refreshed.");
+                log.Info($"Work of Art {WorkOfArt.ArtName} refreshed.");
             }
             else
             {
                 Console.WriteLine("Failed to refresh Work of Art.");
+                log.Error("Failed to refresh Work of Art.");
             }
         }
 
@@ -188,10 +201,12 @@ namespace Client.ViewModels
                 Author.ArtMovement = updatedAuthor.ArtMovement;
                 OnPropertyChanged(nameof(Author));
                 Console.WriteLine("Author refreshed.");
+                log.Info($"Author {Author.FirstName} {Author.LastName} refreshed.");
             }
             else
             {
                 Console.WriteLine("Failed to refresh Author.");
+                log.Error("Failed to refresh Author.");
             }
         }
         #endregion

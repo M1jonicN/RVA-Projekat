@@ -34,6 +34,7 @@ namespace Client.ViewModels
             LoginCommand = new RelayCommand(Login);
 
             log.Info("LoginViewModel initialized.");
+            UserActionLoggerService.Instance.Log("System", "LoginViewModel initialized.");
         }
 
         #region Properties
@@ -44,7 +45,6 @@ namespace Client.ViewModels
             {
                 _username = value;
                 OnPropertyChanged();
-                log.Debug($"Username property changed to: {_username}");
             }
         }
 
@@ -56,7 +56,6 @@ namespace Client.ViewModels
             {
                 _password = value;
                 OnPropertyChanged();
-                log.Debug($"Password property changed.");
             }
         }
 
@@ -68,6 +67,7 @@ namespace Client.ViewModels
                 _errorMessage = value;
                 OnPropertyChanged();
                 log.Debug($"ErrorMessage property changed to: {_errorMessage}");
+                UserActionLoggerService.Instance.Log(Username, $"encountered error: {_errorMessage}");
             }
         }
         #endregion
@@ -80,12 +80,14 @@ namespace Client.ViewModels
             try
             {
                 log.Info("Attempting to log in.");
+                UserActionLoggerService.Instance.Log(Username, "attempting to log in.");
                 var UserAuthenticationServiceClient = _channelFactory.CreateChannel();
                 User loggedInUser = UserAuthenticationServiceClient.Login(Username, Password);
 
                 if (loggedInUser != null && loggedInUser.IsLoggedIn)
                 {
                     log.Info($"User {Username} logged in successfully.");
+                    UserActionLoggerService.Instance.Log(Username, "logged in successfully.");
 
                     // Open UserActionsView if not already open
                     if (_userActionsView == null)
@@ -101,10 +103,8 @@ namespace Client.ViewModels
                         _userActionsView.Closed += (s, e) => _userActionsView = null;
                         _userActionsView.Show();
                         log.Info("Successfully opened User Actions Window.");
+                        UserActionLoggerService.Instance.Log(Username, "opened User Actions Window.");
                     }
-
-                    UserActionLoggerService.Instance.Log(Username, " logged in successfully.");
-                    log.Info(Username + " logged in successfully.");
 
                     var dashboardView = new DashboardView
                     {
@@ -120,20 +120,21 @@ namespace Client.ViewModels
                         dashboardView.Owner = currentWindow;
                         dashboardView.Show();
                         log.Info("Dashboard window opened successfully.");
+                        UserActionLoggerService.Instance.Log(Username, "opened Dashboard window.");
                     }
                 }
                 else
                 {
                     ErrorMessage = "Invalid username or password";
                     log.Warn("Invalid username or password.");
-                    UserActionLoggerService.Instance.Log(Username, " unsuccessfully logged in.");
+                    UserActionLoggerService.Instance.Log(Username, "unsuccessfully logged in. Invalid username or password.");
                 }
             }
             catch (Exception ex)
             {
                 ErrorMessage = $"An error occurred: {ex.Message}";
                 log.Error("An error occurred during login.", ex);
-                UserActionLoggerService.Instance.Log(Username, $" unsuccessfully logged in. Error: {ex.Message}");
+                UserActionLoggerService.Instance.Log(Username, $"unsuccessfully logged in. Error: {ex.Message}");
             }
         }
         #endregion

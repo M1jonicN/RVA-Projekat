@@ -10,6 +10,7 @@ using Client.Models;
 using Client.Services;
 using Common.DbModels;
 using Common.Interfaces;
+using log4net;
 
 namespace Client.ViewModels
 {
@@ -17,6 +18,7 @@ namespace Client.ViewModels
     {
         #region Fields
 
+        private static readonly ILog log = LogManager.GetLogger(typeof(CreateAuthorViewModel));
         private string _firstName;
         private string _lastName;
         private int _birthYear;
@@ -38,8 +40,12 @@ namespace Client.ViewModels
             var endpointAuthor = new EndpointAddress("net.tcp://localhost:8088/Author");
             _channelFactoryAuthor = new ChannelFactory<IAuthorService>(bindingAuthor, endpointAuthor);
 
+            log.Info("CreateAuthorViewModel initialized.");
+            UserActionLoggerService.Instance.Log(_loggedInUser, "initialized CreateAuthorViewModel.");
         }
+
         public ICommand SaveCommand { get; }
+
         #region Properties
         public string FirstName
         {
@@ -82,43 +88,65 @@ namespace Client.ViewModels
         #region Methods
         private void Save()
         {
-            if (!CanCreateAuthor()) 
+            if (!CanCreateAuthor())
             {
                 MessageBox.Show("Unsuccessfully create new Author!");
-                UserActionLoggerService.Instance.Log(_loggedInUser, $" unsuccessfully created new Author.");
+                log.Warn("Attempt to create new Author failed due to invalid input.");
+                UserActionLoggerService.Instance.Log(_loggedInUser, "unsuccessfully created new Author due to invalid input.");
                 return;
             }
-            var clientAuthor = _channelFactoryAuthor.CreateChannel();
-            Common.DbModels.Author newAuthor = new Common.DbModels.Author()
+
+            try
             {
-                FirstName = FirstName,
-                LastName = LastName,
-                BirthYear = BirthYear,
-                DeathYear = DeathYear,
-                ArtMovement = SelectedArtMovement,
-                IsDeleted = false
-            };
-            var success = clientAuthor.CreateNewAuthor(newAuthor);
-            if (success)
-            {
-                MessageBox.Show("Successfully created new Author!");
-                UserActionLoggerService.Instance.Log(_loggedInUser, $" successfully created new Author.");
-                Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
+                var clientAuthor = _channelFactoryAuthor.CreateChannel();
+                Common.DbModels.Author newAuthor = new Common.DbModels.Author()
+                {
+                    FirstName = FirstName,
+                    LastName = LastName,
+                    BirthYear = BirthYear,
+                    DeathYear = DeathYear,
+                    ArtMovement = SelectedArtMovement,
+                    IsDeleted = false
+                };
+
+                var success = clientAuthor.CreateNewAuthor(newAuthor);
+                if (success)
+                {
+                    MessageBox.Show("Successfully created new Author!");
+                    log.Info("Successfully created new Author.");
+                    UserActionLoggerService.Instance.Log(_loggedInUser, "successfully created new Author.");
+                    Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Unsuccessfully create new Author!");
+                    log.Warn("Failed to create new Author.");
+                    UserActionLoggerService.Instance.Log(_loggedInUser, "unsuccessfully created new Author.");
+                    Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Unsuccessfully create new Author!");
-                UserActionLoggerService.Instance.Log(_loggedInUser, $" unseccessfully created new Author.");
-                Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
+                MessageBox.Show("An error occurred while creating the new Author.");
+                log.Error("An error occurred during the creation of a new Author.", ex);
+                UserActionLoggerService.Instance.Log(_loggedInUser, $"unsuccessfully created new Author. Error: {ex.Message}");
             }
         }
 
         private bool CanCreateAuthor()
         {
-            return !string.IsNullOrWhiteSpace(BirthYear.ToString()) &&
-                   !string.IsNullOrWhiteSpace(DeathYear.ToString()) &&
-                   !string.IsNullOrWhiteSpace(FirstName) &&
-                   !string.IsNullOrWhiteSpace(LastName);
+            bool canCreate = !string.IsNullOrWhiteSpace(FirstName) &&
+                             !string.IsNullOrWhiteSpace(LastName) &&
+                             BirthYear > 0 &&
+                             DeathYear > 0;
+
+            if (!canCreate)
+            {
+                log.Warn("CanCreateAuthor validation failed.");
+                UserActionLoggerService.Instance.Log(_loggedInUser, "failed CanCreateAuthor validation.");
+            }
+
+            return canCreate;
         }
         #endregion
     }

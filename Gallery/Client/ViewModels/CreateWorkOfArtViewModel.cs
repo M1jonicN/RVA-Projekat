@@ -11,11 +11,14 @@ using DbStyle = Common.DbModels.Style;
 using System.Linq;
 using Common.Services;
 using Client.Services;
+using log4net;
 
 namespace Client.ViewModels
 {
     public class CreateWorkOfArtViewModel : BaseViewModel
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(CreateWorkOfArtViewModel));
+
         #region Fields
         private string _artName;
         private ArtMovement _selectedArtMovement;
@@ -25,17 +28,17 @@ namespace Client.ViewModels
         private readonly ChannelFactory<IAuthorService> _channelFactoryAuthor;
         private readonly ChannelFactory<IWorkOfArtService> _channelFactoryWoa;
         private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
-        private readonly string _loggedInUser; // Add this field to store the logged-in user
+        private readonly string _loggedInUser;
         #endregion
 
         public CreateWorkOfArtViewModel()
         {
-
         }
 
-        public CreateWorkOfArtViewModel(string loggedInUser) // Modify constructor to accept logged-in user's username
+        public CreateWorkOfArtViewModel(string loggedInUser)
         {
-            _loggedInUser = loggedInUser; // Store the logged-in user's username
+            _loggedInUser = loggedInUser;
+            log.Info($"{_loggedInUser} initialized CreateWorkOfArtViewModel.");
 
             var bindingAuthor = new NetTcpBinding();
             var endpointAuthor = new EndpointAddress("net.tcp://localhost:8088/Author");
@@ -110,6 +113,8 @@ namespace Client.ViewModels
             {
                 AuthorNames.Add($"{author.FirstName} {author.LastName}");
             }
+
+            log.Info($"{_loggedInUser} loaded authors.");
         }
 
         private void Save()
@@ -117,7 +122,7 @@ namespace Client.ViewModels
             if (!CanCreateWoa())
             {
                 MessageBox.Show("Unsuccessfully create new Work of Art!");
-                UserActionLoggerService.Instance.Log(_loggedInUser, " unsuccessfully created new Work of Art.");
+                log.Warn($"{_loggedInUser} unsuccessfully attempted to create new Work of Art due to invalid input.");
                 return;
             }
 
@@ -153,19 +158,19 @@ namespace Client.ViewModels
                 if (success)
                 {
                     MessageBox.Show("Successfully created new Work of Art!");
-                    UserActionLoggerService.Instance.Log(_loggedInUser, $" successfully created new Work of Art with name: {ArtName}.");
+                    log.Info($"{_loggedInUser} successfully created new Work of Art with name: {ArtName}.");
                     Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
                 }
                 else
                 {
                     MessageBox.Show("Unsuccessfully create new Work of Art!");
-                    UserActionLoggerService.Instance.Log(_loggedInUser, " unsuccessfully created new Work of Art.");
+                    log.Warn($"{_loggedInUser} unsuccessfully created new Work of Art.");
                     Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
                 }
             }
             catch (Exception ex)
             {
-                UserActionLoggerService.Instance.Log(_loggedInUser, " unsuccessfully created new Work of Art.");
+                log.Error($"{_loggedInUser} encountered an error while creating new Work of Art. Error: {ex.Message}");
                 MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

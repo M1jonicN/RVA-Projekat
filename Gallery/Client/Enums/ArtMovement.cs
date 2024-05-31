@@ -24,6 +24,7 @@ namespace Client.Enums
         Sculpture,
         Architecture,
         Photography,
-        Film
+        Film,
+        Entity_Deleted
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using Client.Helpers;
@@ -11,25 +10,30 @@ using Common.Helper;
 using Common.Contracts;
 using System.Windows;
 using Client.Services;
+using log4net;
 
 namespace Client.ViewModels
 {
     public class EditUserViewModel : BaseViewModel
     {
         #region Fields
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(EditUserViewModel));
         public event EventHandler<Common.DbModels.User> UserUpdated;
         private readonly IUserAuthenticationService _UserAuthenticationService;
         private Common.DbModels.User _user;
+
         #endregion
 
         #region Properties
+
         public Common.DbModels.User User
         {
             get { return _user; }
             set
             {
                 _user = value;
-                OnPropertyChanged(nameof(Common.DbModels.User));
+                OnPropertyChanged(nameof(User));
             }
         }
 
@@ -100,6 +104,7 @@ namespace Client.ViewModels
         #region Commands
         public ICommand EditUserCommand { get; }
         public ICommand SaveUserCommand { get; }
+
         #endregion
 
         public EditUserViewModel(Common.DbModels.User user, IUserAuthenticationService UserAuthenticationService)
@@ -111,8 +116,13 @@ namespace Client.ViewModels
             SaveUserCommand = new RelayCommand(SaveUser);
             EditUserCommand = new RelayCommand(EditUser);
             LoadUserTypes();
+
+            log.Info($"EditUserViewModel initialized for user {user.Username}.");
+            UserActionLoggerService.Instance.Log(User.Username, " initialized EditUserViewModel.");
         }
+
         #region Methods
+
         private void LoadUserTypes()
         {
             UserTypes = Enum.GetValues(typeof(UserType)).Cast<UserType>().ToList();
@@ -125,6 +135,7 @@ namespace Client.ViewModels
                 if (NewPassword != ConfirmPassword)
                 {
                     MessageBox.Show("Passwords doesn't match", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    log.Warn($"User {User.Username} unsuccessfully edited user data, passwords doesn't match.");
                     UserActionLoggerService.Instance.Log(User.Username, " unsuccessfully edited user data, passwords doesn't match.");
                     return;
                 }
@@ -134,8 +145,9 @@ namespace Client.ViewModels
                 }
                 else
                 {
-                    MessageBox.Show("U must enter password", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    UserActionLoggerService.Instance.Log(User.Username, " unsuccessfully edited user data, u must enter password.");
+                    MessageBox.Show("You must enter a password", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    log.Warn($"User {User.Username} unsuccessfully edited user data, password is required.");
+                    UserActionLoggerService.Instance.Log(User.Username, " unsuccessfully edited user data, password is required.");
                     return;
                 }
 
@@ -143,9 +155,10 @@ namespace Client.ViewModels
                 if (updated)
                 {
                     MessageBox.Show("User saved successfully!");
+                    log.Info($"User {User.Username} saved successfully.");
                     UserActionLoggerService.Instance.Log(User.Username, " successfully edited user data.");
 
-                    // Poziv događaja
+                    // Raise the event
                     UserUpdated?.Invoke(this, User);
 
                     Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
@@ -153,6 +166,7 @@ namespace Client.ViewModels
                 else
                 {
                     MessageBox.Show("Failed to save user.");
+                    log.Warn($"Failed to save user {User.Username}.");
                     UserActionLoggerService.Instance.Log(User.Username, " unsuccessfully edited user data, failed to save user.");
                 }
 
@@ -160,10 +174,9 @@ namespace Client.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}");
+                log.Error($"An error occurred while saving user {User.Username}.", ex);
                 UserActionLoggerService.Instance.Log(User.Username, $" unsuccessfully edited user data, an error occurred: {ex.Message}.");
-
-
+                MessageBox.Show($"An error occurred: {ex.Message}");
             }
         }
 
@@ -171,6 +184,7 @@ namespace Client.ViewModels
         {
             IsEditMode = true;
         }
+
         #endregion
     }
 }

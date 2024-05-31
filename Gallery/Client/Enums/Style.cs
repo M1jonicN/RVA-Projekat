@@ -24,6 +24,7 @@ namespace Client.Enums
         Hyperrealism,
         Naive_art,
         Op_art,
-        Suprematism
+        Suprematism,
+        Entity_Deleted
     }
 }

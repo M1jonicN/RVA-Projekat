@@ -10,12 +10,14 @@ using Client.Views;
 using Common.DbModels;
 using Common.Interfaces;
 using Common.Services;
+using log4net;
 
 namespace Client.ViewModels
 {
     public class GalleryDetailsViewModel : BaseViewModel
     {
         #region Fields
+        private static readonly ILog log = LogManager.GetLogger(typeof(GalleryDetailsViewModel));
         private Common.DbModels.Gallery _gallery;
         private bool _isEditing;
         private readonly ChannelFactory<IAuthorService> _channelFactoryAuthor;
@@ -48,9 +50,8 @@ namespace Client.ViewModels
                 OnPropertyChanged();
             }
         }
-
-
         #endregion
+
         public GalleryDetailsViewModel(Common.DbModels.Gallery gallery, Common.DbModels.User loggedInUser)
         {
             _loggedInUser = loggedInUser;
@@ -81,6 +82,9 @@ namespace Client.ViewModels
             _dispatcherTimer.Interval = TimeSpan.FromSeconds(1);
             _dispatcherTimer.Tick += (sender, args) => RefreshGallery();
             _dispatcherTimer.Start();
+
+            log.Info("GalleryDetailsViewModel initialized.");
+            UserActionLoggerService.Instance.Log(_loggedInUser.Username, " initialized GalleryDetailsViewModel.");
         }
 
         #region Commands
@@ -134,12 +138,10 @@ namespace Client.ViewModels
             }
             catch (Exception ex)
             {
+                log.Error("Failed to refresh gallery.", ex);
                 MessageBox.Show($"Failed to refresh gallery: {ex.Message}");
             }
         }
-
-
-
 
         private void Edit()
         {
@@ -148,7 +150,9 @@ namespace Client.ViewModels
             Gallery.GalleryIsEdditedBy = _loggedInUser.Username;
             var clientGallery = _channelFactoryGallery.CreateChannel();
             clientGallery.SaveGalleryChanges(Gallery);
-            UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully enabled edit.");
+
+            log.Info("Edit mode enabled.");
+            UserActionLoggerService.Instance.Log(_loggedInUser.Username, " successfully enabled edit.");
         }
 
         private void Save()
@@ -156,10 +160,12 @@ namespace Client.ViewModels
             IsEditing = false;
 
             var clientGallery = _channelFactoryGallery.CreateChannel();
-            UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully saved changes.");
+            UserActionLoggerService.Instance.Log(_loggedInUser.Username, " successfully saved changes.");
             Gallery.IsInEditingMode = false;
             Gallery.GalleryIsEdditedBy = "";
             clientGallery.SaveGalleryChanges(Gallery);
+
+            log.Info("Changes saved.");
         }
 
         private void DetailsWorkOfArt(WorkOfArt workOfArt)
@@ -174,9 +180,12 @@ namespace Client.ViewModels
                     DataContext = detailsViewModel
                 };
                 detailsWindow.Show();
+
+                log.Info($"Details for Work of Art {workOfArt.ArtName} opened.");
             }
             catch (Exception ex)
             {
+                log.Error($"Failed to open details for Work of Art {workOfArt.ArtName}.", ex);
                 MessageBox.Show($"An error occurred: {ex.Message}");
             }
         }
@@ -189,12 +198,15 @@ namespace Client.ViewModels
                 clientWorkOfArt.DeleteWorkOfArt(workOfArt.ID);
                 WorkOfArts.Remove(workOfArt);
                 MessageBox.Show($"Deleted {workOfArt.ArtName}");
+
+                log.Info($"Deleted Work of Art {workOfArt.ArtName}.");
                 UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" successfully deleted Work of Art with name: {workOfArt.ArtName}.");
             }
             catch (Exception ex)
             {
+                log.Error($"Failed to delete Work of Art {workOfArt.ArtName}.", ex);
                 MessageBox.Show($"Failed to delete {workOfArt.ArtName}: {ex.Message}");
-                UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" failed to deleted Work of Art with name: {workOfArt.ArtName}.");
+                UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" failed to delete Work of Art with name: {workOfArt.ArtName}.");
             }
         }
         #endregion
