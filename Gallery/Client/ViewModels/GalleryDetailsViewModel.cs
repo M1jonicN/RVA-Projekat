@@ -145,14 +145,22 @@ namespace Client.ViewModels
 
         private void Edit()
         {
-            IsEditing = true;
-            Gallery.IsInEditingMode = true;
-            Gallery.GalleryIsEdditedBy = _loggedInUser.Username;
-            var clientGallery = _channelFactoryGallery.CreateChannel();
-            clientGallery.SaveGalleryChanges(Gallery);
+            if (!Gallery.IsInEditingMode)
+            {
+                IsEditing = true;
+                Gallery.IsInEditingMode = true;
+                Gallery.GalleryIsEdditedBy = _loggedInUser.Username;
+                var clientGallery = _channelFactoryGallery.CreateChannel();
+                clientGallery.SaveGalleryChanges(Gallery);
 
-            log.Info("Edit mode enabled.");
-            UserActionLoggerService.Instance.Log(_loggedInUser.Username, " successfully enabled edit.");
+                log.Info("Edit mode enabled.");
+                UserActionLoggerService.Instance.Log(_loggedInUser.Username, " successfully enabled edit.");
+            }
+            else 
+            {
+                UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" unsuccessfully enabled editing for Gallery PIB: {Gallery.PIB} becouse gallery is already being edited by {Gallery.GalleryIsEdditedBy}.");
+                log.Info($"{_loggedInUser.Username} unsuccessfully enabled editing for Gallery PIB: {Gallery.PIB} becouse gallery is already being edited by {Gallery.GalleryIsEdditedBy}.");
+            }
         }
 
         private void Save()

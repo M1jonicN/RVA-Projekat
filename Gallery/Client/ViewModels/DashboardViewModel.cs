@@ -329,6 +329,7 @@ namespace Client.ViewModels
             };
             log.Info($"{_loggedInUser.Username} successfully opened Show Gallery Details Window for Gallery PIB: {gallery.PIB}.");
             detailsWindow.Show();
+            
         }
 
         private void DeleteGallery(Gallery gallery)

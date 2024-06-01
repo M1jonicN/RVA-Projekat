@@ -49,6 +49,7 @@ namespace Server
                 Username = username,
                 PasswordHash = passwordHash,
                 FirstName = firstName,
+                IsLoggedIn = false,
                 UserType = UserType.User,
                 LastName = lastName
             };

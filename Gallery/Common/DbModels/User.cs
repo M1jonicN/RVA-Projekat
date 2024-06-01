@@ -1,39 +1,42 @@
-﻿using Common.Helper;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace Common.DbModels
 {
+    [DataContract]
     public class User
     {
         [Key]
+        [DataMember]
         public int ID { get; set; }
 
         [Required]
+        [DataMember]
         public string FirstName { get; set; }
 
         [Required]
+        [DataMember]
         public string LastName { get; set; }
 
         [Required]
+        [DataMember]
         public string Username { get; set; }
+
         [Required]
+        [DataMember]
         public bool IsDeleted { get; set; }
-        [Required]
+
+        [EnumDataType(typeof(UserType))]
+        [DataMember]
         public UserType UserType { get; set; }
 
         [Required]
+        [DataMember]
         [DataType(DataType.Password)]
-        public string PasswordHash  { get; set; }
+        public string PasswordHash { get; set; }
 
         [Required]
+        [DataMember]
         public bool IsLoggedIn { get; set; }
-
-
     }
 }
