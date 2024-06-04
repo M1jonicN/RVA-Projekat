@@ -97,6 +97,9 @@ namespace Server.Services
                 if (existingGallery != null)
                 {
                     existingGallery.IsDeleted = gallery.IsDeleted;
+                    existingGallery.MBR = gallery.MBR;
+                    existingGallery.Address = gallery.Address;
+
                     // Other property updates as needed
                     dbContext.SaveChanges();
                     log.Info($"Gallery with PIB {gallery.PIB} updated successfully.");

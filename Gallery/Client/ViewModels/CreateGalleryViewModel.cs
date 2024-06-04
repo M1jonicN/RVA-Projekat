@@ -121,6 +121,7 @@ namespace Client.ViewModels
                 var addGalleryCommand = new AddGalleryCommand(createdGallery, _galleryService);
                 Commands.CommandManager.ExecuteCommand(addGalleryCommand);
             }
+                Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
         }
         private void Undo()
         {

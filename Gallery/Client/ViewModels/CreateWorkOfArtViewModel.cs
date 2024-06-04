@@ -17,9 +17,9 @@ namespace Client.ViewModels
 {
     public class CreateWorkOfArtViewModel : BaseViewModel
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(CreateWorkOfArtViewModel));
 
         #region Fields
+        private static readonly ILog log = LogManager.GetLogger(typeof(CreateWorkOfArtViewModel));
         private string _artName;
         private ArtMovement _selectedArtMovement;
         private DbStyle _selectedStyle;

@@ -34,6 +34,7 @@ namespace Client.Commands
                 _galleryService.SaveGalleryChanges(_gallery);
                 //MessageBox.Show("A gallery with the same PIB already exists.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 //log.Warn("Attempt to create new Gallery failed due to duplicate PIB.");
+
             }
         }
 

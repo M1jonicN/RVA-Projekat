@@ -4,6 +4,7 @@ using System.ServiceModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Client.Commands;
 using Client.Helpers;
 using Client.Services;
 using Client.Views;
@@ -11,6 +12,7 @@ using Common.DbModels;
 using Common.Interfaces;
 using Common.Services;
 using log4net;
+using Server.Services;
 
 namespace Client.ViewModels
 {
@@ -25,6 +27,8 @@ namespace Client.ViewModels
         private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
         private readonly Common.DbModels.User _loggedInUser;
         private readonly DispatcherTimer _dispatcherTimer;
+
+        private Gallery oldGallery;
         #endregion
 
         #region Properties
@@ -75,6 +79,8 @@ namespace Client.ViewModels
 
             EditCommand = new RelayCommand(Edit);
             SaveCommand = new RelayCommand(Save);
+            UndoCommand = new RelayCommand(Undo);
+            RedoCommand = new RelayCommand(Redo);
             DetailsWorkOfArtCommand = new RelayCommand<WorkOfArt>(DetailsWorkOfArt);
             DeleteWorkOfArtCommand = new RelayCommand<WorkOfArt>(DeleteWorkOfArt);
 
@@ -92,6 +98,8 @@ namespace Client.ViewModels
         public ICommand DeleteWorkOfArtCommand { get; }
         public ICommand EditCommand { get; }
         public ICommand SaveCommand { get; }
+        public ICommand UndoCommand { get; }
+        public ICommand RedoCommand { get; }
         #endregion
 
         #region Methods
@@ -145,8 +153,17 @@ namespace Client.ViewModels
 
         private void Edit()
         {
+
             if (!Gallery.IsInEditingMode)
             {
+                oldGallery = new Gallery()
+                {
+                    MBR = Gallery.MBR,
+                    Address = Gallery.Address,
+                    IsDeleted = Gallery.IsDeleted,
+                    PIB = Gallery.PIB,
+                    
+                };
                 IsEditing = true;
                 Gallery.IsInEditingMode = true;
                 Gallery.GalleryIsEdditedBy = _loggedInUser.Username;
@@ -171,7 +188,11 @@ namespace Client.ViewModels
             UserActionLoggerService.Instance.Log(_loggedInUser.Username, " successfully saved changes.");
             Gallery.IsInEditingMode = false;
             Gallery.GalleryIsEdditedBy = "";
-            clientGallery.SaveGalleryChanges(Gallery);
+          //  clientGallery.SaveGalleryChanges(Gallery);
+
+            var editGalleryCommand = new EditGalleryCommand(Gallery, clientGallery, oldGallery);
+            Commands.CommandManager.ExecuteCommand(editGalleryCommand);
+            
 
             log.Info("Changes saved.");
         }
@@ -217,6 +238,26 @@ namespace Client.ViewModels
                 UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" failed to delete Work of Art with name: {workOfArt.ArtName}.");
             }
         }
+
+        private void Undo()
+        {
+            if (Commands.CommandManager._undoStack.Count > 0)
+            {
+                Commands.CommandManager.Undo();
+
+            }
+        }
+
+        private void Redo()
+        {
+            if (Commands.CommandManager._redoStack.Count > 0)
+            {
+                Commands.CommandManager.Redo();
+
+            }
+        }
+
+
         #endregion
     }
 }

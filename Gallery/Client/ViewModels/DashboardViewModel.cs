@@ -272,8 +272,8 @@ namespace Client.ViewModels
             {
                 Content = createGalleryView,
                 Title = "Create New Gallery",
-                Width = 800,
-                Height = 600
+                Width = 450,
+                Height = 250
             };
 
             log.Info($"{_loggedInUser.Username} successfully opened Create New Gallery Window.");
@@ -288,10 +288,9 @@ namespace Client.ViewModels
                 return;
             }
 
-            // Add the new Gallery to ObservableCollection
             Galleries.Add(newGallery);
             _allGalleries.Add(newGallery);
-            Commands.CommandManager._redoStack.Clear();           // Clear the redo stack
+            Commands.CommandManager._redoStack.Clear();           
 
             log.Info($"{_loggedInUser.Username} successfully created a new gallery with PIB {newGallery.PIB}.");
         }
@@ -300,12 +299,10 @@ namespace Client.ViewModels
         private void DeleteGallery(Gallery gallery)
         {
             var clientGallery = _channelFactoryGallery.CreateChannel();
-            gallery.IsDeleted = true;
-            clientGallery.DeleteGallery(gallery.PIB);
 
-            // Update local collections
-           // _allGalleries.Remove(gallery);
-           // Galleries.Remove(gallery);
+            var deleteGalleryCommand = new DeleteGalleryCommand(gallery, clientGallery);
+            Commands.CommandManager.ExecuteCommand(deleteGalleryCommand);
+
             log.Info($"{_loggedInUser.Username} successfully deleted the gallery with PIB {gallery.PIB}.");
         }
 
