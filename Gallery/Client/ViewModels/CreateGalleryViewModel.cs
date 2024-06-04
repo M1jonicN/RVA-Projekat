@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Common.DbModels;
-using Client.Helpers;
-using System.ServiceModel;
 using Common.Services;
-using System.Linq;
-using Client.Models;
-using Client.Services;
+using Client.Helpers;
 using log4net;
+using Client.Commands;
+using Client.Services;
+using System.ServiceModel;
+using Common.Helpers;
+using System.Net;
+
 
 namespace Client.ViewModels
 {
@@ -17,18 +20,24 @@ namespace Client.ViewModels
         #region Fields
 
         private static readonly ILog log = LogManager.GetLogger(typeof(CreateGalleryViewModel));
-        private Common.DbModels.Gallery _newGallery;
+        private Gallery _newGallery;
         private readonly IGalleryService _galleryService;
-        public event EventHandler<Common.DbModels.Gallery> GalleryCreated;
+        public event EventHandler<Gallery> GalleryCreated;
         private string _loggedInUser;
+        private readonly Action<object, Gallery> _onGalleryCreated;
 
         #endregion
 
-        public CreateGalleryViewModel(string username)
+        #region Constructor
+
+        public CreateGalleryViewModel(string username, EventHandler<Gallery> onGalleryCreated)
         {
-            NewGallery = new Common.DbModels.Gallery();
-            CreateGalleryCommand = new RelayCommand(CreateGallery);
+            _newGallery = new Gallery();
+            CreateGalleryCommand = new RelayCommand(OnCreateGalleryCommand);
+            UndoCommand = new RelayCommand(Undo);
+            RedoCommand = new RelayCommand(Redo);
             _loggedInUser = username;
+            GalleryCreated += onGalleryCreated;
 
             var binding = new NetTcpBinding();
             var endpoint = new EndpointAddress("net.tcp://localhost:8086/Gallery");
@@ -39,7 +48,11 @@ namespace Client.ViewModels
             UserActionLoggerService.Instance.Log(_loggedInUser, "initialized CreateGalleryViewModel.");
         }
 
-        public Common.DbModels.Gallery NewGallery
+        #endregion
+
+        #region Properties
+
+        public Gallery NewGallery
         {
             get => _newGallery;
             set
@@ -50,8 +63,13 @@ namespace Client.ViewModels
         }
 
         public ICommand CreateGalleryCommand { get; }
+        public ICommand UndoCommand { get; }
+        public ICommand RedoCommand { get; }
+
+        #endregion
 
         #region Methods
+
         private bool AreFieldsValid()
         {
             // Check if all required fields are filled
@@ -67,41 +85,53 @@ namespace Client.ViewModels
             return fieldsValid;
         }
 
-        private void CreateGallery()
+        private Gallery CreateGallery()
         {
             if (!AreFieldsValid())
             {
                 MessageBox.Show("All fields must be filled out.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 log.Warn("Attempt to create new Gallery failed due to invalid fields.");
                 UserActionLoggerService.Instance.Log(_loggedInUser, "unsuccessfully created new Gallery due to invalid fields.");
-                return;
+                return null;
             }
 
             try
             {
-                bool result = _galleryService.CreateNewGallery(NewGallery);
-                if (result)
+                var newGallery = new Gallery
                 {
-                    GalleryCreated?.Invoke(this, NewGallery);
-                    MessageBox.Show("Gallery created successfully.");
-                    log.Info("Successfully created new Gallery.");
-                    UserActionLoggerService.Instance.Log(_loggedInUser, "successfully created new Gallery.");
-                    Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
-                }
-                else
-                {
-                    MessageBox.Show("Failed to create gallery. A gallery with the same PIB might already exist.");
-                    log.Warn("Failed to create new Gallery due to duplicate PIB.");
-                    UserActionLoggerService.Instance.Log(_loggedInUser, "unsuccessfully created new Gallery.");
-                }
+                    Address = NewGallery.Address,
+                    MBR = NewGallery.MBR
+                    // Set other necessary properties
+                };
+                return newGallery;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred while creating the new Gallery.");
-                log.Error("An error occurred during the creation of a new Gallery.", ex);
-                UserActionLoggerService.Instance.Log(_loggedInUser, $"unsuccessfully created new Gallery. Error: {ex.Message}");
+                log.Error("Error occurred while creating new gallery.", ex);
+                return null;
             }
         }
+
+        private void OnCreateGalleryCommand()
+        {
+            var createdGallery = CreateGallery();
+            if (createdGallery != null)
+            {
+                // Create AddGalleryCommand and execute it
+                var addGalleryCommand = new AddGalleryCommand(createdGallery, _galleryService);
+                Commands.CommandManager.ExecuteCommand(addGalleryCommand);
+            }
+        }
+        private void Undo()
+        {
+            Commands.CommandManager.Undo();
+        }
+
+        private void Redo()
+        {
+            Commands.CommandManager.Redo();
+        }
+
         #endregion
     }
 }

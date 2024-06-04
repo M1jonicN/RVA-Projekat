@@ -381,6 +381,71 @@ Svi pretplaćeni posmatrači (kao što je UserActionsViewModel) primaju obavešt
         <Location left="3227" top="750" />
         <Size width="412" height="335" />
       </Entity>
+      <Entity type="Comment">
+        <Text>COMMAND PATTERN</Text>
+        <Location left="2913" top="1424" />
+        <Size width="131" height="50" />
+      </Entity>
+      <Entity type="Class">
+        <Name>Command</Name>
+        <Access>Public</Access>
+        <Location left="2896" top="1522" />
+        <Size width="162" height="122" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">public abstract void Execute()</Member>
+        <Member type="Method">public abstract void UnExecute()</Member>
+        <Modifier>Abstract</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>GalleryCommand</Name>
+        <Access>Public</Access>
+        <Location left="2896" top="1710" />
+        <Size width="162" height="111" />
+        <Collapsed>False</Collapsed>
+        <Member type="Property">public string PIB { get; set; }</Member>
+        <Modifier>Abstract</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>AddGalleryCommand</Name>
+        <Access>Public</Access>
+        <Location left="2602" top="1905" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">public override void Execute()</Member>
+        <Member type="Method">public override void UnExecute()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>DuplicateGalleryCommand</Name>
+        <Access>Public</Access>
+        <Location left="2850" top="1905" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">public override void Execute()</Member>
+        <Member type="Method">public override void UnExecute()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>EditGalleryCommend</Name>
+        <Access>Public</Access>
+        <Location left="3070" top="1905" />
+        <Size width="225" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">public override void Execute()</Member>
+        <Member type="Method">public override void UnExecute()</Member>
+        <Member type="Property">public Gallery OldGalleryState { get; set; }</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>DeleteGalleryCommand</Name>
+        <Access>Public</Access>
+        <Location left="3350" top="1905" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">public override void Execute()</Member>
+        <Member type="Method">public override void UnExecute()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
     </Entities>
     <Relationships>
       <Relationship type="Realization" first="8" second="9">
@@ -425,6 +490,42 @@ Svi pretplaćeni posmatrači (kao što je UserActionsViewModel) primaju obavešt
         <BendPoint relativeToStartShape="False">
           <X>3010</X>
           <Y>868</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="29" second="28">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Generalization" first="30" second="29">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>2905</X>
+          <Y>1846</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="31" second="29">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>2932</X>
+          <Y>1846</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="32" second="29">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>2956</X>
+          <Y>1847</Y>
+        </BendPoint>
+      </Relationship>
+      <Relationship type="Generalization" first="33" second="29">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <BendPoint relativeToStartShape="False">
+          <X>3147</X>
+          <Y>1850</Y>
         </BendPoint>
       </Relationship>
     </Relationships>

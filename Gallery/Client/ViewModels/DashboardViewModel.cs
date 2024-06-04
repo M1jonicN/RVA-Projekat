@@ -15,6 +15,10 @@ using System.Windows.Threading;
 using Common.Helpers;
 using Client.Services;
 using log4net;
+using Client.Commands;
+using Client;
+using Server.Services;
+using System.ServiceModel.Channels;
 
 namespace Client.ViewModels
 {
@@ -27,6 +31,8 @@ namespace Client.ViewModels
         private readonly ChannelFactory<IUserAuthenticationService> _channelFactory;
         private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
         private readonly ChannelFactory<IWorkOfArtService> _channelFactoryWOA;
+        private readonly ChannelFactory<IAuthorService> _channelFactoryAuthors;
+        private IGalleryService galleryService;
         private readonly User _loggedInUser;
         private ObservableCollection<Gallery> _galleries;
         private ObservableCollection<Gallery> _allGalleries;
@@ -60,11 +66,16 @@ namespace Client.ViewModels
             var endpointWOA = new EndpointAddress("net.tcp://localhost:8087/WorkOfArt");
             _channelFactoryWOA = new ChannelFactory<IWorkOfArtService>(bindingWOA, endpointWOA);
 
+            var bindingAuthors = new NetTcpBinding();
+            var endpointAuthors = new EndpointAddress("net.tcp://localhost:8088/Author");
+            _channelFactoryAuthors = new ChannelFactory<IAuthorService>(bindingAuthors, endpointAuthors);
+
             // Initialize collections with dummy data or fetch from service
             _allGalleries = new ObservableCollection<Gallery>();
             Galleries = new ObservableCollection<Gallery>();
             WorkOfArts = new ObservableCollection<WorkOfArt>();
             Authors = new ObservableCollection<Author>();
+
 
             SearchCommand = new RelayCommand(Search);
             LogoutCommand = new RelayCommand(Logout);
@@ -76,6 +87,8 @@ namespace Client.ViewModels
             DuplicateGalleryCommand = new RelayCommand<Gallery>(DuplicateGallery);
             CreateNewAuthorCommand = new RelayCommand(OpenCreateAuthorWindow);
             CreateNewWorkOfArtCommand = new RelayCommand(OpenCreateWorkOfArtView);
+            UndoCommand = new RelayCommand(Undo);
+            RedoCommand = new RelayCommand(Redo);
 
             // Load data initially
             LoadData();
@@ -100,6 +113,8 @@ namespace Client.ViewModels
         public ICommand CreateUserCommand { get; }
         public ICommand CreateNewAuthorCommand { get; }
         public ICommand CreateNewWorkOfArtCommand { get; }
+        public ICommand UndoCommand { get; }
+        public ICommand RedoCommand { get; }
 
         #endregion
 
@@ -200,6 +215,8 @@ namespace Client.ViewModels
             }
         }
 
+        public bool IsSearching { get => _isSearching; set => _isSearching = value; }
+
         #endregion
 
         #region Methods
@@ -225,100 +242,78 @@ namespace Client.ViewModels
 
         private void DuplicateGallery(Gallery gallery)
         {
-            // Kreiranje duboke kopije liste WorkOfArts
-            var duplicatedWorkOfArts = new List<WorkOfArt>();
-            if (gallery.WorkOfArts != null)
+            galleryService = _channelFactoryGallery.CreateChannel();
+            if (gallery != null)
             {
-                foreach (var workOfArt in gallery.WorkOfArts)
-                {
-                    duplicatedWorkOfArts.Add(new WorkOfArt
-                    {
-                        // Pretpostavljajući da WorkOfArt ima ove atribute, dodajte sve potrebne atribute za kopiranje
-                        ID = workOfArt.ID,
-                        ArtName = workOfArt.ArtName,
-                        ArtMovement = workOfArt.ArtMovement,
-                        Style = workOfArt.Style,
-                        AuthorID = workOfArt.AuthorID,
-                        AuthorName = workOfArt.AuthorName,
-                        GalleryPIB = workOfArt.GalleryPIB,
-                        IsDeleted = workOfArt.IsDeleted,
-                        // Dodajte ostale atribute koje je potrebno kopirati
-                    });
-                }
+                // Create AddGalleryCommand and execute it
+                var duplicateGalleryCommand = new DuplicateGalleryCommand(gallery, galleryService, Galleries);
+                Commands.CommandManager.ExecuteCommand(duplicateGalleryCommand);
             }
-
-            // Kreiranje duplikata galerije
-            var duplicateGallery = new Gallery
-            {
-                PIB = PibHelper.GenerateUniquePIB(_allGalleries.ToList()),
-                Address = gallery.Address,
-                MBR = gallery.MBR,
-                WorkOfArts = duplicatedWorkOfArts,
-                IsDeleted = gallery.IsDeleted
-            };
-
-            // Dodavanje duplikata galerije u bazu podataka
-            var clientGallery = _channelFactoryGallery.CreateChannel();
-            clientGallery.CreateNewGallery(duplicateGallery);
-
-            // Dodavanje duplikata galerije u obe kolekcije
-            _allGalleries.Add(duplicateGallery);
-            Galleries.Add(duplicateGallery);
-            log.Info($"{_loggedInUser.Username} successfully duplicated Gallery with MBR: {duplicateGallery.MBR}, Address: {duplicateGallery.Address}.");
         }
 
         private void OpenCreateUserWindow()
         {
-            if (_loggedInUser.UserType == Common.DbModels.UserType.Admin)
+            var createUserView = new CreateUserView
             {
-                var createUserViewModel = new CreateUserViewModel(_loggedInUser.Username);
-                var createUserWindow = new CreateUserView
-                {
-                    DataContext = createUserViewModel,
-                    Width = 400,
-                    Height = 210
-                };
-                log.Info($"{_loggedInUser.Username} successfully opened Create New User Window.");
-                createUserWindow.ShowDialog();
-            }
-            else
-            {
-                MessageBox.Show("Only Admin can add new User");
-            }
+                DataContext = new CreateUserViewModel(_loggedInUser.Username)
+            };
+            log.Info($"{_loggedInUser.Username} successfully opened Create New User Window.");
+            createUserView.Show();
         }
 
-        private void OnWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void OpenCreateGalleryWindow()
         {
-            Logout();
+            var createGalleryView = new CreateGalleryView
+            {
+                DataContext = new CreateGalleryViewModel(_loggedInUser.Username, OnGalleryCreated)
+            };
+
+            var window = new Window
+            {
+                Content = createGalleryView,
+                Title = "Create New Gallery",
+                Width = 800,
+                Height = 600
+            };
+
+            log.Info($"{_loggedInUser.Username} successfully opened Create New Gallery Window.");
+            window.Show();
         }
 
-        private void LoadData()
+
+        private void OnGalleryCreated(object sender, Gallery newGallery)
+        {
+            if (newGallery == null)
+            {
+                return;
+            }
+
+            // Add the new Gallery to ObservableCollection
+            Galleries.Add(newGallery);
+            _allGalleries.Add(newGallery);
+            Commands.CommandManager._redoStack.Clear();           // Clear the redo stack
+
+            log.Info($"{_loggedInUser.Username} successfully created a new gallery with PIB {newGallery.PIB}.");
+        }
+
+
+        private void DeleteGallery(Gallery gallery)
         {
             var clientGallery = _channelFactoryGallery.CreateChannel();
-            var galleries = clientGallery.GetAllGalleries();
+            gallery.IsDeleted = true;
+            clientGallery.DeleteGallery(gallery.PIB);
 
-            _allGalleries.Clear();
-            foreach (var gallery in galleries)
-            {
-                _allGalleries.Add(gallery);
-            }
-
-            // Always update Galleries collection
-            if (!_isSearching)
-            {
-                Galleries.Clear();
-                foreach (var gallery in _allGalleries)
-                {
-                    Galleries.Add(gallery);
-                }
-            }
+            // Update local collections
+           // _allGalleries.Remove(gallery);
+           // Galleries.Remove(gallery);
+            log.Info($"{_loggedInUser.Username} successfully deleted the gallery with PIB {gallery.PIB}.");
         }
 
-        private void ShowDetails(Gallery gallery)
+        private void ShowDetails(Common.DbModels.Gallery gallery)
         {
             var clientWOA = _channelFactoryWOA.CreateChannel();
             var workOfArts = clientWOA.GetWorkOfArtsForGallery(gallery.PIB);
-            gallery.WorkOfArts = new List<WorkOfArt>(workOfArts);
+            gallery.WorkOfArts = new List<Common.DbModels.WorkOfArt>(workOfArts);
 
             var detailsViewModel = new GalleryDetailsViewModel(gallery, _loggedInUser);
             var detailsWindow = new GalleryDetailsWindow
@@ -329,165 +324,170 @@ namespace Client.ViewModels
             };
             log.Info($"{_loggedInUser.Username} successfully opened Show Gallery Details Window for Gallery PIB: {gallery.PIB}.");
             detailsWindow.Show();
-            
-        }
-
-        private void DeleteGallery(Gallery gallery)
-        {
-            if (!gallery.IsInEditingMode)
-            {
-                if (MessageBox.Show("Are you sure you want to delete this gallery?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                {
-                    gallery.IsDeleted = true;
-                    _allGalleries.Remove(gallery);
-                    Galleries.Remove(gallery);
-
-                    log.Info($"{_loggedInUser.Username} successfully deleted Gallery for PIB: {gallery.PIB}.");
-                    var clientGallery = _channelFactoryGallery.CreateChannel();
-                    clientGallery.DeleteGallery(gallery.PIB);
-                }
-                else
-                {
-                    log.Warn($"{_loggedInUser.Username} canceled deletion of Gallery for PIB: {gallery.PIB}.");
-                }
-            }
-            else
-            {
-                log.Warn($"{_loggedInUser.Username} unsuccessfully deleted Gallery for PIB: {gallery.PIB} because gallery is being edited by user: {gallery.GalleryIsEdditedBy}.");
-                MessageBox.Show($"{_loggedInUser.Username} unsuccessfully deleted Gallery for PIB: {gallery.PIB} because gallery is being edited by user: {gallery.GalleryIsEdditedBy}.");
-            }
         }
 
         private void Search()
         {
-            if (string.IsNullOrWhiteSpace(SearchText))
+            IsSearching = true;
+            Galleries.Clear();
+
+            var filteredGalleries = _allGalleries.Where(gallery =>
             {
-                _isSearching = false;
-                Galleries = new ObservableCollection<Gallery>(_allGalleries);
-            }
-            else
-            {
-                _isSearching = true;
-
-                var filteredGalleries = _allGalleries.AsQueryable();
-
-                if (IsSearchByParameters)
+                if (!string.IsNullOrEmpty(SearchText) && !gallery.Address.Contains(SearchText.ToLower()) &&
+                    !gallery.MBR.Contains(SearchText.ToLower()) &&
+                    !gallery.PIB.Contains(SearchText.ToLower()))
                 {
-                    if (IsSearchByMBR)
-                    {
-                        filteredGalleries = filteredGalleries.Where(g => g.MBR.ToLower().Contains(SearchText.ToLower()));
-                        log.Info($"{_loggedInUser.Username} searched data by MBR.");
-                    }
-
-                    if (IsSearchByPIB)
-                    {
-                        filteredGalleries = filteredGalleries.Where(g => g.PIB.ToLower().Contains(SearchText.ToLower()));
-                        log.Info($"{_loggedInUser.Username} searched data by PIB.");
-                    }
-
-                    if (IsSearchByAddress)
-                    {
-                        filteredGalleries = filteredGalleries.Where(g => g.Address.ToLower().Contains(SearchText.ToLower()));
-                        log.Info($"{_loggedInUser.Username} searched data by Address.");
-                    }
-                }
-                else
-                {
-                    filteredGalleries = filteredGalleries.Where(g => g.Address.ToLower().Contains(SearchText.ToLower())
-                             || g.PIB.ToLower().Contains(SearchText.ToLower())
-                             || g.MBR.ToLower().Contains(SearchText.ToLower()));
+                    return false;
                 }
 
-                Galleries = new ObservableCollection<Gallery>(filteredGalleries.ToList());
+                if (IsSearchByMBR && !gallery.MBR.Equals(SearchText.ToLower()))
+                {
+                    return false;
+                }
+
+                if (IsSearchByPIB && !gallery.PIB.Equals(SearchText.ToLower()))
+                {
+                    return false;
+                }
+
+                if (IsSearchByAddress && !gallery.Address.Contains(SearchText.ToLower()))
+                {
+                    return false;
+                }
+
+                if (IsSearchByParameters && (string.IsNullOrEmpty(SearchText) ||
+                                             (!gallery.MBR.Equals(SearchText, StringComparison.InvariantCultureIgnoreCase) &&
+                                              !gallery.PIB.Equals(SearchText, StringComparison.InvariantCultureIgnoreCase) &&
+                                              !gallery.Address.Contains(SearchText.ToLower()))))
+                {
+                    return false;
+                }
+
+                return true;
+            }).ToList();
+
+            foreach (var gallery in filteredGalleries)
+            {
+                Galleries.Add(gallery);
             }
+
+            IsSearching = false;
         }
 
         public void Logout()
         {
-            try
-            {
-                var UserAuthenticationServiceClient = _channelFactory.CreateChannel();
-                bool isLoggedOut = UserAuthenticationServiceClient.Logout(_loggedInUser.Username);
-
-                if (isLoggedOut)
-                {
-                    log.Info($"{_loggedInUser.Username} logged out successfully.");
-                    Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
-                }
-                else
-                {
-                    MessageBox.Show("Error while logout.");
-                }
-            }
-            catch (Exception ex)
-            {
-                log.Error($"{_loggedInUser.Username} logged out unsuccessfully. Error: {ex.Message}");
-                MessageBox.Show($"An error occurred: {ex.Message}");
-            }
+            var client = _channelFactory.CreateChannel();
+            client.Logout(_loggedInUser.Username);
+            log.Info($"{_loggedInUser.Username} successfully logged out.");
+            Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
         }
 
         private void Edit()
         {
+            var client = _channelFactory.CreateChannel();
+            var editUserView = new EditUserWindow
+            {
+                DataContext = new EditUserViewModel(_loggedInUser, client)
+            };
+            log.Info($"{_loggedInUser.Username} successfully opened Edit User Window.");
+            editUserView.Show();
+        }
+
+        private void LoadData()
+        {
+            LoadGalleries();
+            LoadWorksOfArt();
+            LoadAuthors();
+        }
+
+        private void LoadGalleries()
+        {
             try
             {
-                var UserAuthenticationServiceClient = _channelFactory.CreateChannel();
-                User user = UserAuthenticationServiceClient.FindUser(_loggedInUser.Username);
-
-                if (user != null)
+                var clientGallery = _channelFactoryGallery.CreateChannel();
+                var galleries = clientGallery.GetAllGalleries();
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    log.Info($"{_loggedInUser.Username} successfully opened Edit Window for user with username: {user.Username}.");
-                    var editUserViewModel = new EditUserViewModel(user, UserAuthenticationServiceClient);
-                    editUserViewModel.UserUpdated += OnUserUpdated;
-                    var editUserWindow = new EditUserWindow
+                    _allGalleries.Clear();
+                    Galleries.Clear();
+                    foreach (var gallery in galleries)
                     {
-                        DataContext = editUserViewModel
-                    };
-                    editUserWindow.ShowDialog();
-                }
+                        _allGalleries.Add(gallery);
+                        Galleries.Add(gallery);
+                    }
+                });
             }
             catch (Exception ex)
             {
-                log.Error($"{_loggedInUser.Username} unsuccessfully opened Edit Window for user with username: {_loggedInUser.Username}. Error: {ex.Message}");
-                MessageBox.Show($"An error occurred: {ex.Message}");
+                log.Error("Error occurred while loading galleries.", ex);
             }
         }
 
-        private void OpenCreateGalleryWindow()
+        private void LoadWorksOfArt()
         {
-            var createGalleryViewModel = new CreateGalleryViewModel(_loggedInUser.Username);
-            createGalleryViewModel.GalleryCreated += OnGalleryCreated;
-
-            var createGalleryWindow = new Window
+            try
             {
-                Title = "Create New Gallery",
-                Content = new CreateGalleryView
+                var clientWOA = _channelFactoryWOA.CreateChannel();
+                var worksOfArt = clientWOA.GetAllWorkOfArts();
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    DataContext = createGalleryViewModel
-                },
-                Width = 400,
-                Height = 300
-            };
-            log.Info($"{_loggedInUser.Username} successfully opened Create New Gallery Window.");
-            createGalleryWindow.Show();
+                    WorkOfArts.Clear();
+                    foreach (var workOfArt in worksOfArt)
+                    {
+                        WorkOfArts.Add(workOfArt);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error occurred while loading works of art.", ex);
+            }
         }
 
-        private void OnGalleryCreated(object sender, Gallery newGallery)
+        private void LoadAuthors()
         {
-            _allGalleries.Add(newGallery);
-            Galleries.Add(newGallery);
-
-            // Find the window hosting CreateGalleryView and close it
-            var createGalleryWindow = Application.Current.Windows
-                .OfType<Window>()
-                .SingleOrDefault(w => w.DataContext == sender);
-            createGalleryWindow?.Close();
+            try
+            {
+                var clientGallery = _channelFactoryAuthors.CreateChannel();
+                var authors = clientGallery.GetAllAuthores();
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Authors.Clear();
+                    foreach (var author in authors)
+                    {
+                        Authors.Add(author);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error occurred while loading authors.", ex);
+            }
         }
 
-        private void OnUserUpdated(object sender, User updatedUser)
+        private void Undo()
         {
-            _loggedInUser.Username = updatedUser.Username;
-            LoggedInUsername = updatedUser.Username;
+            if (Commands.CommandManager._undoStack.Count > 0)
+            {
+                Commands.CommandManager.Undo();
+
+            }
         }
+
+        private void Redo()
+        {
+            if (Commands.CommandManager._redoStack.Count > 0)
+            {
+                Commands.CommandManager.Redo();
+
+            }
+        }
+
+        private void OnWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Save state or handle necessary actions before the window closes
+        }
+
         #endregion
     }
 }

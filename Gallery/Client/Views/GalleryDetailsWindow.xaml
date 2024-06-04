@@ -26,8 +26,10 @@
             <TextBox Text="{Binding Gallery.Address}" FontSize="16" IsEnabled="{Binding IsEditing}"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="10,0,20,0" HorizontalAlignment="Center">
-            <Button Content="Edit" Command="{Binding EditCommand}" Width="75" Margin="0,0,100,0" />
+            <Button Content="Edit" Command="{Binding EditCommand}" Width="75" Margin="0,0,20,0" />
             <Button Content="Save" Command="{Binding SaveCommand}" Width="75" Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <Button Content="Undo" Command="{Binding UndoCommand}" Width="75" Margin="20,0,0,0"/>
+            <Button Content="Redo" Command="{Binding RedoCommand}" Width="75" Margin="20,0,0,0"/>
         </StackPanel>
         <ListView Grid.Row="3" ItemsSource="{Binding WorkOfArts}" Margin="10">
             <ListView.View>

@@ -60,6 +60,13 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Commands\AddGalleryCommand.cs" />
+    <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\CommandManager.cs" />
+    <Compile Include="Commands\DeleteGalleryCommand.cs" />
+    <Compile Include="Commands\DuplicateGalleryCommand.cs" />
+    <Compile Include="Commands\EditGalleryCommand.cs" />
+    <Compile Include="Commands\GalleryCommand.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter .cs" />
     <Compile Include="Helper\RelayCommand.cs" />
     <Compile Include="Models\LoggedInUsers.cs" />

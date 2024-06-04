@@ -51,6 +51,28 @@ namespace Server.Services
             return true;
         }
 
+
+        public Gallery CreateGallery(Gallery newGallery)
+        {
+            if (dbContext.Galleries.Any(g => g.PIB == newGallery.PIB))
+            {
+                log.Warn($"CreateNewGallery failed: Gallery with PIB {newGallery.PIB} already exists.");
+                return null;
+            }
+            var _allGalleries = dbContext.Galleries.ToList();
+            var gallery = new Gallery
+            {
+                PIB = PibHelper.GenerateUniquePIB(_allGalleries),
+                MBR = newGallery.MBR,
+                Address = newGallery.Address,
+                IsDeleted = false
+            };
+            dbContext.Galleries.Add(gallery);
+            dbContext.SaveChanges();
+            log.Info($"New gallery created with PIB {gallery.PIB}.");
+            return gallery;
+        }
+
         public bool DeleteGallery(string galleryPIB)
         {
             var gallery = dbContext.Galleries.FirstOrDefault(g => g.PIB == galleryPIB);
@@ -74,12 +96,8 @@ namespace Server.Services
                 var existingGallery = dbContext.Galleries.FirstOrDefault(g => g.PIB == gallery.PIB);
                 if (existingGallery != null)
                 {
-                    existingGallery.PIB = gallery.PIB;
-                    existingGallery.MBR = gallery.MBR;
-                    existingGallery.Address = gallery.Address;
-                    existingGallery.IsInEditingMode = gallery.IsInEditingMode;
-                    existingGallery.GalleryIsEdditedBy = gallery.GalleryIsEdditedBy;
-
+                    existingGallery.IsDeleted = gallery.IsDeleted;
+                    // Other property updates as needed
                     dbContext.SaveChanges();
                     log.Info($"Gallery with PIB {gallery.PIB} updated successfully.");
                     return true;
@@ -94,6 +112,7 @@ namespace Server.Services
                 return false;
             }
         }
+
 
         public Gallery GetGalleryByPIB(string pib)
         {

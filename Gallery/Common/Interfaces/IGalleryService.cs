@@ -28,5 +28,8 @@ namespace Common.Services
         bool SaveGalleryChanges(Gallery gallery);
         [OperationContract]
         Gallery GetGalleryByPIB(string pib);
+
+        [OperationContract]
+        Gallery CreateGallery(Gallery newGallery);
     }
 }

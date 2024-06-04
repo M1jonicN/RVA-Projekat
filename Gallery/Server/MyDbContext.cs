@@ -8,7 +8,7 @@ namespace Server
     public class MyDbContext : DbContext
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(MyDbContext));
-        private static readonly string connectionString = "Data Source=localhost;Initial Catalog=GalleryDB;Integrated Security=True;";
+        private static readonly string connectionString = "Data Source=localhost\\SQLEXPRESS;Initial Catalog=GalleryDB;Integrated Security=True;";
 
         // Lazy initialization for the singleton instance
         private static readonly Lazy<MyDbContext> instance = new Lazy<MyDbContext>(() => new MyDbContext());
