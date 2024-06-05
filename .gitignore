@@ -39,9 +39,6 @@ obj/
 *.manifest
 *.xbap
 *.cache
-*.png
-*.jpg
-*.jpeg
 *.gif
 *.tif
 *.tiff

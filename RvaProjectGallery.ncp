@@ -948,7 +948,7 @@ Definisana je apstraktna klasa Command, koja pruža mogucnost za implementiranje
 Implementirano je nekoliko konkretnih klasa komandi (AddGalleryCommand, DeleteGalleryCommand, DuplicateGalleryCommand, EditGalleryCommand), od kojih svaka enkapsulira specifične operacije povezane sa objektom Gallery. Svaka komanda pravilno implementira metode Execute i UnExecute, omogućavajući izvršenje i poništavanje akcija.
 
 
- Klasa CommandManager održava dva steka, _undoStack i _redoStack, za rukovanje operacijama Undo i Redo. Ova klasa pruža metode za izvršavanje komandi, kao i funkcionalnosti za Undo i Redo, osiguravajući efikasno upravljanje promenama stanja. Korišćenje stekova za upravljanje operacijama Undo i Redo je standardan i efikasan pristup. Svaka izvršena komanda se dodaje na _undoStack, a brisanjem _redoStack osigurava se da su operacije ponavljanja resetovane kad god se izvrši nova komanda.
+Klasa CommandManager održava dva steka, _undoStack i _redoStack, za rukovanje operacijama Undo i Redo. Ova klasa pruža metode za izvršavanje komandi, kao i funkcionalnosti za Undo i Redo, osiguravajući efikasno upravljanje promenama stanja. Korišćenje stekova za upravljanje operacijama Undo i Redo je standardan i efikasan pristup. Svaka izvršena komanda se dodaje na _undoStack, a brisanjem _redoStack osigurava se da su operacije ponavljanja resetovane kad god se izvrši nova komanda.
 
 
 Konkretne klase komandi koriste servise (IGalleryService) i modele (Gallery), koji enkapsuliraju poslovnu logiku i podatke. Ova separacija odgovornosti čini komande fokusiranim na svoje specifične zadatke i promoviše ponovnu upotrebu koda.</Text>
