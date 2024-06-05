@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client.ViewModels"
         mc:Ignorable="d"
-        Title="Create New Work Of Art" Height="270" Width="600">
+        Title="Create New Work Of Art" Height="280" Width="400"
+        Background="#F0F4F8">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -20,23 +21,23 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Text="Art Name:" Grid.Row="0" Grid.Column="0" Margin="5"/>
-        <TextBox Text="{Binding ArtName}" Grid.Row="0" Grid.Column="1" Margin="5"/>
+        <TextBlock Text="Art Name:" Grid.Row="0" Grid.Column="0" Margin="5" FontSize="12" FontWeight="Bold"/>
+        <TextBox Text="{Binding ArtName}" Grid.Row="0" Grid.Column="1" Margin="5" FontSize="12" BorderBrush="#B0BEC5" BorderThickness="1" Padding="5" Background="White"/>
 
-        <TextBlock Text="Art Movement:" Grid.Row="1" Grid.Column="0" Margin="5"/>
-        <ComboBox ItemsSource="{Binding ArtMovements}" SelectedItem="{Binding SelectedArtMovement}" Grid.Row="1" Grid.Column="1" Margin="5"/>
+        <TextBlock Text="Art Movement:" Grid.Row="1" Grid.Column="0" Margin="5" FontSize="12" FontWeight="Bold"/>
+        <ComboBox ItemsSource="{Binding ArtMovements}" SelectedItem="{Binding SelectedArtMovement}" Grid.Row="1" Grid.Column="1" Margin="5" FontSize="12" BorderBrush="#B0BEC5" BorderThickness="1" Padding="5" Background="White"/>
 
-        <TextBlock Text="Style:" Grid.Row="2" Grid.Column="0" Margin="5"/>
-        <ComboBox ItemsSource="{Binding Styles}" SelectedItem="{Binding SelectedStyle}" Grid.Row="2" Grid.Column="1" Margin="5"/>
+        <TextBlock Text="Style:" Grid.Row="2" Grid.Column="0" Margin="5" FontSize="12" FontWeight="Bold"/>
+        <ComboBox ItemsSource="{Binding Styles}" SelectedItem="{Binding SelectedStyle}" Grid.Row="2" Grid.Column="1" Margin="5" FontSize="12" BorderBrush="#B0BEC5" BorderThickness="1" Padding="5" Background="White"/>
 
-        <TextBlock Text="Author Name:" Grid.Row="3" Grid.Column="0" Margin="5"/>
-        <ComboBox ItemsSource="{Binding AuthorNames}" SelectedItem="{Binding SelectedAuthorName}" Grid.Row="3" Grid.Column="1" Margin="5"/>
+        <TextBlock Text="Author Name:" Grid.Row="3" Grid.Column="0" Margin="5" FontSize="12" FontWeight="Bold"/>
+        <ComboBox ItemsSource="{Binding AuthorNames}" SelectedItem="{Binding SelectedAuthorName}" Grid.Row="3" Grid.Column="1" Margin="5" FontSize="12" BorderBrush="#B0BEC5" BorderThickness="1" Padding="5" Background="White"/>
 
-        <TextBlock Text="Gallery PIB:" Grid.Row="4" Grid.Column="0" Margin="5"/>
-        <ComboBox ItemsSource="{Binding GalleryPIBs}" SelectedItem="{Binding SelectedGalleryPIB}" Grid.Row="4" Grid.Column="1" Margin="5"/>
+        <TextBlock Text="Gallery PIB:" Grid.Row="4" Grid.Column="0" Margin="5" FontSize="12" FontWeight="Bold"/>
+        <ComboBox ItemsSource="{Binding GalleryPIBs}" SelectedItem="{Binding SelectedGalleryPIB}" Grid.Row="4" Grid.Column="1" Margin="5" FontSize="12" BorderBrush="#B0BEC5" BorderThickness="1" Padding="5" Background="White"/>
 
         <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-            <Button Content="Save" Command="{Binding CreateCommand}" Width="100" Margin="5"/>
+            <Button Content="Save" Command="{Binding CreateCommand}" Width="100" Height="30" Margin="5" FontSize="12" Background="#4DB6AC" Foreground="White" BorderBrush="#00897B" BorderThickness="1"/>
         </StackPanel>
     </Grid>
 </Window>

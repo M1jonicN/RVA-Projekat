@@ -6,10 +6,11 @@
         mc:Ignorable="d"
         Title="Create New User"
         Width="400"
-        Height="220">
+        Height="220"
+        WindowStartupLocation="CenterScreen"
+        Background="#F0F4F8">
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -21,18 +22,18 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Text="Username:" VerticalAlignment="Center" Margin="5"/>
-        <TextBox Grid.Column="1" Width="200" Margin="5" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBlock Text="Username:" VerticalAlignment="Center" Margin="5" FontSize="12" FontWeight="Bold"/>
+        <TextBox Grid.Column="1" Width="200" Margin="5" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" FontSize="12" BorderBrush="#B0BEC5" BorderThickness="1" Padding="5" Background="White" />
 
-        <TextBlock Text="Password:" VerticalAlignment="Center" Margin="5" Grid.Row="1"/>
-        <PasswordBox Grid.Column="1" Width="200" Margin="5" PasswordChanged="PasswordBox_PasswordChanged" Grid.Row="1"/>
+        <TextBlock Text="Password:" VerticalAlignment="Center" Margin="5" Grid.Row="1" FontSize="12" FontWeight="Bold"/>
+        <PasswordBox Grid.Column="1" Width="200" Margin="5" PasswordChanged="PasswordBox_PasswordChanged" Grid.Row="1" FontSize="12" BorderBrush="#B0BEC5" BorderThickness="1" Padding="5" Background="White" />
 
-        <TextBlock Text="First Name:" VerticalAlignment="Center" Margin="5" Grid.Row="2"/>
-        <TextBox Grid.Column="1" Width="200" Margin="5" Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2"/>
+        <TextBlock Text="First Name:" VerticalAlignment="Center" Margin="5" Grid.Row="2" FontSize="12" FontWeight="Bold"/>
+        <TextBox Grid.Column="1" Width="200" Margin="5" Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" FontSize="12" BorderBrush="#B0BEC5" BorderThickness="1" Padding="5" Background="White" />
 
-        <TextBlock Text="Last Name:" VerticalAlignment="Center" Margin="5" Grid.Row="3"/>
-        <TextBox Grid.Column="1" Width="200" Margin="5" Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3"/>
+        <TextBlock Text="Last Name:" VerticalAlignment="Center" Margin="5" Grid.Row="3" FontSize="12" FontWeight="Bold"/>
+        <TextBox Grid.Column="1" Width="200" Margin="5" Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" FontSize="12" BorderBrush="#B0BEC5" BorderThickness="1" Padding="5" Background="White" />
 
-        <Button Grid.Row="4" Grid.ColumnSpan="2" Width="100" Height="30" Content="Create User" Command="{Binding CreateUserCommand}" HorizontalAlignment="Center" Margin="5"/>
+        <Button Grid.Row="4" IsEnabled="True" Visibility="Visible" Grid.ColumnSpan="2" Width="100" Height="30" Content="Create User" Command="{Binding CreateUserCommand}" HorizontalAlignment="Center" Margin="5" FontSize="12" Background="#4DB6AC" Foreground="White" BorderBrush="#00897B" BorderThickness="1" />
     </Grid>
 </Window>

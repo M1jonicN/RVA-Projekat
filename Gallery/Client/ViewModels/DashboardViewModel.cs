@@ -223,7 +223,9 @@ namespace Client.ViewModels
         {
             var createAuthorView = new CreateAuthorView
             {
-                DataContext = new CreateAuthorViewModel(_loggedInUser.Username)
+                DataContext = new CreateAuthorViewModel(_loggedInUser.Username),
+                Width = 400,
+                Height = 390
             };
             log.Info($"{_loggedInUser.Username} successfully opened Create New Author Window.");
             createAuthorView.Show();
@@ -233,7 +235,9 @@ namespace Client.ViewModels
         {
             var createWorkOfArtView = new CreateWorkOfArtView
             {
-                DataContext = new CreateWorkOfArtViewModel(_loggedInUser.Username) // Pass the logged-in user's username to the ViewModel
+                DataContext = new CreateWorkOfArtViewModel(_loggedInUser.Username),
+                Height = 280,
+                Width = 400
             };
             log.Info($"{_loggedInUser.Username} successfully opened Create New Work of Art Window.");
             createWorkOfArtView.Show();
@@ -253,12 +257,21 @@ namespace Client.ViewModels
 
         private void OpenCreateUserWindow()
         {
-            var createUserView = new CreateUserView
+            if (_loggedInUser.UserType == 0)
             {
-                DataContext = new CreateUserViewModel(_loggedInUser.Username)
-            };
-            log.Info($"{_loggedInUser.Username} successfully opened Create New User Window.");
-            createUserView.Show();
+                var createUserView = new CreateUserView
+                {
+                    DataContext = new CreateUserViewModel(_loggedInUser.Username),
+                    Height = 250,
+                    Width = 400
+                };
+                log.Info($"{_loggedInUser.Username} successfully opened Create New User Window.");
+                createUserView.Show();
+            }
+            else
+            {
+                MessageBox.Show("Only admin can create new user!");
+            }
         }
 
         private void OpenCreateGalleryWindow()
@@ -326,6 +339,8 @@ namespace Client.ViewModels
             UserActionLoggerService.Instance.Log(_loggedInUser.Username, $"viewed details for gallery with PIB: {gallery.PIB}.");
         }
 
+
+
         private void Search()
         {
             if (string.IsNullOrWhiteSpace(SearchText))
@@ -386,7 +401,9 @@ namespace Client.ViewModels
             var client = _channelFactory.CreateChannel();
             var editUserView = new EditUserWindow
             {
-                DataContext = new EditUserViewModel(_loggedInUser, client)
+                DataContext = new EditUserViewModel(_loggedInUser, client),
+                Width = 400,
+                Height = 400
             };
             log.Info($"{_loggedInUser.Username} successfully opened Edit User Window.");
             editUserView.Show();
@@ -395,10 +412,12 @@ namespace Client.ViewModels
 
         private void LoadData()
         {
+            LoggedInUsername = _loggedInUser.Username;
             LoadGalleries();
             LoadWorksOfArt();
             LoadAuthors();
         }
+
 
         private void LoadGalleries()
         {
@@ -419,12 +438,19 @@ namespace Client.ViewModels
                         }
                     });
                 }
+                catch (FaultException ex)
+                {
+                    log.Error("FaultException occurred while loading galleries.", ex);
+                    // Handle FaultException specific logic
+                }
                 catch (Exception ex)
                 {
                     log.Error("Error occurred while loading galleries.", ex);
+                    // Handle general exception logic
                 }
             }
         }
+
 
         private void LoadWorksOfArt()
         {

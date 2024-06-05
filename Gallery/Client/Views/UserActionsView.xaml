@@ -5,14 +5,37 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client.Views"
         mc:Ignorable="d"
-        Title="UserActionsView" Height="450" Width="800">
-    <Grid>
-        <ListView ItemsSource="{Binding UserActions}">
+        Title="User Actions" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen"
+        Background="#F0F4F8">
+    <Grid Margin="10">
+        <ListView ItemsSource="{Binding UserActions}" Background="#FFFFFF" BorderBrush="#B0BEC5" BorderThickness="1">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                    <Border BorderBrush="#B0BEC5" BorderThickness="0 0 0 1" Padding="3">
+                        <TextBlock Text="{Binding}" TextWrapping="Wrap" FontSize="14" Foreground="#37474F"/>
+                    </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Padding" Value="5"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Setter Property="Margin" Value="0,3,0,3"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#E0F7FA"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#B2EBF2"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
         </ListView>
     </Grid>
 </Window>

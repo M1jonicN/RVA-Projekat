@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Client.ViewModels;
+using log4net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +21,19 @@ namespace Client.Views
     /// </summary>
     public partial class WorkOfArtDetailsWindow : Window
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(WorkOfArtDetailsWindow));
         public WorkOfArtDetailsWindow()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while initializing the window: {ex.Message}");
+                log.Error("Error occurred while initializing WorkOfArtDetailsWindow.", ex);
+                Close(); // Close the window if initialization fails
+            }
         }
     }
 }

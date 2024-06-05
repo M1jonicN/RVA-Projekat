@@ -1,48 +1,56 @@
 ﻿<Window x:Class="Client.Views.EditUserWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Edit User" Height="450" Width="400">
+        Title="Edit User" Height="380" Width="400"
+        Background="#F0F4F8">
     <Grid>
-        <StackPanel Margin="10">
-            <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
-                <TextBlock Width="80" Text="First Name:" VerticalAlignment="Center"/>
-                <TextBox Text="{Binding User.FirstName}" Margin="10" Width="200" Height="30"
-                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+        <StackPanel Margin="20">
+            <StackPanel Orientation="Horizontal" Margin="0 0 10 10">
+                <TextBlock Width="100" Text="First Name:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#37474F"/>
+                <TextBox Text="{Binding User.FirstName}" Width="200" Height="30" Margin="15 0 0 5"
+                         HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                         Background="#FFFFFF" BorderBrush="#B0BEC5" BorderThickness="1"
                          IsReadOnly="{Binding IsReadOnly}"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
-                <TextBlock Width="80" Text="Last Name:" VerticalAlignment="Center"/>
-                <TextBox Text="{Binding User.LastName}" Margin="10" Width="200" Height="30"
-                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+            <StackPanel Orientation="Horizontal" Margin="0 0 10 10">
+                <TextBlock Width="100" Text="Last Name:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#37474F"/>
+                <TextBox Text="{Binding User.LastName}" Width="200" Height="30" Margin="15 0 0 5"
+                         HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                         Background="#FFFFFF" BorderBrush="#B0BEC5" BorderThickness="1"
                          IsReadOnly="{Binding IsReadOnly}"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
-                <TextBlock Width="80" Text="Username:" VerticalAlignment="Center"/>
-                <TextBox Text="{Binding User.Username}" Margin="10" Width="200" Height="30"
-                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+            <StackPanel Orientation="Horizontal" Margin="0 0 10 10">
+                <TextBlock Width="100" Text="Username:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#37474F"/>
+                <TextBox Text="{Binding User.Username}" Width="200" Height="30" Margin="15 0 0 5"
+                         HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                         Background="#FFFFFF" BorderBrush="#B0BEC5" BorderThickness="1"
                          IsReadOnly="{Binding IsReadOnly}"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" x:Name="spPass" Margin="0 0 0 5">
-                <TextBlock Width="80" Text="New Password:" VerticalAlignment="Center"/>
-                <PasswordBox x:Name="pbNewPassword" Margin="10" Width="200" Height="30" IsEnabled="{Binding IsEditMode}"
-                             HorizontalContentAlignment="Center" VerticalContentAlignment="Center" PasswordChanged="pbNewPassword_PasswordChanged"/>
+            <StackPanel Orientation="Horizontal" x:Name="spPass" Margin="0 0 10 10">
+                <TextBlock Width="100" Text="New Password:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#37474F"/>
+                <PasswordBox x:Name="pbNewPassword" Width="200" Height="30" Margin="15 0 0 5" 
+                             HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                             Background="#FFFFFF" BorderBrush="#B0BEC5" BorderThickness="1"
+                             IsEnabled="{Binding IsEditMode}" PasswordChanged="pbNewPassword_PasswordChanged"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" x:Name="spNewPass" Margin="0 0 0 5">
-                <TextBlock Width="80" Text="Confirm Password:" VerticalAlignment="Center"/>
-                <PasswordBox x:Name="pbConfirmPassword" Margin="10" Width="200" Height="30" IsEnabled="{Binding IsEditMode}"
-                             HorizontalContentAlignment="Center" VerticalContentAlignment="Center" PasswordChanged="pbConfirmPassword_PasswordChanged"/>
+            <StackPanel Orientation="Horizontal" x:Name="spNewPass" Margin="0 0 10 10">
+                <TextBlock Width="100" Text="Confirm Password:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#37474F"/>
+                <PasswordBox x:Name="pbConfirmPassword" Width="200" Height="30" Margin="15 0 0 5" 
+                             HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                             Background="#FFFFFF" BorderBrush="#B0BEC5" BorderThickness="1"
+                             IsEnabled="{Binding IsEditMode}" PasswordChanged="pbConfirmPassword_PasswordChanged"/>
             </StackPanel>
-
-            <StackPanel Orientation="Horizontal" x:Name="spUserType" Visibility="Visible" Margin="0 0 0 5">
-                <TextBlock Width="80" Text="User Type:" VerticalAlignment="Center"/>
-                <TextBox IsEnabled="False" Text="{Binding TypeOfUser}" Margin="10" Width="200" Height="30" 
-                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" x:Name="spUserType" Margin="0 0 10 10">
+                <TextBlock Width="100" Text="User Type:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#37474F"/>
+                <TextBox IsEnabled="False" Text="{Binding TypeOfUser}" Width="200" Height="30" Margin="15 0 0 5"
+                         HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                         Background="#FFFFFF" BorderBrush="#B0BEC5" BorderThickness="1"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-                <Button Content="Edit" Command="{Binding EditUserCommand}" Width="100" Height="30"
-                        Margin="5"/>
-                <Button Content="Save" Command="{Binding SaveUserCommand}" Width="100" Height="30"
-                        Margin="5"/>
+                <Button Content="Edit" Command="{Binding EditUserCommand}" Width="100" Height="30" Margin="5"
+                        Background="#1E88E5" Foreground="White" BorderBrush="#1565C0" BorderThickness="1"/>
+                <Button Content="Save" Command="{Binding SaveUserCommand}" Width="100" Height="30" Margin="5"
+                        Background="#43A047" Foreground="White" BorderBrush="#388E3C" BorderThickness="1"/>
             </StackPanel>
         </StackPanel>
     </Grid>

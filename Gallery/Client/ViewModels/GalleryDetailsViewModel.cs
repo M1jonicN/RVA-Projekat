@@ -203,6 +203,13 @@ namespace Client.ViewModels
             {
                 var clientAuthor = _channelFactoryAuthor.CreateChannel();
                 var author = clientAuthor.GetAuthorByWorkOfArtId(workOfArt.ID);
+
+                if (author == null)
+                {
+                    MessageBox.Show("Author not found for this work of art.");
+                    return;
+                }
+
                 var detailsViewModel = new WorkOfArtDetailsViewModel(workOfArt, author, _loggedInUser);
                 var detailsWindow = new WorkOfArtDetailsWindow()
                 {
@@ -210,14 +217,20 @@ namespace Client.ViewModels
                 };
                 detailsWindow.Show();
 
-                log.Info($"Details for Work of Art {workOfArt.ArtName} opened.");
+                log.Info($"Details for Work of Art '{workOfArt.ArtName}' opened.");
+            }
+            catch (FaultException ex)
+            {
+                log.Error($"FaultException occurred while loading author details for Work of Art '{workOfArt.ArtName}'.", ex);
+                MessageBox.Show("An unexpected error occurred. Please try again later.");
             }
             catch (Exception ex)
             {
-                log.Error($"Failed to open details for Work of Art {workOfArt.ArtName}.", ex);
+                log.Error($"Error occurred while loading details for Work of Art '{workOfArt.ArtName}'.", ex);
                 MessageBox.Show($"An error occurred: {ex.Message}");
             }
         }
+
 
         private void DeleteWorkOfArt(WorkOfArt workOfArt)
         {

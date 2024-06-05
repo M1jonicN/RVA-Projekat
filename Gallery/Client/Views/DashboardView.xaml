@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         d:DesignHeight="400" d:DesignWidth="800"
         WindowStyle="None" MouseLeftButtonDown="Window_MouseLeftButtonDown" WindowStartupLocation="CenterScreen">
-    <Grid>
+    <Grid Background="#F0F4F8">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="50"/>
@@ -17,17 +17,19 @@
         <!-- Prvi red: Username, Search bar, Logout dugme -->
         <Grid Grid.Row="0" Margin="5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="10">
                 <TextBlock Text="Logged in as: " FontSize="14" FontWeight="Bold"/>
                 <TextBlock Text="{Binding LoggedInUsername}" FontSize="14" Margin="5,0,0,0"/>
             </StackPanel>
-            <TextBox Grid.Column="1" Width="200" FontSize="16" Margin="5" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-            <Button Grid.Column="2" FontSize="16" Width="100" Margin="5" Content="Logout" Command="{Binding LogoutCommand}" HorizontalAlignment="Right"/>
+            <Border BorderBrush="#B0BEC5" Grid.Column="1" BorderThickness="2" Background="#FFFFFF" CornerRadius="10" Margin="5" HorizontalAlignment="Center">
+                <TextBox Grid.Column="1"  Width="250" FontSize="16" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Transparent" BorderThickness="0"/>
+            </Border>
+            <Button Grid.Column="2" FontSize="16" Width="100" Margin="5" Content="Logout" Command="{Binding LogoutCommand}" HorizontalAlignment="Right" Background="#1E88E5" Foreground="White" BorderBrush="#1565C0" BorderThickness="1" />
         </Grid>
 
         <!-- Drugi red: Checkboxovi za pretragu -->
@@ -45,8 +47,8 @@
             <CheckBox Grid.Column="1" Content="PIB" IsChecked="{Binding IsSearchByPIB}" Margin="5"/>
             <CheckBox Grid.Column="2" Content="Address" IsChecked="{Binding IsSearchByAddress}" Margin="5"/>
             <CheckBox Grid.Column="3" Content="Search By Parameters" IsChecked="{Binding IsSearchByParameters}" Margin="5"/>
-            <Button Grid.Column="4" Content="Undo" Command="{Binding UndoCommand}" Margin="5" Width="75"/>
-            <Button Grid.Column="5" Content="Redo" Command="{Binding RedoCommand}" Margin="5" Width="75"/>
+            <Button Grid.Column="4" Content="Undo" Command="{Binding UndoCommand}" Margin="5" Width="75" Background="#FFCDD2" Foreground="Black" BorderBrush="#E57373" BorderThickness="1" />
+            <Button Grid.Column="5" Content="Redo" Command="{Binding RedoCommand}" Margin="5" Width="75" Background="#C5E1A5" Foreground="Black" BorderBrush="#8BC34A" BorderThickness="1" />
         </Grid>
 
         <!-- Treći red: Akcione dugmad -->
@@ -58,11 +60,11 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" FontSize="16" Width="100" Margin="5" Content="View User" Command="{Binding EditUserCommand}" HorizontalAlignment="Left"/>
-            <Button Grid.Column="2" FontSize="16" Width="150" Margin="5" Content="Create New User" Command="{Binding CreateUserCommand}" HorizontalAlignment="Left"/>
-            <Button Grid.Column="3" FontSize="16" Width="150" Margin="5" Content="Create New Gallery" Command="{Binding CreateNewGalleryCommand}" HorizontalAlignment="Left"/>
-            <Button Grid.Column="1" FontSize="16" Width="150" Margin="205,5,0,5" Content="Create New Author" Command="{Binding CreateNewAuthorCommand}" HorizontalAlignment="Left" />
-            <Button Grid.Column="1" FontSize="16" Width="190" Margin="5" Content="Create New Work Of Art" Command="{Binding CreateNewWorkOfArtCommand}" HorizontalAlignment="Left"/>
+            <Button Grid.Column="0" FontSize="16" Width="100" Margin="5" Content="View User" Command="{Binding EditUserCommand}" HorizontalAlignment="Left" Background="#4DB6AC" Foreground="White" BorderBrush="#00897B" BorderThickness="1" />
+            <Button Grid.Column="1" FontSize="16" Width="150" Margin="5" Content="Create New User" Command="{Binding CreateUserCommand}" HorizontalAlignment="Left" Background="#FFB74D" Foreground="White" BorderBrush="#FB8C00" BorderThickness="1" />
+            <Button Grid.Column="2" FontSize="16" Width="150" Margin="5" Content="Create New Gallery" Command="{Binding CreateNewGalleryCommand}" HorizontalAlignment="Left" Background="#64B5F6" Foreground="White" BorderBrush="#1976D2" BorderThickness="1" />
+            <Button Grid.Column="3" FontSize="16" Width="150" Margin="5" Content="Create New Author" Command="{Binding CreateNewAuthorCommand}" HorizontalAlignment="Left" Background="#9575CD" Foreground="White" BorderBrush="#512DA8" BorderThickness="1" />
+            <Button Grid.Column="4" FontSize="16" Width="190" Margin="165,5,5,5" Content="Create New Work Of Art" Command="{Binding CreateNewWorkOfArtCommand}" HorizontalAlignment="Left" Background="#E57373" Foreground="White" BorderBrush="#D32F2F" BorderThickness="1" />
         </Grid>
 
         <!-- Četvrti red: ListView -->
@@ -94,9 +96,9 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Button Content="Details" Command="{Binding DataContext.DetailsCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}" Margin="5"/>
-                                    <Button Content="Delete" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}" Margin="5"/>
-                                    <Button Content="Duplicate" Command="{Binding DataContext.DuplicateGalleryCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}" Margin="5"/>
+                                    <Button Content="Details" Command="{Binding DataContext.DetailsCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}" Margin="5" Background="#4DB6AC" Foreground="White" BorderBrush="#00897B" BorderThickness="1" />
+                                    <Button Content="Delete" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}" Margin="5" Background="#E57373" Foreground="White" BorderBrush="#D32F2F" BorderThickness="1" />
+                                    <Button Content="Duplicate" Command="{Binding DataContext.DuplicateGalleryCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}" Margin="5" Background="#64B5F6" Foreground="White" BorderBrush="#1976D2" BorderThickness="1" />
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

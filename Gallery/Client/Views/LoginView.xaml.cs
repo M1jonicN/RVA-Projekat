@@ -38,8 +38,8 @@ namespace Client.Views
             {
                 errorMessage.Text = "";
                 tbUsername.Text = "";
-                userBorder.BorderBrush = Brushes.Red;
-                userBorder.BorderThickness = new Thickness(0);
+                /*userBorder.BorderBrush = Brushes.Red;
+                userBorder.BorderThickness = new Thickness(0);*/
             }
         }
 
@@ -48,8 +48,8 @@ namespace Client.Views
             if (tbUsername.Text.Trim() == "")
             {
                 errorMessage.Text = "Invalid username or password";
-                userBorder.BorderBrush = Brushes.Red;
-                userBorder.BorderThickness = new Thickness(1);
+                /*userBorder.BorderBrush = Brushes.Red;
+                userBorder.BorderThickness = new Thickness(1);*/
                 tbUsername.Text = "username";
 
             }
@@ -61,8 +61,8 @@ namespace Client.Views
             {
                 lblPassword.Visibility = Visibility.Hidden;
                 errorMessage.Text = "";
-                passBorder.BorderBrush = Brushes.Red;
-                passBorder.BorderThickness = new Thickness(0);
+               /* passBorder.BorderBrush = Brushes.Red;
+                passBorder.BorderThickness = new Thickness(0);*/
             }
         }
 
@@ -71,8 +71,8 @@ namespace Client.Views
             if (pbPassword.Password == "")
             {
                 errorMessage.Text = "Invalid username or password";
-                passBorder.BorderBrush = Brushes.Red;
-                passBorder.BorderThickness = new Thickness(1);
+                /*passBorder.BorderBrush = Brushes.Red;
+                passBorder.BorderThickness = new Thickness(1);*/
                 lblPassword.Visibility = Visibility.Visible;
             }
         }

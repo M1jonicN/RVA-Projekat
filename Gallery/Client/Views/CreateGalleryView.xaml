@@ -4,19 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="180" d:DesignWidth="400">
-    <Grid>
+             d:DesignHeight="200" d:DesignWidth="400">
+    <Grid Background="#F0F4F8">
         <StackPanel Margin="10">
             <TextBlock Text="Create New Gallery" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
             <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
-                <TextBlock Width="100" Text="MBR:" VerticalAlignment="Center"/>
-                <TextBox Text="{Binding NewGallery.MBR}" Width="200" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                <TextBlock Width="100" Text="MBR:" VerticalAlignment="Center" FontSize="12" FontWeight="Bold"/>
+                <TextBox Text="{Binding NewGallery.MBR}" Width="200" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="12" BorderBrush="#B0BEC5" BorderThickness="1" Padding="5" Background="White"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
-                <TextBlock Width="100" Text="Address:" VerticalAlignment="Center"/>
-                <TextBox Text="{Binding NewGallery.Address}" Width="200" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                <TextBlock Width="100" Text="Address:" VerticalAlignment="Center" FontSize="12" FontWeight="Bold"/>
+                <TextBox Text="{Binding NewGallery.Address}" Width="200" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="12" BorderBrush="#B0BEC5" BorderThickness="1" Padding="5" Background="White"/>
             </StackPanel>
-            <Button Content="Create" Command="{Binding CreateGalleryCommand}" Width="100" Height="30" HorizontalAlignment="Center" Margin="20"/>
+            <Button Content="Create" Command="{Binding CreateGalleryCommand}" Width="100" Height="30" HorizontalAlignment="Center" Margin="20" FontSize="12" Background="#4DB6AC" Foreground="White" BorderBrush="#00897B" BorderThickness="1"/>
         </StackPanel>
     </Grid>
 </UserControl>

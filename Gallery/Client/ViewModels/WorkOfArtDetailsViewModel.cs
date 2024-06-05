@@ -201,7 +201,7 @@ namespace Client.ViewModels
                 OnPropertyChanged(nameof(Author));
                 Console.WriteLine("Author refreshed.");
                 log.Info($"Author {Author.FirstName} {Author.LastName} refreshed.");
-            }
+            }       
             else
             {
                 Console.WriteLine("Failed to refresh Author.");
