@@ -31,14 +31,11 @@ namespace Client.ViewModels
         private readonly string _loggedInUser;
         #endregion
 
-        public CreateWorkOfArtViewModel()
-        {
-        }
-
         public CreateWorkOfArtViewModel(string loggedInUser)
         {
             _loggedInUser = loggedInUser;
             log.Info($"{_loggedInUser} initialized CreateWorkOfArtViewModel.");
+            UserActionLoggerService.Instance.Log(_loggedInUser, "initialized CreateWorkOfArtViewModel.");
 
             var bindingAuthor = new NetTcpBinding();
             var endpointAuthor = new EndpointAddress("net.tcp://localhost:8088/Author");
@@ -61,7 +58,7 @@ namespace Client.ViewModels
             AuthorNames = new ObservableCollection<string>();
 
             LoadAuthors();
-            SaveCommand = new RelayCommand(Save);
+            CreateCommand = new RelayCommand(Create);
         }
 
         #region Properties
@@ -101,7 +98,7 @@ namespace Client.ViewModels
         public ObservableCollection<string> GalleryPIBs { get; }
         #endregion
 
-        public ICommand SaveCommand { get; }
+        public ICommand CreateCommand { get; }
 
         #region Methods
         private void LoadAuthors()
@@ -115,14 +112,16 @@ namespace Client.ViewModels
             }
 
             log.Info($"{_loggedInUser} loaded authors.");
+            UserActionLoggerService.Instance.Log(_loggedInUser, "loaded authors.");
         }
 
-        private void Save()
+        private void Create()
         {
             if (!CanCreateWoa())
             {
                 MessageBox.Show("Unsuccessfully create new Work of Art!");
                 log.Warn($"{_loggedInUser} unsuccessfully attempted to create new Work of Art due to invalid input.");
+                UserActionLoggerService.Instance.Log(_loggedInUser, "attempted to create a user with invalid fields.");
                 return;
             }
 
@@ -159,18 +158,21 @@ namespace Client.ViewModels
                 {
                     MessageBox.Show("Successfully created new Work of Art!");
                     log.Info($"{_loggedInUser} successfully created new Work of Art with name: {ArtName}.");
+                    UserActionLoggerService.Instance.Log(_loggedInUser, $"successfully created new Work of Art with name: {ArtName}.");
                     Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
                 }
                 else
                 {
                     MessageBox.Show("Unsuccessfully create new Work of Art!");
                     log.Warn($"{_loggedInUser} unsuccessfully created new Work of Art.");
+                    UserActionLoggerService.Instance.Log(_loggedInUser, $"unsuccessfully created new Work of Art with name: {ArtName}.");
                     Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
                 }
             }
             catch (Exception ex)
             {
                 log.Error($"{_loggedInUser} encountered an error while creating new Work of Art. Error: {ex.Message}");
+                UserActionLoggerService.Instance.Log(_loggedInUser, $"encountered an error while creating new Work of Art. Error: {ex.Message}");
                 MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

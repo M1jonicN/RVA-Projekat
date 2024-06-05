@@ -32,15 +32,12 @@ namespace Client.Commands
             {
                 _gallery.IsDeleted = false;
                 _galleryService.SaveGalleryChanges(_gallery);
-                //MessageBox.Show("A gallery with the same PIB already exists.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                //log.Warn("Attempt to create new Gallery failed due to duplicate PIB.");
 
             }
         }
 
         public override void UnExecute()
         {
-            // Instead of actually deleting, just mark as IsDeleted
             _gallery.IsDeleted = true;
             _galleryService.SaveGalleryChanges(_gallery);
          

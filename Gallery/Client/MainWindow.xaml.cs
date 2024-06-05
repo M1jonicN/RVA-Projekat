@@ -1,11 +1,6 @@
 ﻿using Client.ViewModels;
-using Common.DbModels;
-using Common.Services;
 using log4net;
 using log4net.Config;
-using System;
-using System.Collections.Generic;
-using System.ServiceModel;
 using System.Windows;
 
 namespace Client

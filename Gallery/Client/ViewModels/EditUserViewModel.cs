@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Client.Helpers;
-using Client.Models;
 using Common.DbModels;
 using Common.Helper;
 using Common.Contracts;
@@ -19,15 +18,29 @@ namespace Client.ViewModels
         #region Fields
 
         private static readonly ILog log = LogManager.GetLogger(typeof(EditUserViewModel));
-        public event EventHandler<Common.DbModels.User> UserUpdated;
+        public event EventHandler<User> UserUpdated;
         private readonly IUserAuthenticationService _UserAuthenticationService;
-        private Common.DbModels.User _user;
+        private User _user;
 
         #endregion
 
+        public EditUserViewModel(User user, IUserAuthenticationService UserAuthenticationService)
+        {
+            _UserAuthenticationService = UserAuthenticationService;
+            User = user;
+            IsEditMode = false;
+            TypeOfUser = user.UserType.ToString();
+            SaveUserCommand = new RelayCommand(SaveUser);
+            EditUserCommand = new RelayCommand(EditUser);
+            LoadUserTypes();
+
+            log.Info($"EditUserViewModel initialized for user {user.Username}.");
+            UserActionLoggerService.Instance.Log(User.Username, " initialized EditUserViewModel.");
+        }
+
         #region Properties
 
-        public Common.DbModels.User User
+        public User User
         {
             get { return _user; }
             set
@@ -107,19 +120,7 @@ namespace Client.ViewModels
 
         #endregion
 
-        public EditUserViewModel(Common.DbModels.User user, IUserAuthenticationService UserAuthenticationService)
-        {
-            _UserAuthenticationService = UserAuthenticationService;
-            User = user;
-            IsEditMode = false;
-            TypeOfUser = user.UserType.ToString();
-            SaveUserCommand = new RelayCommand(SaveUser);
-            EditUserCommand = new RelayCommand(EditUser);
-            LoadUserTypes();
-
-            log.Info($"EditUserViewModel initialized for user {user.Username}.");
-            UserActionLoggerService.Instance.Log(User.Username, " initialized EditUserViewModel.");
-        }
+      
 
         #region Methods
 

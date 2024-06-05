@@ -38,6 +38,7 @@ namespace Server.Services
                 ArtMovement = newAuthor.ArtMovement,
                 IsDeleted = false
             };
+
             dbContext.Authors.Add(author);
             dbContext.SaveChanges();
             log.Info($"Author {newAuthor.FirstName} {newAuthor.LastName} created successfully.");

@@ -92,6 +92,9 @@ namespace Client.ViewModels
                     // Open UserActionsView if not already open
                     if (_userActionsView == null)
                     {
+                        log.Info("Opening User Actions Window.");
+                        UserActionLoggerService.Instance.Log(Username, "opening User Actions Window.");
+
                         _userActionsView = new UserActionsView
                         {
                             Height = 450,
@@ -102,9 +105,13 @@ namespace Client.ViewModels
 
                         _userActionsView.Closed += (s, e) => _userActionsView = null;
                         _userActionsView.Show();
+
                         log.Info("Successfully opened User Actions Window.");
                         UserActionLoggerService.Instance.Log(Username, "opened User Actions Window.");
                     }
+
+                    log.Info("Opening Dashboard window.");
+                    UserActionLoggerService.Instance.Log(Username, "opening Dashboard window.");
 
                     var dashboardView = new DashboardView
                     {

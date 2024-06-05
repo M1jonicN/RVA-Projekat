@@ -20,19 +20,19 @@ namespace Client.ViewModels
     {
         #region Fields
         private static readonly ILog log = LogManager.GetLogger(typeof(GalleryDetailsViewModel));
-        private Common.DbModels.Gallery _gallery;
+        private Gallery _gallery;
         private bool _isEditing;
         private readonly ChannelFactory<IAuthorService> _channelFactoryAuthor;
         private readonly ChannelFactory<IWorkOfArtService> _channelFactoryWorkOfArt;
         private readonly ChannelFactory<IGalleryService> _channelFactoryGallery;
-        private readonly Common.DbModels.User _loggedInUser;
+        private readonly User _loggedInUser;
         private readonly DispatcherTimer _dispatcherTimer;
 
         private Gallery oldGallery;
         #endregion
 
         #region Properties
-        public Common.DbModels.Gallery Gallery
+        public Gallery Gallery
         {
             get => _gallery;
             set
@@ -42,7 +42,7 @@ namespace Client.ViewModels
             }
         }
 
-        public ObservableCollection<Common.DbModels.WorkOfArt> WorkOfArts { get; set; }
+        public ObservableCollection<WorkOfArt> WorkOfArts { get; set; }
 
         public string LoggedInUsername => _loggedInUser.Username;
         public bool IsEditing
@@ -56,7 +56,7 @@ namespace Client.ViewModels
         }
         #endregion
 
-        public GalleryDetailsViewModel(Common.DbModels.Gallery gallery, Common.DbModels.User loggedInUser)
+        public GalleryDetailsViewModel(Gallery gallery, User loggedInUser)
         {
             _loggedInUser = loggedInUser;
 

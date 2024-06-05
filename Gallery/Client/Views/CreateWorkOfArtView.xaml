@@ -36,7 +36,7 @@
         <ComboBox ItemsSource="{Binding GalleryPIBs}" SelectedItem="{Binding SelectedGalleryPIB}" Grid.Row="4" Grid.Column="1" Margin="5"/>
 
         <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-            <Button Content="Save" Command="{Binding SaveCommand}" Width="100" Margin="5"/>
+            <Button Content="Save" Command="{Binding CreateCommand}" Width="100" Margin="5"/>
         </StackPanel>
     </Grid>
 </Window>

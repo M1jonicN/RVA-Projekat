@@ -49,7 +49,7 @@ namespace Client.ViewModels
 
         #endregion
 
-        public DashboardViewModel(Common.DbModels.User loggedInUser)
+        public DashboardViewModel(User loggedInUser)
         {
             _loggedInUser = loggedInUser;
             LoggedInUsername = _loggedInUser.Username;
@@ -99,7 +99,6 @@ namespace Client.ViewModels
             _dispatcherTimer.Tick += (sender, args) => LoadData(); // Attach the LoadData method to the Tick event
             _dispatcherTimer.Start(); // Start the timer
 
-            Application.Current.MainWindow.Closing += OnWindowClosing;
         }
 
         #region Commands
@@ -248,6 +247,7 @@ namespace Client.ViewModels
                 // Create AddGalleryCommand and execute it
                 var duplicateGalleryCommand = new DuplicateGalleryCommand(gallery, galleryService, Galleries);
                 Commands.CommandManager.ExecuteCommand(duplicateGalleryCommand);
+                UserActionLoggerService.Instance.Log(_loggedInUser.Username, $"duplicated gallery with PIB: {gallery.PIB}.");
             }
         }
 
@@ -290,9 +290,10 @@ namespace Client.ViewModels
 
             Galleries.Add(newGallery);
             _allGalleries.Add(newGallery);
-            Commands.CommandManager._redoStack.Clear();           
+            Commands.CommandManager._redoStack.Clear();
 
             log.Info($"{_loggedInUser.Username} successfully created a new gallery with PIB {newGallery.PIB}.");
+            UserActionLoggerService.Instance.Log(_loggedInUser.Username, $"created a new gallery with PIB: {newGallery.PIB}.");
         }
 
 
@@ -304,13 +305,14 @@ namespace Client.ViewModels
             Commands.CommandManager.ExecuteCommand(deleteGalleryCommand);
 
             log.Info($"{_loggedInUser.Username} successfully deleted the gallery with PIB {gallery.PIB}.");
+            UserActionLoggerService.Instance.Log(_loggedInUser.Username, $"deleted the gallery with PIB: {gallery.PIB}.");
         }
 
-        private void ShowDetails(Common.DbModels.Gallery gallery)
+        private void ShowDetails(Gallery gallery)
         {
             var clientWOA = _channelFactoryWOA.CreateChannel();
             var workOfArts = clientWOA.GetWorkOfArtsForGallery(gallery.PIB);
-            gallery.WorkOfArts = new List<Common.DbModels.WorkOfArt>(workOfArts);
+            gallery.WorkOfArts = new List<WorkOfArt>(workOfArts);
 
             var detailsViewModel = new GalleryDetailsViewModel(gallery, _loggedInUser);
             var detailsWindow = new GalleryDetailsWindow
@@ -321,54 +323,53 @@ namespace Client.ViewModels
             };
             log.Info($"{_loggedInUser.Username} successfully opened Show Gallery Details Window for Gallery PIB: {gallery.PIB}.");
             detailsWindow.Show();
+            UserActionLoggerService.Instance.Log(_loggedInUser.Username, $"viewed details for gallery with PIB: {gallery.PIB}.");
         }
 
         private void Search()
         {
-            IsSearching = true;
-            Galleries.Clear();
-
-            var filteredGalleries = _allGalleries.Where(gallery =>
+            if (string.IsNullOrWhiteSpace(SearchText))
             {
-                if (!string.IsNullOrEmpty(SearchText) && !gallery.Address.Contains(SearchText.ToLower()) &&
-                    !gallery.MBR.Contains(SearchText.ToLower()) &&
-                    !gallery.PIB.Contains(SearchText.ToLower()))
-                {
-                    return false;
-                }
-
-                if (IsSearchByMBR && !gallery.MBR.Equals(SearchText.ToLower()))
-                {
-                    return false;
-                }
-
-                if (IsSearchByPIB && !gallery.PIB.Equals(SearchText.ToLower()))
-                {
-                    return false;
-                }
-
-                if (IsSearchByAddress && !gallery.Address.Contains(SearchText.ToLower()))
-                {
-                    return false;
-                }
-
-                if (IsSearchByParameters && (string.IsNullOrEmpty(SearchText) ||
-                                             (!gallery.MBR.Equals(SearchText, StringComparison.InvariantCultureIgnoreCase) &&
-                                              !gallery.PIB.Equals(SearchText, StringComparison.InvariantCultureIgnoreCase) &&
-                                              !gallery.Address.Contains(SearchText.ToLower()))))
-                {
-                    return false;
-                }
-
-                return true;
-            }).ToList();
-
-            foreach (var gallery in filteredGalleries)
+                IsSearching = false;
+                Galleries = new ObservableCollection<Gallery>(_allGalleries);
+            }
+            else
             {
-                Galleries.Add(gallery);
+                IsSearching = true;
+
+                var filteredGalleries = _allGalleries.AsQueryable();
+
+                if (IsSearchByParameters)
+                {
+                    if (IsSearchByMBR)
+                    {
+                        filteredGalleries = filteredGalleries.Where(g => g.MBR.ToLower().Contains(SearchText.ToLower()));
+                        log.Info($"{_loggedInUser.Username} searched data by MBR.");
+                    }
+
+                    if (IsSearchByPIB)
+                    {
+                        filteredGalleries = filteredGalleries.Where(g => g.PIB.ToLower().Contains(SearchText.ToLower()));
+                        log.Info($"{_loggedInUser.Username} searched data by PIB.");
+                    }
+
+                    if (IsSearchByAddress)
+                    {
+                        filteredGalleries = filteredGalleries.Where(g => g.Address.ToLower().Contains(SearchText.ToLower()));
+                        log.Info($"{_loggedInUser.Username} searched data by Address.");
+                    }
+                }
+                else
+                {
+                    filteredGalleries = filteredGalleries.Where(g => g.Address.ToLower().Contains(SearchText.ToLower())
+                             || g.PIB.ToLower().Contains(SearchText.ToLower())
+                             || g.MBR.ToLower().Contains(SearchText.ToLower()));
+                }
+
+                Galleries = new ObservableCollection<Gallery>(filteredGalleries.ToList());
             }
 
-            IsSearching = false;
+            UserActionLoggerService.Instance.Log(_loggedInUser.Username, $"performed a search with text: {SearchText}.");
         }
 
         public void Logout()
@@ -376,6 +377,7 @@ namespace Client.ViewModels
             var client = _channelFactory.CreateChannel();
             client.Logout(_loggedInUser.Username);
             log.Info($"{_loggedInUser.Username} successfully logged out.");
+            UserActionLoggerService.Instance.Log(_loggedInUser.Username, "logged out.");
             Application.Current.Windows.OfType<Window>().SingleOrDefault(w => w.IsActive)?.Close();
         }
 
@@ -388,6 +390,7 @@ namespace Client.ViewModels
             };
             log.Info($"{_loggedInUser.Username} successfully opened Edit User Window.");
             editUserView.Show();
+            UserActionLoggerService.Instance.Log(_loggedInUser.Username, "opened Edit User Window.");
         }
 
         private void LoadData()
@@ -399,24 +402,27 @@ namespace Client.ViewModels
 
         private void LoadGalleries()
         {
-            try
+            if (!IsSearching)
             {
-                var clientGallery = _channelFactoryGallery.CreateChannel();
-                var galleries = clientGallery.GetAllGalleries();
-                Application.Current.Dispatcher.Invoke(() =>
+                try
                 {
-                    _allGalleries.Clear();
-                    Galleries.Clear();
-                    foreach (var gallery in galleries)
+                    var clientGallery = _channelFactoryGallery.CreateChannel();
+                    var galleries = clientGallery.GetAllGalleries();
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
-                        _allGalleries.Add(gallery);
-                        Galleries.Add(gallery);
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                log.Error("Error occurred while loading galleries.", ex);
+                        _allGalleries.Clear();
+                        Galleries.Clear();
+                        foreach (var gallery in galleries)
+                        {
+                            _allGalleries.Add(gallery);
+                            Galleries.Add(gallery);
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error occurred while loading galleries.", ex);
+                }
             }
         }
 
@@ -467,7 +473,7 @@ namespace Client.ViewModels
             if (Commands.CommandManager._undoStack.Count > 0)
             {
                 Commands.CommandManager.Undo();
-
+                UserActionLoggerService.Instance.Log(_loggedInUser.Username, "performed an undo action.");
             }
         }
 
@@ -476,14 +482,10 @@ namespace Client.ViewModels
             if (Commands.CommandManager._redoStack.Count > 0)
             {
                 Commands.CommandManager.Redo();
-
+                UserActionLoggerService.Instance.Log(_loggedInUser.Username, "performed a redo action.");
             }
         }
 
-        private void OnWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            // Save state or handle necessary actions before the window closes
-        }
 
         #endregion
     }

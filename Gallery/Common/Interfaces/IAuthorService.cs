@@ -29,5 +29,6 @@ namespace Common.Interfaces
 
         [OperationContract]
         bool CreateNewAuthor(Author newAuthor);
+
     }
 }

@@ -1,22 +1,16 @@
 ﻿using Common.DbModels;
 using Common.Helpers;
 using Common.Services;
-using log4net;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Client.Commands
 {
     public class DuplicateGalleryCommand : GalleryCommand
     {
-        private Common.DbModels.Gallery _gallery;
+        private Gallery _gallery;
         private readonly IGalleryService _galleryService;
-        private static readonly ILog log = LogManager.GetLogger(typeof(AddGalleryCommand));
         private bool undo = false;
 
         private ObservableCollection<Gallery> galleries = new ObservableCollection<Gallery>();
@@ -33,7 +27,7 @@ namespace Client.Commands
         {
             if (!undo)
             {
-                var duplicatedWorkOfArts = new List<Common.DbModels.WorkOfArt>();
+                var duplicatedWorkOfArts = new List<WorkOfArt>();
                 if (_gallery.WorkOfArts != null)
                 {
                     foreach (var workOfArt in _gallery.WorkOfArts)
@@ -55,7 +49,7 @@ namespace Client.Commands
                 }
     
                 // Kreiranje duplikata galerije
-                var duplicateGallery = new Common.DbModels.Gallery
+                var duplicateGallery = new Gallery
                 {
                     PIB = PibHelper.GenerateUniquePIB(galleries.ToList()),
                     Address = _gallery.Address,
@@ -67,7 +61,6 @@ namespace Client.Commands
                 // Dodavanje duplikata galerije u bazu podataka
                 
                 _galleryService.CreateNewGallery(duplicateGallery);
-                //  log.Info($"{_loggedInUser.Username} successfully duplicated the gallery with PIB {gallery.PIB}.");
             }
             else
             {

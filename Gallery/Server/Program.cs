@@ -44,6 +44,7 @@ namespace Server
         }
 
         // Metod koji inicijalizuje podatke prilikom prvog pokretanja programa
+
         private static void InitializeDatabaseData()
         {
             if (!(dbContext.Users.Count() == 0 &&
@@ -51,6 +52,7 @@ namespace Server
                   dbContext.Authors.Count() == 0 &&
                   dbContext.WorkOfArts.Count() == 0))
             {
+                log.Info("Database is already initialized...");
                 return;
             }
 
@@ -103,13 +105,35 @@ namespace Server
                     IsDeleted = false
                 };
 
+                Author author4 = new Author()
+                {
+                    FirstName = "Claude",
+                    LastName = "Monet",
+                    BirthYear = 1840,
+                    DeathYear = 1926,
+                    ArtMovement = ArtMovement.Impressionism,
+                    IsDeleted = false
+                };
+
+                Author author5 = new Author()
+                {
+                    FirstName = "Salvador",
+                    LastName = "Dali",
+                    BirthYear = 1904,
+                    DeathYear = 1989,
+                    ArtMovement = ArtMovement.Painting,
+                    IsDeleted = false
+                };
+
                 dbContext.Authors.Add(author1);
                 dbContext.Authors.Add(author2);
                 dbContext.Authors.Add(author3);
+                dbContext.Authors.Add(author4);
+                dbContext.Authors.Add(author5);
                 dbContext.SaveChanges();
                 log.Debug("Authors added to the database.");
 
-                Gallery gallery = new Gallery()
+                Gallery gallery1 = new Gallery()
                 {
                     PIB = "123456789",
                     Address = "123 Gallery Street, City, Country",
@@ -119,16 +143,27 @@ namespace Server
                     GalleryIsEdditedBy = ""
                 };
 
-                dbContext.Galleries.Add(gallery);
+                Gallery gallery2 = new Gallery()
+                {
+                    PIB = "987654321",
+                    Address = "456 Art Avenue, Metropolis, Country",
+                    MBR = "123456789",
+                    IsDeleted = false,
+                    IsInEditingMode = false,
+                    GalleryIsEdditedBy = ""
+                };
+
+                dbContext.Galleries.Add(gallery1);
+                dbContext.Galleries.Add(gallery2);
                 dbContext.SaveChanges();
-                log.Debug("Gallery added to the database.");
+                log.Debug("Galleries added to the database.");
 
                 WorkOfArt art1 = new WorkOfArt()
                 {
                     ArtName = "Mona Lisa",
                     ArtMovement = ArtMovement.Renaissance,
                     Style = Style.Realism,
-                    GalleryPIB = gallery.PIB,
+                    GalleryPIB = gallery1.PIB,
                     AuthorID = author1.ID,
                     AuthorName = $"{author1.FirstName} {author1.LastName}",
                     IsDeleted = false
@@ -139,7 +174,7 @@ namespace Server
                     ArtName = "Starry Night",
                     ArtMovement = ArtMovement.PostImpressionism,
                     Style = Style.Expressionism,
-                    GalleryPIB = gallery.PIB,
+                    GalleryPIB = gallery1.PIB,
                     AuthorID = author2.ID,
                     AuthorName = $"{author2.FirstName} {author2.LastName}",
                     IsDeleted = false
@@ -150,22 +185,47 @@ namespace Server
                     ArtName = "Guernica",
                     ArtMovement = ArtMovement.Cubism,
                     Style = Style.Surrealism,
-                    GalleryPIB = gallery.PIB,
+                    GalleryPIB = gallery1.PIB,
                     AuthorID = author3.ID,
                     AuthorName = $"{author3.FirstName} {author3.LastName}",
+                    IsDeleted = false
+                };
+
+                WorkOfArt art4 = new WorkOfArt()
+                {
+                    ArtName = "Water Lilies",
+                    ArtMovement = ArtMovement.Impressionism,
+                    Style = Style.Naturalism,
+                    GalleryPIB = gallery2.PIB,
+                    AuthorID = author4.ID,
+                    AuthorName = $"{author4.FirstName} {author4.LastName}",
+                    IsDeleted = false
+                };
+
+                WorkOfArt art5 = new WorkOfArt()
+                {
+                    ArtName = "The Persistence of Memory",
+                    ArtMovement = ArtMovement.Baroque,
+                    Style = Style.Surrealism,
+                    GalleryPIB = gallery2.PIB,
+                    AuthorID = author5.ID,
+                    AuthorName = $"{author5.FirstName} {author5.LastName}",
                     IsDeleted = false
                 };
 
                 dbContext.WorkOfArts.Add(art1);
                 dbContext.WorkOfArts.Add(art2);
                 dbContext.WorkOfArts.Add(art3);
+                dbContext.WorkOfArts.Add(art4);
+                dbContext.WorkOfArts.Add(art5);
                 dbContext.SaveChanges();
                 log.Debug("Works of art added to the database.");
 
-                // Dodela WorkOfArts galeriji
-                gallery.WorkOfArts = new List<WorkOfArt>() { art1, art2, art3 };
+                // Dodela WorkOfArts galerijama
+                gallery1.WorkOfArts = new List<WorkOfArt>() { art1, art2, art3 };
+                gallery2.WorkOfArts = new List<WorkOfArt>() { art4, art5 };
                 dbContext.SaveChanges();
-                log.Debug("Works of art assigned to the gallery.");
+                log.Debug("Works of art assigned to the galleries.");
             }
             catch (Exception ex)
             {
@@ -173,5 +233,6 @@ namespace Server
                 throw;
             }
         }
+
     }
 }

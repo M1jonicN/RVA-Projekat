@@ -6,7 +6,6 @@ using System.ServiceModel;
 using System.Timers;
 using System.Windows.Input;
 using Client.Helpers;
-using Client.Models;
 using Client.Services;
 using Common.DbModels;
 using Common.Interfaces;
@@ -19,14 +18,14 @@ namespace Client.ViewModels
         #region Fields
         private static readonly ILog log = LogManager.GetLogger(typeof(WorkOfArtDetailsViewModel));
         private Timer _timer;
-        private Common.DbModels.WorkOfArt _workOfArt;
-        private Common.DbModels.Author _author;
+        private WorkOfArt _workOfArt;
+        private Author _author;
         private bool _isWorkOfArtEditing;
         private bool _isAuthorEditing;
         #endregion
 
         #region Properties
-        public Common.DbModels.WorkOfArt WorkOfArt
+        public WorkOfArt WorkOfArt
         {
             get => _workOfArt;
             set
@@ -36,7 +35,7 @@ namespace Client.ViewModels
             }
         }
 
-        public Common.DbModels.Author Author
+        public Author Author
         {
             get => _author;
             set
@@ -46,7 +45,7 @@ namespace Client.ViewModels
             }
         }
 
-        private readonly Common.DbModels.User _loggedInUser;
+        private readonly User _loggedInUser;
         public string LoggedInUsername => _loggedInUser.Username;
 
         public bool IsWorkOfArtEditing
@@ -81,7 +80,7 @@ namespace Client.ViewModels
         public ICommand DeleteAuthorCommand { get; }
 
         #endregion
-        public WorkOfArtDetailsViewModel(Common.DbModels.WorkOfArt workOfArt, Common.DbModels.Author author, Common.DbModels.User loggedInUser)
+        public WorkOfArtDetailsViewModel(WorkOfArt workOfArt, Author author, User loggedInUser)
         {
             WorkOfArt = workOfArt;
             Author = author;
@@ -143,7 +142,7 @@ namespace Client.ViewModels
                 Console.WriteLine("Author deleted successfully.");
                 log.Info($"Author {Author.FirstName} {Author.LastName} deleted successfully.");
                 UserActionLoggerService.Instance.Log(_loggedInUser.Username, $" author {Author.FirstName} {Author.LastName} deleted successfully.");
-                Author = new Common.DbModels.Author(); // or null, depending on your logic
+                Author = new Author(); // or null, depending on your logic
                 OnPropertyChanged(nameof(Author));
             }
             else
